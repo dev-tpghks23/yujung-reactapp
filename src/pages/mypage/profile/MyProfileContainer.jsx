@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import PageS from './styles/MyPageWrapper'; 
 import InfoS from './styles/InfoManagementStyles'; 
 import CommS from './styles/CommunityStyles'; 
 
-import mainImg from '../heroSection/resources/fail-logs.png';
-import mylogImg from '../heroSection/resources/my-fail-log.png';
-import likesImg from '../heroSection/resources/likes.png';
-import guestbookImg from '../heroSection/resources/guestbook.png';
-
 import ProfileCardComponent from './components/ProfileCardComponent';
 import AccountDataComponent from './components/AccountDataComponent';
 import MyCommunityContainer from './components/MyCommunityContainer';
 import HeroRotationComponent from '../heroSection/HeroRotationComponents';
+import { getHeroContent } from '../heroSection/HeroData';
 
 const MyProfileContainer = () => {
-  const location = useLocation();
   const navigate = useNavigate();
+  const {pathname} = useLocation();
+
+  // [절대 삭제 금지] 로그인 체크 및 접근 제한 로직
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token'); 
+
+  //   if (!token) {
+  //     alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
+  //     navigate('/login', { replace: true });
+  //   }
+  // }, [navigate]);
+
+  // 0. 히어로 섹션 복붙용
+    const { mainContent, quickMenus } = getHeroContent(pathname);
 
   // 1. 회원 정보 상태 (이미지 상태를 여기에 통합하면 관리가 편합니다)
   const [memberInfo, setMemberInfo] = useState({
@@ -54,16 +63,6 @@ const MyProfileContainer = () => {
     navigate('/change-password'); // 실제 경로로 수정 필요
   };
 
-  // 4. 히어로 섹션 데이터 (동일)
-  const heroData = [
-    { id: "fail-logs", path: "/fail-logs", subTitle: "페일로그를 작성해보고 싶다면", title: "페일로그 바로가기", description: "실패를 기록하고 성장의 발판으로 삼으세요.", bgColor: "#E8EBFD", img: mainImg },
-    { id: "my-fail-log", path: "/my-page/fail-logs", subTitle: "내가 작성한 로그를 보고 싶다면", title: "마이 페일로그", description: "내가 작성한 로그를 볼 수 있어요.", bgColor: "#F0F3FF", img: mylogImg },
-    { id: "likes", path: "/my-page/likes", subTitle: "참고하고 싶은 게시글을 모아둔", title: "좋아요 한 페일로그", description: "좋아요 한 게시글을 모아 볼 수 있어요.", bgColor: "#EBF8FF", img: likesImg },
-    { id: "guestbook", path: "/my-page/guestbook", subTitle: "다른 사람들과 소통하는", title: "페일로그 방명록", description: "내게 남긴 말을 확인해보세요.", bgColor: "#EEF2FF", img: guestbookImg }
-  ];
-
-  const mainContent = heroData.find(item => item.path === location.pathname) || heroData[0];
-  const quickMenus = heroData.filter(item => item.id !== mainContent.id);
 
   return (
     <PageS.MainWrapper>
