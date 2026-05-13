@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Outlet, useParams, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -7,6 +7,15 @@ const LogResultContainer = () => {
   const { id } = useParams();
   const location = useLocation();
   const isMyLog = id === "my";
+  
+  // Lifting up like state
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(38); // Using mock value from relatedPeople for now
+
+  const handleLike = () => {
+    setLiked(prev => !prev);
+    setLikeCount(prev => liked ? prev - 1 : prev + 1);
+  };
 
   // Mock data for the carousel
   const relatedPeople = [
@@ -40,7 +49,7 @@ const LogResultContainer = () => {
         <S.CardWrapper>
           <S.PurpleShadow />
           <S.Card>
-            <Outlet context={{ isMyLog }} />
+            <Outlet context={{ isMyLog, liked, likeCount, handleLike }} />
           </S.Card>
         </S.CardWrapper>
 

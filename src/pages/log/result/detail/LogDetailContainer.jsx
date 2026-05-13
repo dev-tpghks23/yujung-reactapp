@@ -29,14 +29,7 @@ const LOG_DATA = {
 };
 
 const LogDetailContainer = () => {
-  const { isMyLog } = useOutletContext();
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(LOG_DATA.likes);
-
-  const handleLike = () => {
-    setLiked(prev => !prev);
-    setLikeCount(prev => liked ? prev - 1 : prev + 1);
-  };
+  const { isMyLog, liked, likeCount, handleLike } = useOutletContext();
 
   return (
     <S.Container>
@@ -192,16 +185,20 @@ S.LikeButton = styled.button`
   border: none;
   background: transparent;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 
   span {
     font-size: ${({ theme }) => theme.FONT_SIZE.h8};
     font-weight: ${({ theme }) => theme.FONT_WEIGHT.medium};
     color: ${({ theme }) => theme.TEXT_COLOR.basic};
-  }
-
-  &:hover {
-    opacity: 0.7;
   }
 `;
 
