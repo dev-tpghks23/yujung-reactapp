@@ -8,6 +8,7 @@ import Content from './components/Content';
 import ImagesContainer from './components/ImagesContainer';
 import AuthorInfo from './components/AuthorInfo';
 import Middle from './components/Middle';
+import Reply from './components/Reply';
 
 const postData = {
     category: 0,
@@ -21,6 +22,14 @@ const postData = {
 
 const CommunityDetailContainer = () => {
     const {id} = useParams()
+
+    // const handleSubmit = (data) => {
+    //     if(data.length === 0) {
+    //         alert("댓글을 입력하세요")
+    //     }
+    //     console.log(data);
+    // }
+
     return (
     <Container>
         <Wrapper>
@@ -54,8 +63,9 @@ const CommunityDetailContainer = () => {
             <Divider />
 
             {/* 중앙(목록으로,좋아요,메뉴버튼컨테이너) */}
-            <Middle />
+            <Middle isOwner={true} isLiked={true} likeCount={24} />
 
+            <Reply />
         </Wrapper>
     </Container>
     );
