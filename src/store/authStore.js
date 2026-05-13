@@ -5,7 +5,7 @@ const useAuthStore = create(
   persist(
     combine({
       user: null,
-      isAuthenticated: false,
+      isAuthenticated: true,
     }, 
     (set) => ({
       setIsAuthenticated: (status) => set({ isAuthenticated: status }),

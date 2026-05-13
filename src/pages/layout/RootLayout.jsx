@@ -3,9 +3,7 @@ import useAuthStore from '../../store/authStore';
 import './RootLayout.css';
 
 const RootLayout = () => {
-  // const { isAuthenticated, setIsAuthenticated, setUser } = useAuthStore();
-
-  const isAuthenticated = false;
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <div>
@@ -14,7 +12,7 @@ const RootLayout = () => {
         {/* 로고 */}
         <div className="root-header-logo">
           <Link to="/">
-            <img src="/logo.png" alt="FailLog" />
+            <img src="/assets\picture\logo.png" alt="FailLog" />
           </Link>
         </div>
 
