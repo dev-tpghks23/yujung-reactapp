@@ -11,6 +11,7 @@ import Middle from './components/Middle';
 import ReplySubmit from './components/ReplySubmit';
 import ReplyContainer from './components/ReplyContainer';
 import BeforeAfterPost from './components/BeforeAfterPost';
+import AiPostContainer from './components/AiPostContainer';
 
 const replyList = [
     {
@@ -115,6 +116,49 @@ const replyList = [
     },
 ];
 
+const aiPostList = [
+    {
+        date: '2026년 03월 03일',
+        category: 0,
+        title: '시험 직전 불안이 심해질 때 내가 했던 복기 루틴 3가지를 소개합니다',
+        profile: icon04,
+        author: '필기마스터',
+        views: 45,
+        likes: 35,
+        comments: 6,
+    },
+    {
+        date: '2026년 03월 03일',
+        category: 0,
+        title: '도서관 루틴으로 바꾸고 나서 집중력이 유지된 기록',
+        profile: icon04,
+        author: '필기마스터',
+        views: 45,
+        likes: 35,
+        comments: 6,
+    },
+    {
+        date: '2026년 03월 03일',
+        category: 1,
+        title: '공부 환경을 바꾸고 나서 성적이 오른 실제 경험담',
+        profile: icon04,
+        author: '필기마스터',
+        views: 45,
+        likes: 35,
+        comments: 6,
+    },
+    {
+        date: '2026년 03월 03일',
+        category: 2,
+        title: '기출 회독보다 개념 이해가 먼저다 – 내 공부법 변화기',
+        profile: icon04,
+        author: '필기마스터',
+        views: 45,
+        likes: 35,
+        comments: 6,
+    },
+];
+
 const postData = {
     category: 0,
     title: '기출만 파다가 실전에서 백지 된 썰. 공부 환경부터 바꾸고 나서니 변화가 생긴 썰',
@@ -180,6 +224,8 @@ const CommunityDetailContainer = () => {
                 nextTitle="도서관 루틴으로 바꾸고 나서 집중력이 유지된 기록"
                 // nextId={4}
             />
+            
+            <AiPostContainer aiPostList={aiPostList} />
         </Wrapper>
     </Container>
     );
@@ -204,6 +250,7 @@ const Wrapper = styled.div`
     width: 1320px;
     margin-top: 63px;
     margin-bottom: 101px;
+    padding-bottom: 43px;
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import S, { colorCSS } from '../../style';
+import S, { colorCSS, sizeCSS } from '../../style';
 import { Link } from 'react-router-dom';
 
 const BeforeAfterPost = ({ prevTitle, prevId, nextTitle, nextId }) => {
   return (
     <Wrapper>
       <Row>
-        <S.Span size="h10Regular" color="faillog_gray9">이전글</S.Span>
+        <Label size="h10Regular" color="faillog_gray9">이전글</Label>
         {prevId ? (
           <PostLink to={`/community/detail/${prevId}`}>
-            <S.Span size="h9Regular" color="faillog-black">{prevTitle}</S.Span>
+            <S.Span2 size="h9Regular" color="faillog-black" lineclamp={1}>{prevTitle}</S.Span2>
           </PostLink>
         ) : (
           <S.Span size="h9Regular" color="faillog_gray9">이전글이 없습니다</S.Span>
@@ -20,10 +20,10 @@ const BeforeAfterPost = ({ prevTitle, prevId, nextTitle, nextId }) => {
       <Divider />
 
       <Row>
-        <S.Span size="h10Regular" color="faillog_gray9">다음글</S.Span>
+        <Label size="h10Regular" color="faillog_gray9">다음글</Label>
         {nextId ? (
           <PostLink to={`/community/detail/${nextId}`}>
-            <S.Span size="h9Regular" color="faillog-black">{nextTitle}</S.Span>
+            <S.Span2 size="h9Regular" color="faillog-black" lineclamp={1}>{nextTitle}</S.Span2>
           </PostLink>
         ) : (
           <S.Span size="h9Regular" color="faillog_gray9">다음글이 없습니다</S.Span>
@@ -47,9 +47,18 @@ const Row = styled.div`
   align-items: center;
   gap: 49px;
   padding-left: 16px;
+  padding-right: 190px;
 `;
 
+const Label = styled.span`
+  white-space: nowrap;
+  flex-shrink: 0;
+  ${sizeCSS["h10-regular"]}
+  color: ${colorCSS["faillog_gray9"]};
+`
+
 const PostLink = styled(Link)`
+  min-width: 0;
   text-decoration: none;
   &:hover span {
     text-decoration: underline;
