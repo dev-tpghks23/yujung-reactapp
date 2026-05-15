@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 import theme from '../../../../../styles/theme';
-import heartIcon from '../../result_icon/heart.svg';
-import arrowRightIcon from '../../result_icon/arrow-right.svg';
 import planTargetIcon from './actionplan_icon/plan_target.svg';
 import planEnvIcon from './actionplan_icon/plan_env.svg';
 import planPartnerIcon from './actionplan_icon/plan_partner.svg';
@@ -11,8 +9,7 @@ import planChecklistIcon from './actionplan_icon/plan_checklist.svg';
 
 const LogActionPlanContainer = () => {
     const theme = useTheme();
-    const navigate = useNavigate();
-    const { liked, likeCount, handleLike } = useOutletContext();
+    const { liked, likeCount, handleLike, selectedLog } = useOutletContext();
     const [openPlanItems, setOpenPlanItems] = useState([]);
     const [openTransformItems, setOpenTransformItems] = useState([]);
 
@@ -101,19 +98,26 @@ const LogActionPlanContainer = () => {
 
     return (
         <S.Container>
-            {/* Meta Row */}
+            {/* Profile & Like Row */}
             <S.MetaRow>
                 <S.AuthorInfo>
-                    <S.AuthorName>필기마스터</S.AuthorName>
+                    <S.AuthorName>{selectedLog.author.name}</S.AuthorName>
                 </S.AuthorInfo>
                 <S.LikeButton onClick={handleLike}>
                     <S.HeartIcon $liked={liked}>
-                        <S.HeartImg src={heartIcon} alt="heart" $liked={liked} />
+                        <svg width="18" height="16" viewBox="0 0 25 22" fill={liked ? "#FF4B4B" : "none"} xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M7.19401 0.777345C3.65026 0.777345 0.777344 3.65026 0.777344 7.19401C0.777344 13.6107 8.36068 19.444 12.444 20.8008C16.5273 19.444 24.1107 13.6107 24.1107 7.19401C24.1107 3.65026 21.2378 0.777345 17.694 0.777345C15.524 0.777345 13.6048 1.85476 12.444 3.50384C11.8522 2.66115 11.0661 1.97342 10.1523 1.49883C9.23846 1.02424 8.22374 0.776763 7.19401 0.777345Z"
+                                stroke="#FF4B4B"
+                                strokeWidth="1.55556"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
                     </S.HeartIcon>
                     <span>{likeCount}</span>
                 </S.LikeButton>
             </S.MetaRow>
-
             {/* Header Section */}
             <S.SummaryHeader>
                 <S.Badge>{actionPlanData.badge}</S.Badge>
@@ -193,12 +197,6 @@ const LogActionPlanContainer = () => {
                 </S.Grid>
             </S.Section>
 
-            <S.BottomLinkWrapper>
-                <S.BottomLink onClick={() => navigate('/projects')}>
-                    프로젝트 작성하러 가기
-                    <S.ArrowRightIcon src={arrowRightIcon} alt="arrow-right" />
-                </S.BottomLink>
-            </S.BottomLinkWrapper>
         </S.Container>
     );
 };
@@ -211,7 +209,6 @@ S.Container = styled.div`
     width: 1096px;
     margin: 0 auto;
 `;
-
 S.MetaRow = styled.div`
     display: flex;
     justify-content: space-between;
@@ -242,15 +239,6 @@ S.LikeButton = styled.div`
     border: none;
     background: transparent;
     cursor: pointer;
-    transition: transform 0.2s ease;
-
-    &:hover {
-        transform: scale(1.05);
-    }
-
-    &:active {
-        transform: scale(0.95);
-    }
 
     span {
         font-size: ${({ theme }) => theme.FONT_SIZE.h8};
@@ -265,12 +253,6 @@ S.HeartIcon = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-`;
-
-S.HeartImg = styled.img`
-    width: 18px;
-    height: 16px;
-    filter: ${({ $liked }) => $liked ? 'none' : 'grayscale(100%) brightness(200%)'};
 `;
 
 S.SummaryHeader = styled.div`
@@ -427,33 +409,6 @@ S.Chevron = styled.span`
     transform: ${({ $isOpen }) => $isOpen ? 'rotate(-135deg)' : 'rotate(45deg)'};
     transition: transform 0.3s ease;
     margin-left: 10px;
-`;
-
-S.BottomLinkWrapper = styled.div`
-    margin-top: 40px;
-    display: flex;
-    justify-content: flex-end;
-`;
-
-S.BottomLink = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: ${({ theme }) => theme.FONT_SIZE.h7};
-    font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
-    color: ${({ theme }) => theme.TEXT_COLOR.basic};
-    text-decoration: none;
-    padding-bottom: 4px;
-    cursor: pointer;
-
-    &:hover {
-        color: ${({ theme }) => theme.PALETTE.third.main};
-    }
-`;
-
-S.ArrowRightIcon = styled.img`
-    width: 25px;
-    height: 25px;
 `;
 
 S.TransformWrapper = styled.div`

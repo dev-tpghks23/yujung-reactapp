@@ -1,7 +1,6 @@
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
-import heartIcon from '../result_icon/heart.svg';
 import checkCircleIcon from '../result_icon/check_circle.svg';
 
 const LogDetailContainer = () => {
@@ -29,19 +28,29 @@ const LogDetailContainer = () => {
         <S.Date>{selectedLog.date}</S.Date>
       </S.TitleRow>
 
-      {/* Author & Actions (Like button always shown now) */}
+      {/* Author & Actions */}
       <S.MetaRow>
         <S.AuthorInfo>
           <S.AuthorName>{selectedLog.author.name}</S.AuthorName>
         </S.AuthorInfo>
 
-        <S.LikeButton onClick={handleLike} $liked={liked}>
+        <S.LikeButton onClick={handleLike}>
           <S.HeartIcon $liked={liked}>
-            <S.HeartImg src={heartIcon} alt="heart" $liked={liked} />
+            <svg width="18" height="16" viewBox="0 0 25 22" fill={liked ? "#FF4B4B" : "none"} xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M7.19401 0.777345C3.65026 0.777345 0.777344 3.65026 0.777344 7.19401C0.777344 13.6107 8.36068 19.444 12.444 20.8008C16.5273 19.444 24.1107 13.6107 24.1107 7.19401C24.1107 3.65026 21.2378 0.777345 17.694 0.777345C15.524 0.777345 13.6048 1.85476 12.444 3.50384C11.8522 2.66115 11.0661 1.97342 10.1523 1.49883C9.23846 1.02424 8.22374 0.776763 7.19401 0.777345Z"
+                stroke="#FF4B4B"
+                strokeWidth="1.55556"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </S.HeartIcon>
           <span>{likeCount}</span>
         </S.LikeButton>
       </S.MetaRow>
+
+      {/* Vision */}
 
       {/* Vision */}
       <S.VisionBox>
@@ -137,15 +146,6 @@ S.LikeButton = styled.button`
   border: none;
   background: transparent;
   cursor: pointer;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
 
   span {
     font-size: ${({ theme }) => theme.FONT_SIZE.h8};
@@ -165,12 +165,6 @@ S.HeartIcon = styled.div`
 S.CheckIcon = styled.img`
   width: 17px;
   height: 17px;
-`;
-
-S.HeartImg = styled.img`
-  width: 18px;
-  height: 16px;
-  filter: ${({ $liked }) => $liked ? 'none' : 'grayscale(100%) brightness(200%)'};
 `;
 
 S.VisionBox = styled.div`
@@ -208,6 +202,11 @@ S.ContentText = styled.p`
   line-height: 2;
   white-space: pre-line;
   letter-spacing: -0.2px;
+`;
+
+S.CheckIcon = styled.img`
+  width: 17px;
+  height: 17px;
 `;
 
 export default LogDetailContainer;

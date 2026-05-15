@@ -209,7 +209,6 @@ S.Wrapper = styled.div`
 
 S.Header = styled.div`
   text-align: left;
-  width: 100%;
   width: 1298px;
   margin-bottom: 100px;
 `;
@@ -228,14 +227,12 @@ S.SubTitle = styled.p`
 `;
 
 S.ContentWrapper = styled.div`
-  width: 100%;
   width: 1320px;
 `;
 
 S.TabBar = styled.div`
   display: flex;
   gap: 24px;
-  margin-bottom: 0;
   width: 1320px;
   margin: 0 auto;
   padding-left: 101px;
@@ -254,7 +251,7 @@ S.Tab = styled(NavLink)`
   text-decoration: none;
   color: ${({ theme }) => theme.PALETTE.third.main};
   border: 1px solid ${({ theme }) => theme.GRAYSCALE[3]};
-  border-bottom: 1px solid ${({ theme }) => theme.PALETTE.third.main}; /* Default bottom border to match card */
+  border-bottom: 1px solid ${({ theme }) => theme.PALETTE.third.main};
   border-radius: 12px 12px 0 0;
   transition: all 0.2s;
   background: ${({ theme }) => theme.PALETTE.white};
@@ -266,7 +263,7 @@ S.Tab = styled(NavLink)`
     color: ${({ theme }) => theme.PALETTE.white};
     background-color: ${({ theme }) => theme.PALETTE.third.main};
     border: 1px solid ${({ theme }) => theme.PALETTE.third.main};
-    border-bottom: 1px solid ${({ theme }) => theme.PALETTE.third.main}; /* Same as background to look merged */
+    border-bottom: 1px solid ${({ theme }) => theme.PALETTE.third.main};
     z-index: 10;
   }
 
@@ -303,64 +300,34 @@ S.Card = styled.div`
   z-index: 1;
   width: 1298px;
   box-sizing: border-box;
-`;
-
-S.VisionLinkWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  margin-top: 24px;
-  padding-right: 22px;
-`;
-
-S.VisionLinkText = styled.p`
-  font-size: 12px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-  text-align: right;
-  line-height: 1.4;
-`;
-
-S.VisionLink = styled.a`
-  font-size: 12px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
+  min-height: 800px;
 `;
 
 S.CarouselSection = styled.div`
   margin-top: 100px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 1320px;
+  padding-right: 22px;
+  box-sizing: border-box;
 `;
 
-S.CarouselTitle = styled.h2`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h3_2};
+S.CarouselTitle = styled.h3`
+  font-size: ${({ theme }) => theme.FONT_SIZE.h3};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   color: ${({ theme }) => theme.TEXT_COLOR.basic};
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 `;
 
 S.CarouselSubTitle = styled.p`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h5};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-  margin-bottom: 60px;
+  font-size: ${({ theme }) => theme.FONT_SIZE.h7};
+  color: ${({ theme }) => theme.GRAYSCALE[6]};
+  margin-bottom: 48px;
 `;
 
 S.CarouselContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px;
-  width: 100%;
-  justify-content: center;
+  gap: 32px;
+  position: relative;
 `;
 
 S.SliderWindow = styled.div`
