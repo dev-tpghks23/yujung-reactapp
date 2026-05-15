@@ -33,7 +33,7 @@ const PagenationComponent = ({ minPage, maxPage, onPageChange, page }) => {
     if (canPrev) changePage(groupStart - 1);
   };
 
-  const handleNext = () => {0
+  const handleNext = () => {
     if (canNext) changePage(groupStart + 5);
   };
 
