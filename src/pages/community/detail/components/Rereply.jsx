@@ -5,6 +5,7 @@ import menuIcon from '../../resources/menuIcon.svg';
 import S, { colorCSS, sizeCSS } from '../../style.js';
 import { flexCenterRow } from '../../../../styles/common.js';
 import { useMenuContext } from './MenuContext.js';
+import { useReportContext } from './ReportContext.js';
 
 //삭제예정
 const EXAMPLE = {
@@ -24,6 +25,7 @@ const Rereply = ({
   createdAt = EXAMPLE.createdAt,
 }) => {
   const { openMenuId, setOpenMenuId } = useMenuContext();
+  const { openReport } = useReportContext();
   const menuId = useRef(`rereply-${Math.random()}`).current;
   const menuOpen = openMenuId === menuId;
   const toggleMenu = () => setOpenMenuId(menuOpen ? null : menuId);
@@ -55,7 +57,7 @@ const Rereply = ({
                   <S.Span size="h9Regular">삭제하기</S.Span>
                 </DropdownItem>
               ) : (
-                <DropdownItem onClick={() => setOpenMenuId(null)}>
+                <DropdownItem onClick={() => { openReport('대댓글', undefined, profileImg, author, content); setOpenMenuId(null); }}>
                   <S.Span size="h9Regular">신고하기</S.Span>
                 </DropdownItem>
               )}
