@@ -90,16 +90,17 @@ const LogWriteStep1Container = () => {
 
         <S.FormContainer>
           <S.FormRow>
-            <S.FormGroup $flex={1.5}>
+            <S.FormGroup>
               <S.Label>로그 제목</S.Label>
               <S.Input
                 placeholder="예) 정보처리기사 자격증 필기 도전기"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                $width={491}
               />
             </S.FormGroup>
 
-            <S.FormGroup $flex={1.2} ref={categoryRef}>
+            <S.FormGroup ref={categoryRef}>
               <S.Label>카테고리</S.Label>
               <S.DropdownWrapper>
                 <S.DropdownHeader $isOpen={isCategoryOpen} onClick={() => setIsCategoryOpen(!isCategoryOpen)}>
@@ -130,7 +131,7 @@ const LogWriteStep1Container = () => {
             <S.LabelRow>
               <S.Label>이루고 싶은 비전</S.Label>
               <S.LoadVisionButton $isOpen={isVisionListOpen} type="button" onClick={() => setIsVisionListOpen(!isVisionListOpen)}>
-                <S.VisionIcon src={visionListIcon} alt="vision list" />
+                <S.VisionIcon />
                 기존 비전 불러오기
               </S.LoadVisionButton>
             </S.LabelRow>
@@ -138,6 +139,7 @@ const LogWriteStep1Container = () => {
               placeholder="예) 정보처리기사 취득하기"
               value={vision}
               onChange={(e) => setVision(e.target.value)}
+              $width={782}
             />
 
             {isVisionListOpen && (
@@ -213,7 +215,7 @@ S.Wrapper = styled.div`
 
 S.ContentWrapper = styled.div`
   width: 100%;
-  max-width: 872px;
+  max-width: 882px;
 `;
 
 S.Header = styled.div`
@@ -222,13 +224,13 @@ S.Header = styled.div`
 `;
 
 S.Title = styled.h1`
-  font-size: 60px;
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h3};
+  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   color: ${({ theme }) => theme.TEXT_COLOR.basic};
 `;
 
 S.SubTitle = styled.p`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h8};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h7};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
   color: ${({ theme }) => theme.TEXT_COLOR.basic};
 `;
@@ -329,8 +331,7 @@ S.FormRow = styled.div`
 S.FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  flex: ${({ $flex }) => $flex || 1};
+  gap: 14px;
   position: relative;
 `;
 
@@ -341,22 +342,24 @@ S.LabelRow = styled.div`
 `;
 
 S.Label = styled.label`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h8};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h7};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   color: ${({ theme }) => theme.TEXT_COLOR.basic};
 `;
 
 S.Input = styled.input`
-  width: 100%;
-  padding: 18px 24px;
+  width: ${({ $width }) => ($width ? `${$width}px` : '100%')};
+  height: 52px;
+  padding: 0 24px;
   border: 1px solid ${({ theme }) => theme.GRAYSCALE[3]};
   border-radius: 8px;
   font-family: inherit;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h8};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
   color: ${({ theme }) => theme.TEXT_COLOR.basic};
   outline: none;
   background-color: ${({ theme }) => theme.PALETTE.white};
+  box-sizing: border-box;
 
   &::placeholder {
     color: ${({ theme }) => theme.GRAYSCALE[9]};
@@ -373,11 +376,12 @@ S.DropdownWrapper = styled.div`
 `;
 
 S.DropdownHeader = styled.div`
-  width: 100%;
-  padding: 18px 24px;
+  width: 267px;
+  height: 52px;
+  padding: 0 24px;
   border: 1px solid ${({ $isOpen }) => $isOpen ? theme.PALETTE.third.main : theme.GRAYSCALE[3]};
   border-radius: 8px;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h8};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
   background-color: ${({ theme }) => theme.PALETTE.white};
   cursor: pointer;
@@ -385,6 +389,7 @@ S.DropdownHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   transition: border-color 0.2s;
+  box-sizing: border-box;
 `;
 
 S.DropdownText = styled.span`
@@ -456,7 +461,8 @@ S.FloatingItem = styled.li`
 `;
 
 S.LoadVisionButton = styled.button`
-  padding: 10px 16px;
+  width: 155px;
+  height: 36px;
   border: 1px solid ${({ $isOpen }) => $isOpen ? theme.PALETTE.third.main : theme.GRAYSCALE[3]};
   background-color: ${({ theme }) => theme.PALETTE.white};
   border-radius: 6px;
@@ -466,9 +472,12 @@ S.LoadVisionButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   white-space: nowrap;
   transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+  box-sizing: border-box;
+  padding: 0;
 
   &:hover {
     background-color: ${({ theme }) => theme.PALETTE.white};
@@ -495,8 +504,8 @@ S.ThumbnailRow = styled.div`
 `;
 
 S.UploadButtonArea = styled.div`
-  flex: 2; /* aligns width with Title input */
-  height: 64px;
+  flex: 2;
+  height: 52px;
   border: 1px solid ${({ theme }) => theme.GRAYSCALE[3]};
   border-radius: 8px;
   display: flex;
@@ -506,6 +515,7 @@ S.UploadButtonArea = styled.div`
   cursor: pointer;
   gap: 10px;
   transition: border-color 0.2s, background-color 0.2s;
+  box-sizing: border-box;
 
   &:hover {
     background-color: ${({ theme }) => theme.PALETTE.white};
@@ -543,7 +553,7 @@ S.PreviewWrapper = styled.div`
   flex-direction: column;
   position: relative;
   width: 100%;
-  max-width: 200px;
+  max-width: 140px;
   border: 1.5px solid ${({ theme }) => theme.GRAYSCALE[2]};
   border-radius: 12px;
   background-color: ${({ theme }) => theme.PALETTE.white};
@@ -551,19 +561,19 @@ S.PreviewWrapper = styled.div`
 
 S.PreviewImage = styled.img`
   width: 100%;
-  height: 110px;
+  height: 80px;
   object-fit: cover;
   border-radius: 11px 11px 0 0;
 `;
 
 S.FileNameContainer = styled.div`
-  padding: 12px 16px;
+  padding: 8px 12px;
   width: 100%;
   box-sizing: border-box;
 `;
 
 S.PreviewFileName = styled.span`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h7};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h10};
   color: ${({ theme }) => theme.PALETTE.third.main};
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -589,9 +599,20 @@ S.DeleteIcon = styled.div`
   }
 `;
 
-S.VisionIcon = styled.img`
+const VisionIconComponent = ({ className }) => (
+  <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2.6499 3.98242H13.3166M2.6499 7.98242H13.3166M2.6499 11.9824H13.3166" stroke="currentColor" strokeWidth="1.88235" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+S.VisionIcon = styled(VisionIconComponent)`
   width: 16px;
   height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  flex-shrink: 0;
 `;
 
 S.UploadIconImg = styled.img`
