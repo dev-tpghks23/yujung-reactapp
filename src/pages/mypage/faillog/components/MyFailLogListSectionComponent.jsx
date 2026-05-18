@@ -43,11 +43,9 @@ const MyFailLogListSectionComponent = ({
         />
       ) : (
         <>
-          <MyFailLogCardComponent 
-            filteredLogs={filteredLogs} 
-            navigate={navigate} 
+          <MyFailLogCardComponent
+            filteredLogs={filteredLogs}
             selectedDeleteIds={selectedDeleteIds}
-            onSelectOneLog={onSelectOneLog}
           />
 
           <div style={{ 

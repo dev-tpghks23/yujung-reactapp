@@ -88,7 +88,9 @@ const MyFailLogsContainer = () => {
   const [selectedTrashIds, setSelectedTrashIds] = useState([]);
 
   const draftLogs = [
-    { id: 1, title: "작성중인 페일로그 1", content: '"신기시험 실패의 원인을 찾아서"', progress: 80, date: "3일 전", color: "#A5B4C3" },
+    { id: 1, title: '"붉은사막 30시간 해봤다" 게임주 영업익 10% 될 증거', content: '오늘 프로젝트를 정리하다가 스타일 경로가 꼬인 것을 발견했다. 당황했지만 Git 복구를 통해 해결!', progress: 80, date: "3일 전", color: "#E7EFFF" },
+    { id: 2, title: 'React 공통 컴포넌트 설계의 어려움, 그리고 깨달음', content: '페이지네이션 컴포넌트를 만들면서 그룹화 로직을 구현하는 게 생각보다 까다로웠다.', progress: 45, date: "5일 전", color: "#D8EEFD" },
+    { id: 3, title: '오늘의 실패: 커피를 쏟은 키보드와 하드웨어의 소중함', content: '코딩에 집중하다가 커피를 쏟았다. 하드웨어 관리는 정말 중요하다는 것을 다시 깨달았다.', progress: 20, date: "1주 전", color: "#D7E0FF" },
   ];
 
   useEffect(() => {

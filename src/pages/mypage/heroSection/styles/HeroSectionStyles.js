@@ -99,7 +99,7 @@ S.HeroBanner = styled.div`
 S.QuickMenuGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 11px;
+  gap: 5px;
   width: 100%;
 `;
 

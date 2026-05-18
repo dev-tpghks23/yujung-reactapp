@@ -10,16 +10,17 @@ import React from 'react';
  * @param {boolean} showRestore - 복구 버튼 노출 여부 분기 프롭
  * @param {object} styles - 외부 스타일 객체
  */
-const ControlBarComponent = ({ 
-  isAllChecked, 
-  onSelectAll, 
-  selectedCount = 0, 
-  totalCount = 0, 
-  onRestore, 
-  onDelete, 
-  showRestore = false, 
-  styles 
+const ControlBarComponent = ({
+  isAllChecked,
+  onSelectAll,
+  selectedCount = 0,
+  totalCount = 0,
+  onRestore,
+  onDelete,
+  showRestore = false,
+  styles
 }) => {
+  const checkboxId = React.useId();
 
   return (
     <div 
@@ -42,13 +43,13 @@ const ControlBarComponent = ({
       >
         <input
           type="checkbox"
-          id="all-check"
+          id={checkboxId}
           onChange={onSelectAll}
           checked={isAllChecked}
           style={{ cursor: 'pointer', width: '16px', height: '16px' }}
         />
-        <label 
-          htmlFor="all-check" 
+        <label
+          htmlFor={checkboxId} 
           style={{ 
             fontSize: '14px', 
             fontWeight: '500', 

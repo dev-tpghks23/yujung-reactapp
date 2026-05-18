@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { sizeCSS, colorCSS } from "../../../../../components/style";
+import theme from "../../../../../styles/theme";
 
 const S = {};
 
@@ -10,10 +11,15 @@ S.DraftSection = styled.section`
   flex-direction: column;
 
   h2 {
-    ${sizeCSS["h6-bold"]}
-    margin-bottom: 30px; 
+    ${sizeCSS["h3_2Bold"]}
+    margin-bottom: 30px;
     color: ${colorCSS["faillog-black"]};
-    span { color: ${colorCSS["faillog_purple"]}; }
+    span {
+      background: ${theme.GRADIENT.blue};
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
   }
 `;
 
@@ -33,16 +39,12 @@ S.DraftGrid = styled.div`
   }
 `;
 
-/* 🎯 피그마 시안 스펙이 완벽 적용된 작성 중인 카드 본체 */
 S.DraftCard = styled.div`
   width: 100%;
   max-width: 410px; 
   height: 534px;     
   
-  /* 🔄 [평상시] 카드 순서에 따른 파스텔톤 배경색 설정 */
-  &:nth-of-type(1) { background-color: #E7EFFF; }
-  &:nth-of-type(2) { background-color: #D8EEFD; }
-  &:nth-of-type(3) { background-color: #D7E0FF; }
+  
 
   border-radius: 24px;
   padding: 40px 32px;
@@ -55,7 +57,10 @@ S.DraftCard = styled.div`
   border: 3px solid transparent; 
   transition: border-color 0.25s ease, transform 0.2s ease, background-color 0.25s ease;
 
-  /* 🔥 [레이어 2] 암전 필름 오버레이 */
+  &:nth-of-type(1) { background-color: #E7EFFF; }
+  &:nth-of-type(2) { background-color: #D8EEFD; }
+  &:nth-of-type(3) { background-color: #D7E0FF; }
+
   &::before {
     content: '';
     position: absolute;
@@ -84,7 +89,7 @@ S.DraftCard = styled.div`
 
   .CardHeader {
     h3 {
-      ${sizeCSS["h7-bold"]}
+      ${sizeCSS["h7-regular"]}
       color: ${colorCSS["faillog_white"]};
       margin: 0 0 12px 0;
       display: -webkit-box;
@@ -104,7 +109,6 @@ S.DraftCard = styled.div`
     }
   }
 
-  /* 🔥 [레이어 1] 피그마 우하단 고정 일러스트 */
   .CardImage {
     position: absolute;
     bottom: 0;
@@ -156,10 +160,8 @@ S.DraftCard = styled.div`
     border-color: ${colorCSS["faillog_purple"]}; 
     transform: translateY(-8px); 
     
-    /* 🔄 [수정] 호버 시 흰색으로 덮어쓰지 않고, 원래 지정된 순서별 배경색이 유지되도록 강제 제거 */
     /* background-color: ${colorCSS["faillog_white"]} !important; */
     
-    /* 🔄 필름 투명화 -> 이 액션 덕분에 원래 깔려있던 고유의 순서별 색상이 선명하게 노출됩니다. */
     &::before {
       opacity: 0; 
     }

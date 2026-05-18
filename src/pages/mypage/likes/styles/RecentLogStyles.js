@@ -1,11 +1,28 @@
 import styled from "styled-components";
-import { sizeCSS, colorCSS } from "../../../../components/style"; 
+import { sizeCSS, colorCSS } from "../../../../components/style";
+import theme from "../../../../styles/theme";
 
 const S = {};
 
-/* ==========================================================================
-   📌 1. [정밀 조정 완료] DraftCard의 이미지 위치와 완벽히 동기화된 상단 스타일
-   ========================================================================== */
+S.RecentSection = styled.section`
+  padding: 78px 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    ${sizeCSS["h3_2Bold"]}
+    margin-bottom: 30px;
+    color: ${colorCSS["faillog-black"]};
+    span {
+      background: ${theme.GRADIENT.blue};
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+`;
+
 S.RecentGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -96,7 +113,7 @@ S.RecentContent = styled.div`
   }
 
   h4 {
-    ${sizeCSS["h7-bold"] || "font-size: 18px; font-weight: 700;"}
+    ${sizeCSS["h7-regular"]}
     margin: 0 0 12px 0; 
     line-height: 1.4; 
     display: -webkit-box; 
@@ -116,12 +133,11 @@ S.RecentContent = styled.div`
       height: 18px; 
       border-radius: 50%; 
     }
-    span { 
-      ${sizeCSS["h9-regular"] || "font-size: 14px;"} 
+    span {
+      ${sizeCSS["h9-regular"]}
     }
   }
 
-  /* 🎯 [수정 완료] DraftCard 시안과 우하단 마진 및 고정 배치 좌표 완전 일치화 */
   .CardMainImage {
     position: absolute; 
     bottom: 0;      /* 0으로 변경하여 여백 밀착 */
@@ -135,7 +151,9 @@ S.RecentContent = styled.div`
     img { 
       width: 278px !important;  
       height: 209px !important; 
-      margin-top: 340px !important; /* 피그마 수직 고정 마진 동일 반영 */
+      margin-top: 340px !important;
+      margin-bottom: -45px;
+      margin-right: -40px; 
       object-fit: contain; 
       filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15)); 
       transition: filter 0.25s ease; 
@@ -149,7 +167,10 @@ S.RecentContent = styled.div`
     align-items: flex-end; /* flex-end 정렬로 싱크 조절 */
     
     .TimeText { 
-      ${sizeCSS["h9-bold"] || "font-size: 14px; font-weight: 700;"} 
+      ${sizeCSS["h9-bold"]}
+      color: ${colorCSS["faillog_white"]};
+      opacity: 0.9;
+      line-height: 1.6; 
     }
   }
 `;

@@ -1,11 +1,14 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getHeroContent } from '../heroSection/HeroData';
 import HeroRotationComponent from '../heroSection/HeroRotationComponents';
 import PageS from '../profile/styles/MyPageWrapper';
 import S from './styles/MyGuestbookStyles';
 import SearchDropdownComponent from '../../../components/commons/SearchDropdownComponent';
 import useAuthStore from '../../../store/authStore';
+
+import GuestbookInputComponent from './components/GuestbookInputComponent';
+import GuestbookCommentItemComponent from './components/GuestbookCommentItemComponent';
 
 const initialComments = [
   {
@@ -70,6 +73,7 @@ const initialComments = [
 ];
 
 const MyGuestbookContainer = () => {
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const { mainContent, quickMenus } = getHeroContent(pathname);
   const currentUser = useAuthStore((state) => state.user?.nickname || state.user?.name || '익명');
@@ -92,32 +96,23 @@ const MyGuestbookContainer = () => {
       const title = comment.title.toLowerCase();
       const content = comment.content.toLowerCase();
       const author = comment.author.toLowerCase();
-      const replyTexts = comment.replies.map((reply) => reply.content.toLowerCase()).join(' ');
+      const replyTexts = comment.replies.map((r) => r.content.toLowerCase()).join(' ');
 
-      if (searchType === '제목') {
-        return title.includes(keyword);
-      }
-      if (searchType === '내용') {
-        return content.includes(keyword);
-      }
-      if (searchType === '제목+내용') {
-        return `${title} ${content}`.includes(keyword);
-      }
-      if (searchType === '작성자') {
-        return author.includes(keyword);
-      }
-      if (searchType === '댓글') {
-        return content.includes(keyword) || replyTexts.includes(keyword);
-      }
+      if (searchType === '제목') return title.includes(keyword);
+      if (searchType === '내용') return content.includes(keyword);
+      if (searchType === '제목+내용') return `${title} ${content}`.includes(keyword);
+      if (searchType === '작성자') return author.includes(keyword);
+      if (searchType === '댓글') return content.includes(keyword) || replyTexts.includes(keyword);
       return false;
     });
   }, [comments, searchKeyword, searchType]);
 
-  const visibleComments = useMemo(() => filteredComments.slice(0, visibleCount), [filteredComments, visibleCount]);
+  const visibleComments = useMemo(
+    () => filteredComments.slice(0, visibleCount),
+    [filteredComments, visibleCount],
+  );
 
-  useEffect(() => {
-    setVisibleCount(4);
-  }, [searchKeyword, searchType]);
+  useEffect(() => { setVisibleCount(4); }, [searchKeyword, searchType]);
 
   useEffect(() => {
     if (!sentinelRef.current) return;
@@ -127,9 +122,8 @@ const MyGuestbookContainer = () => {
           setVisibleCount((prev) => Math.min(prev + 4, filteredComments.length));
         }
       },
-      { rootMargin: '200px' }
+      { rootMargin: '200px' },
     );
-
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
   }, [filteredComments.length, visibleCount]);
@@ -143,21 +137,21 @@ const MyGuestbookContainer = () => {
   const handleSubmit = () => {
     const trimmed = newComment.trim();
     if (!trimmed) return;
-
-    const nextComment = {
-      id: Date.now(),
-      author: currentUser,
-      title: '새로운 방명록',
-      content: trimmed,
-      createdAt: '방금 전',
-      likes: 0,
-      liked: false,
-      replies: [],
-    };
-
-    setComments((prev) => [nextComment, ...prev]);
+    setComments((prev) => [
+      {
+        id: Date.now(),
+        author: currentUser,
+        title: '새로운 방명록',
+        content: trimmed,
+        createdAt: '방금 전',
+        likes: 0,
+        liked: false,
+        replies: [],
+      },
+      ...prev,
+    ]);
     setNewComment('');
-    setVisibleCount((prev) => Math.min(prev + 1, filteredComments.length + 1));
+    setVisibleCount((prev) => prev + 1);
   };
 
   const handleReplyToggle = (commentId) => {
@@ -171,24 +165,26 @@ const MyGuestbookContainer = () => {
   const handleReplySubmit = (commentId) => {
     const replyText = (replyTextMap[commentId] || '').trim();
     if (!replyText) return;
-
-    const newReply = {
-      id: Date.now(),
-      author: currentUser,
-      content: replyText,
-      createdAt: '방금 전',
-      likes: 0,
-      liked: false,
-    };
-
     setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? { ...comment, replies: [...comment.replies, newReply] }
-          : comment
-      )
+      prev.map((c) =>
+        c.id === commentId
+          ? {
+              ...c,
+              replies: [
+                ...c.replies,
+                {
+                  id: Date.now(),
+                  author: currentUser,
+                  content: replyText,
+                  createdAt: '방금 전',
+                  likes: 0,
+                  liked: false,
+                },
+              ],
+            }
+          : c,
+      ),
     );
-
     setReplyTextMap((prev) => ({ ...prev, [commentId]: '' }));
     setReplyOpenId(null);
   };
@@ -197,35 +193,57 @@ const MyGuestbookContainer = () => {
     setComments((prev) =>
       prev.map((comment) => {
         if (comment.id !== commentId) return comment;
-
         if (replyId == null) {
           const liked = !comment.liked;
-          return {
-            ...comment,
-            liked,
-            likes: comment.likes + (liked ? 1 : -1),
-          };
+          return { ...comment, liked, likes: comment.likes + (liked ? 1 : -1) };
         }
-
         return {
           ...comment,
           replies: comment.replies.map((reply) =>
             reply.id === replyId
-              ? {
-                  ...reply,
-                  liked: !reply.liked,
-                  likes: reply.likes + (reply.liked ? -1 : 1),
-                }
-              : reply
+              ? { ...reply, liked: !reply.liked, likes: reply.likes + (reply.liked ? -1 : 1) }
+              : reply,
           ),
         };
-      })
+      }),
     );
   };
 
-  const handleMoreMenuToggle = (commentId, event) => {
-    event.stopPropagation();
+  const handleMoreMenuToggle = (commentId, e) => {
+    e.stopPropagation();
     setActiveMenuId((prev) => (prev === commentId ? null : commentId));
+  };
+
+  const handleCloseMenu = () => setActiveMenuId(null);
+
+  const handleEditComment = (commentId, newContent) => {
+    setComments((prev) =>
+      prev.map((c) => c.id === commentId ? { ...c, content: newContent } : c),
+    );
+  };
+
+  const handleDeleteComment = (commentId) => {
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
+  };
+
+  const handleEditReply = (commentId, replyId, newContent) => {
+    setComments((prev) =>
+      prev.map((c) =>
+        c.id === commentId
+          ? { ...c, replies: c.replies.map((r) => r.id === replyId ? { ...r, content: newContent } : r) }
+          : c,
+      ),
+    );
+  };
+
+  const handleDeleteReply = (commentId, replyId) => {
+    setComments((prev) =>
+      prev.map((c) =>
+        c.id === commentId
+          ? { ...c, replies: c.replies.filter((r) => r.id !== replyId) }
+          : c,
+      ),
+    );
   };
 
   return (
@@ -233,20 +251,16 @@ const MyGuestbookContainer = () => {
       <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} />
 
       <S.GuestbookSection>
-        <S.InputCard>
-          <S.CommentTextarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="인사를 남겨볼까요?"
-          />
+        <S.GuestbookHeader>
+          <h2><span>페일로그</span> 방명록</h2>
+          <p>다른 사람들이 남긴 방명록을 통해 소통해보세요.</p>
+        </S.GuestbookHeader>
 
-          <S.InputFooter>
-            <div />
-            <S.SubmitButton onClick={handleSubmit} disabled={!newComment.trim()}>
-              확인
-            </S.SubmitButton>
-          </S.InputFooter>
-        </S.InputCard>
+        <GuestbookInputComponent
+          value={newComment}
+          onChange={setNewComment}
+          onSubmit={handleSubmit}
+        />
 
         <S.SearchBar>
           <SearchDropdownComponent defaultValue={searchType} onChange={setSearchType} />
@@ -257,95 +271,38 @@ const MyGuestbookContainer = () => {
           />
         </S.SearchBar>
 
-        <S.CommentList>
-          {visibleComments.map((comment) => (
-            <S.CommentBlock key={comment.id}>
-              <S.CommentCard>
-                <S.Avatar>{comment.author.slice(0, 1).toUpperCase()}</S.Avatar>
-                <S.CommentBody>
-                  <S.CommentMeta>
-                    <div>
-                      <S.CommentAuthor>{comment.author}</S.CommentAuthor>
-                      <S.CommentTitle>{comment.title}</S.CommentTitle>
-                    </div>
-                    <S.CommentTime>{comment.createdAt}</S.CommentTime>
-                  </S.CommentMeta>
-                  <S.CommentText>{comment.content}</S.CommentText>
-                  <S.CommentFooter>
-                    <S.ActionGroup>
-                      <S.Reaction liked={comment.liked} type="button" onClick={() => handleToggleLike(comment.id)}>
-                        <span>❤️</span>
-                        <span>{comment.likes}</span>
-                      </S.Reaction>
-                      <S.ReplyAction type="button" onClick={() => handleReplyToggle(comment.id)}>
-                        답글
-                      </S.ReplyAction>
-                    </S.ActionGroup>
-                    <span>{comment.replies.length}개의 답글</span>
-                  </S.CommentFooter>
-                </S.CommentBody>
-                <S.CommentMenu type="button" aria-label="옵션" onClick={(event) => handleMoreMenuToggle(comment.id, event)}>
-                  ···
-                </S.CommentMenu>
-                {activeMenuId === comment.id && (
-                  <S.MenuDropdown onClick={(event) => event.stopPropagation()}>
-                    <S.MenuItem type="button">수정하기</S.MenuItem>
-                    <S.MenuItem type="button">삭제하기</S.MenuItem>
-                    <S.MenuItem type="button">신고하기</S.MenuItem>
-                  </S.MenuDropdown>
-                )}
-              </S.CommentCard>
-
-              {comment.replies.length > 0 && (
-                <S.ReplyList>
-                  {comment.replies.map((reply) => (
-                    <S.ReplyCard key={reply.id}>
-                      <S.ReplyAvatar>{reply.author.slice(0, 1).toUpperCase()}</S.ReplyAvatar>
-                      <S.ReplyBody>
-                        <S.CommentMeta>
-                          <div>
-                            <S.CommentAuthor>{reply.author}</S.CommentAuthor>
-                          </div>
-                          <S.CommentTime>{reply.createdAt}</S.CommentTime>
-                        </S.CommentMeta>
-                        <S.CommentText>{reply.content}</S.CommentText>
-                        <S.CommentFooter>
-                          <S.ActionGroup>
-                            <S.Reaction liked={reply.liked} type="button" onClick={() => handleToggleLike(comment.id, reply.id)}>
-                              <span>❤️</span>
-                              <span>{reply.likes}</span>
-                            </S.Reaction>
-                            <S.ReplyAction type="button" onClick={() => handleReplyToggle(comment.id)}>
-                              답글
-                            </S.ReplyAction>
-                          </S.ActionGroup>
-                        </S.CommentFooter>
-                      </S.ReplyBody>
-                    </S.ReplyCard>
-                  ))}
-                </S.ReplyList>
-              )}
-
-              {replyOpenId === comment.id && (
-                <S.ReplyInputCard>
-                  <S.ReplyTextarea
-                    value={replyTextMap[comment.id] || ''}
-                    onChange={(e) => handleReplyChange(comment.id, e.target.value)}
-                    placeholder="답글을 남겨볼까요?"
-                  />
-                  <S.ReplyFooter>
-                    <div />
-                    <S.SubmitButton type="button" onClick={() => handleReplySubmit(comment.id)} disabled={!replyTextMap[comment.id]?.trim()}>
-                      확인
-                    </S.SubmitButton>
-                  </S.ReplyFooter>
-                </S.ReplyInputCard>
-              )}
-            </S.CommentBlock>
-          ))}
-        </S.CommentList>
-
-        <div ref={sentinelRef} />
+        {filteredComments.length === 0 ? (
+          <S.EmptyState>
+            <h3>아직 작성된 방명록이 없어요.<br /><span>페일로그</span>의 커뮤니티를 이용해볼까요?</h3>
+            <p>실패를 외면하지 않고 기록할 때,<br />당신의 강력한 성장 데이터가 됩니다.</p>
+            <button type="button" onClick={() => navigate('/community')}>시작하기</button>
+          </S.EmptyState>
+        ) : (
+          <S.CommentList>
+            {visibleComments.map((comment) => (
+              <GuestbookCommentItemComponent
+                key={comment.id}
+                comment={comment}
+                currentUser={currentUser}
+                isPageOwner={true}
+                onLike={handleToggleLike}
+                onReplyToggle={handleReplyToggle}
+                replyOpen={replyOpenId === comment.id}
+                replyText={replyTextMap[comment.id] || ''}
+                onReplyChange={handleReplyChange}
+                onReplySubmit={handleReplySubmit}
+                activeMenuId={activeMenuId}
+                onMenuToggle={handleMoreMenuToggle}
+                onCloseMenu={handleCloseMenu}
+                onEdit={handleEditComment}
+                onDelete={handleDeleteComment}
+                onEditReply={handleEditReply}
+                onDeleteReply={handleDeleteReply}
+              />
+            ))}
+            <div ref={sentinelRef} />
+          </S.CommentList>
+        )}
       </S.GuestbookSection>
     </PageS.MainWrapper>
   );
