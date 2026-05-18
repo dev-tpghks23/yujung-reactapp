@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { colorCSS } from "../style";
-import { h5Extrabold, h9Regular, h9Bold, h8Bold, h11Regular } from "../../../styles/common";
+import { h5Extrabold, h7Bold, h9Regular, h9Bold, h8Bold, h10Regular, h11Regular, flexCenterColumn } from "../../../styles/common";
 
 const S = {};
 
@@ -69,6 +69,62 @@ S.PrimaryButton = styled.button`
   &:hover {
     background: ${({ $disabled }) => ($disabled ? '#d8a8ff' : '#9333ea')};
   }
+`;
+
+S.InputRow = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+`;
+
+S.InputWithTimer = styled.div`
+  flex: 1;
+  position: relative;
+`;
+
+S.Timer = styled.span`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  ${h9Bold}
+  color: ${colorCSS.faillog_purple};
+`;
+
+S.SmallButton = styled.button`
+  padding: 13px 14px;
+  background: ${({ $verified }) => ($verified ? colorCSS.faillog_gray2 : colorCSS.faillog_purple)};
+  color: ${({ $verified }) => ($verified ? colorCSS.faillog_gray8 : colorCSS.faillog_white)};
+  border: none;
+  border-radius: 8px;
+  ${h9Bold}
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  white-space: nowrap;
+`;
+
+S.ValidationMsg = styled.p`
+  ${h10Regular}
+  color: ${colorCSS["faillog-red"]};
+  margin-top: 4px;
+`;
+
+S.HintMsg = styled.p`
+  ${h10Regular}
+  color: ${colorCSS.faillog_gray8};
+  margin-top: 4px;
+`;
+
+S.SuccessBox = styled.div`
+  ${flexCenterColumn}
+  gap: 32px;
+  padding: 20px 0;
+`;
+
+S.SuccessText = styled.p`
+  ${h7Bold}
+  color: ${colorCSS["faillog-black"]};
+  text-align: center;
 `;
 
 S.Copyright = styled.p`

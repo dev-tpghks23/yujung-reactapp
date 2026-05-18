@@ -1,28 +1,37 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState, useRef } from 'react';
+import S from './styles/ChronologyTimelineStyle';
 
 const ChronologyTimeline = ({
   vision,
   projects,
+  addProjects,
   timeline,
   selectedProject,
   onSelectProject,
   onStartAnalysis,
+  onReorderTimeline,
+  onRemoveTimeline,
+  onAddTimeline,
 }) => {
+  const [showVisionDropdown, setShowVisionDropdown] = useState(false);
   const [showProjectToggle, setShowProjectToggle] = useState(false);
   const [carouselIndexes, setCarouselIndexes] = useState({});
+
+  // drag state
+  const dragIndex = useRef(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
+  const [draggingId, setDraggingId] = useState(null);
+
 
   const getCarouselIndex = (id) => carouselIndexes[id] ?? 0;
 
   const moveCarousel = (id, dir, length) => {
     setCarouselIndexes((prev) => {
       const cur = prev[id] ?? 0;
-      const next = (cur + dir + length) % length;
-      return { ...prev, [id]: next };
+      return { ...prev, [id]: (cur + dir + length) % length };
     });
   };
 
-  // 연도 기준으로 그룹핑
   const groupByYear = () => {
     const groups = [];
     let lastYear = null;
@@ -38,430 +47,168 @@ const ChronologyTimeline = ({
   };
 
   const groups = groupByYear();
-  const allItems = groups.flatMap(g => g.items);
+  const allItems = groups.flatMap((g) => g.items);
   const indexMap = new Map(allItems.map((item, i) => [item.id, i]));
 
+  // drag handlers
+  const handleDragStart = (e, flatIndex, id) => {
+    dragIndex.current = flatIndex;
+    setDraggingId(id);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, flatIndex) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(flatIndex);
+  };
+
+  const handleDrop = (e, flatIndex) => {
+    e.preventDefault();
+    if (dragIndex.current !== null && dragIndex.current !== flatIndex) {
+      onReorderTimeline(dragIndex.current, flatIndex);
+    }
+    dragIndex.current = null;
+    setDragOverIndex(null);
+    setDraggingId(null);
+  };
+
+  const handleDragEnd = () => {
+    dragIndex.current = null;
+    setDragOverIndex(null);
+    setDraggingId(null);
+  };
+
+
   return (
-    <Wrapper>
-      <Header>
-        <HeaderLeft>
-          <PageTitle>TIME LINE</PageTitle>
-          <PageSubtitle>목표에 도달하기까지 실패와 성장의 흐름을 한눈에 확인하세요.</PageSubtitle>
-        </HeaderLeft>
-        <ProjectSelector>
-          <select
-            value={selectedProject.id}
-            onChange={(e) => {
-              const p = projects.find((p) => p.id === Number(e.target.value));
-              if (p) onSelectProject(p);
-            }}
-          >
+    <S.Wrapper>
+      <S.Header>
+        <S.HeaderLeft>
+          <S.PageTitle>TIME LINE</S.PageTitle>
+          <S.PageSubtitle>목표에 도달하기까지 실패와 성장의 흐름을 한눈에 확인하세요.</S.PageSubtitle>
+        </S.HeaderLeft>
+      </S.Header>
+
+      <S.VisionWrapper>
+        <S.VisionCard onClick={() => setShowVisionDropdown((v) => !v)}>
+          <S.VisionLabel>VISION</S.VisionLabel>
+          <S.VisionTitleRow>
+            <S.VisionTitle>{selectedProject.title}</S.VisionTitle>
+            <S.VisionChevron $open={showVisionDropdown}>
+              <svg width="11" height="4" viewBox="0 0 11 4" fill="none">
+                <path d="M1 0.5L5.5 3.5L10 0.5" stroke="#8D8D8D" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </S.VisionChevron>
+          </S.VisionTitleRow>
+        </S.VisionCard>
+
+        {showVisionDropdown && (
+          <S.VisionDropdown>
             {projects.map((p) => (
-              <option key={p.id} value={p.id}>{p.title}</option>
-            ))}
-          </select>
-        </ProjectSelector>
-      </Header>
-
-      <VisionCard>
-        <VisionLabel>VISION</VisionLabel>
-        <VisionTitle>{vision.title}</VisionTitle>
-      </VisionCard>
-
-      <TimelineSection>
-        {groups.map((group) => (
-          <YearGroup key={group.year}>
-            <YearLabel>{group.year}</YearLabel>
-            <YearItems>
-              {group.items.map((item, idx) => {
-                const isReverse = indexMap.get(item.id) % 2 === 1;
-                return (
-                <TimelineRow key={item.id}>
-                  <DateCol>
-                    {idx === 0 && <YearText>{item.year}</YearText>}
-                    <MonthText>{item.month}</MonthText>
-                  </DateCol>
-                  <DotCol>
-                    <Dot />
-                  </DotCol>
-                  <CardCol $reverse={isReverse}>
-                    <TimelineCard>
-                      <CarouselWrapper>
-                        <CarouselImg
-                          src={item.images[getCarouselIndex(item.id)]}
-                          alt="timeline"
-                        />
-                        {item.images.length > 1 && (
-                          <>
-                            <CarouselBtn $left onClick={() => moveCarousel(item.id, -1, item.images.length)}>‹</CarouselBtn>
-                            <CarouselBtn onClick={() => moveCarousel(item.id, 1, item.images.length)}>›</CarouselBtn>
-                          </>
-                        )}
-                        <CloseBtn>×</CloseBtn>
-                      </CarouselWrapper>
-                      <CardBody>
-                        <CardDesc>{item.description}</CardDesc>
-                        <BulletGrid>
-                          {item.bullets.map((b, i) => (
-                            <BulletItem key={i}>{b}</BulletItem>
-                          ))}
-                        </BulletGrid>
-                      </CardBody>
-                    </TimelineCard>
-                  </CardCol>
-                </TimelineRow>
-                );
-              })}
-            </YearItems>
-          </YearGroup>
-        ))}
-      </TimelineSection>
-
-      {/* 새 항목 추가 */}
-      <AddSection>
-        <AddButton onClick={() => setShowProjectToggle((v) => !v)}>
-          + 새 항목 추가
-        </AddButton>
-
-        {showProjectToggle && (
-          <ProjectToggleList>
-            {projects.map((p) => (
-              <ProjectToggleItem
+              <S.VisionDropdownItem
                 key={p.id}
                 $active={p.id === selectedProject.id}
-                onClick={() => { onSelectProject(p); setShowProjectToggle(false); }}
+                onClick={() => { onSelectProject(p); setShowVisionDropdown(false); }}
               >
-                <ProjectToggleInfo>
-                  <ProjectToggleName>{p.title}</ProjectToggleName>
-                  <ProjectToggleDate>{p.startDate} ~ {p.endDate}</ProjectToggleDate>
-                </ProjectToggleInfo>
-                <DDay $active={p.id === selectedProject.id}>D + {p.dDay}</DDay>
-              </ProjectToggleItem>
+                <S.ProjectToggleInfo>
+                  <S.ProjectToggleName>{p.title}</S.ProjectToggleName>
+                  <S.ProjectToggleDate>{p.startDate} ~ {p.endDate}</S.ProjectToggleDate>
+                </S.ProjectToggleInfo>
+                <S.DDay $active={p.id === selectedProject.id}>D + {p.dDay}</S.DDay>
+              </S.VisionDropdownItem>
             ))}
-          </ProjectToggleList>
+          </S.VisionDropdown>
         )}
-      </AddSection>
+      </S.VisionWrapper>
 
-      <AnalysisButton onClick={onStartAnalysis}>성과랭크 분석하기</AnalysisButton>
-    </Wrapper>
+      <S.TimelineSection>
+        {groups.map((group) => (
+          <S.YearGroup key={group.year}>
+            <S.YearLabel>{group.year}</S.YearLabel>
+            <S.YearItems>
+              {group.items.map((item, idx) => {
+                const flatIndex = indexMap.get(item.id);
+                const isReverse = flatIndex % 2 === 1;
+                return (
+                  <S.TimelineRow
+                    key={item.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, flatIndex, item.id)}
+                    onDragOver={(e) => handleDragOver(e, flatIndex)}
+                    onDrop={(e) => handleDrop(e, flatIndex)}
+                    onDragEnd={handleDragEnd}
+                    $isDragging={draggingId === item.id}
+                    $isDragOver={dragOverIndex === flatIndex && draggingId !== item.id}
+                  >
+                    <S.DateCol>
+                      {idx === 0 && <S.YearText>{item.year}</S.YearText>}
+                      <S.MonthText>{item.month}</S.MonthText>
+                    </S.DateCol>
+                    <S.DotCol>
+                      <S.Dot />
+                    </S.DotCol>
+                    <S.CardCol $reverse={isReverse}>
+                      <S.TimelineCard>
+                        <S.CarouselWrapper>
+                          {item.images && item.images.length > 0 ? (
+                            <S.CarouselImg
+                              src={item.images[getCarouselIndex(item.id)]}
+                              alt="timeline"
+                            />
+                          ) : null}
+                          {item.images && item.images.length > 1 && (
+                            <>
+                              <S.CarouselBtn $left onClick={(e) => { e.stopPropagation(); moveCarousel(item.id, -1, item.images.length); }}>‹</S.CarouselBtn>
+                              <S.CarouselBtn onClick={(e) => { e.stopPropagation(); moveCarousel(item.id, 1, item.images.length); }}>›</S.CarouselBtn>
+                            </>
+                          )}
+                          <S.CloseBtn onClick={(e) => { e.stopPropagation(); onRemoveTimeline(item.id); }}>×</S.CloseBtn>
+                        </S.CarouselWrapper>
+                        <S.CardBody>
+                          <S.CardDesc>{item.description}</S.CardDesc>
+                          <S.BulletGrid>
+                            {item.bullets.map((b, i) => (
+                              <S.BulletItem key={i}>{b}</S.BulletItem>
+                            ))}
+                          </S.BulletGrid>
+                        </S.CardBody>
+                      </S.TimelineCard>
+                    </S.CardCol>
+                  </S.TimelineRow>
+                );
+              })}
+            </S.YearItems>
+          </S.YearGroup>
+        ))}
+      </S.TimelineSection>
+
+      <S.AddSection>
+        <S.AddButton onClick={() => setShowProjectToggle((v) => !v)}>
+          + 새 항목 추가
+        </S.AddButton>
+
+        {showProjectToggle && (
+          <S.ProjectToggleList>
+            {(addProjects ?? []).map((p) => (
+              <S.ProjectToggleItem
+                key={p.id}
+                $active={false}
+                onClick={() => { onAddTimeline(p); setShowProjectToggle(false); }}
+              >
+                <S.ProjectToggleInfo>
+                  <S.ProjectToggleName>{p.title}</S.ProjectToggleName>
+                  <S.ProjectToggleDate>{p.startDate} ~ {p.endDate}</S.ProjectToggleDate>
+                </S.ProjectToggleInfo>
+                <S.DDay $active={false}>D + {p.dDay}</S.DDay>
+              </S.ProjectToggleItem>
+            ))}
+          </S.ProjectToggleList>
+        )}
+      </S.AddSection>
+
+      <S.AnalysisButton onClick={onStartAnalysis}>성과랭크 분석하기</S.AnalysisButton>
+    </S.Wrapper>
   );
 };
 
 export default ChronologyTimeline;
-
-const Wrapper = styled.div`
-  padding: 40px 60px 80px;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
-`;
-
-const HeaderLeft = styled.div``;
-
-const PageTitle = styled.h1`
-  font-size: 42px;
-  font-weight: 800;
-  color: #222;
-  letter-spacing: -0.02em;
-`;
-
-const PageSubtitle = styled.p`
-  font-size: 14px;
-  color: #888;
-  margin-top: 6px;
-`;
-
-const ProjectSelector = styled.div`
-  select {
-    padding: 8px 14px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #333;
-    background: #fff;
-    cursor: pointer;
-    outline: none;
-  }
-`;
-
-const VisionCard = styled.div`
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 20px 24px;
-  margin-bottom: 40px;
-  width: fit-content;
-  margin-left: auto;
-`;
-
-const VisionLabel = styled.p`
-  font-size: 13px;
-  font-weight: 700;
-  color: #888;
-  margin-bottom: 6px;
-`;
-
-const VisionTitle = styled.p`
-  font-size: 15px;
-  font-weight: 700;
-  color: #ab47ff;
-`;
-
-const TimelineSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 92px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(to bottom, #ab47ff, #4caf50);
-  }
-`;
-
-const YearGroup = styled.div``;
-
-const YearLabel = styled.div`
-  display: none;
-`;
-
-const YearItems = styled.div``;
-
-const TimelineRow = styled.div`
-  display: flex;
-  gap: 0;
-  margin-bottom: 40px;
-`;
-
-const DateCol = styled.div`
-  width: 80px;
-  text-align: right;
-  padding-right: 12px;
-  flex-shrink: 0;
-`;
-
-const YearText = styled.p`
-  font-size: 20px;
-  font-weight: 800;
-  color: #222;
-  line-height: 1;
-`;
-
-const MonthText = styled.p`
-  font-size: 16px;
-  font-weight: 700;
-  color: #222;
-`;
-
-const DotCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 24px;
-  flex-shrink: 0;
-`;
-
-const Dot = styled.div`
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #ab47ff;
-  flex-shrink: 0;
-  margin-top: 4px;
-`;
-
-const Line = styled.div`
-  width: 2px;
-  flex: 1;
-  background: linear-gradient(to bottom, #ab47ff, #4caf50);
-  min-height: 40px;
-`;
-
-const CardCol = styled.div`
-  width: 460px;
-  flex-shrink: 0;
-  padding-left: 20px;
-  margin-left: ${({ $reverse }) => $reverse ? '160px' : '0'};
-`;
-
-const TimelineCard = styled.div`
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-`;
-
-const CarouselWrapper = styled.div`
-  position: relative;
-`;
-
-const CarouselImg = styled.img`
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  display: block;
-`;
-
-const CarouselBtn = styled.button`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  ${({ $left }) => $left ? 'left: 8px;' : 'right: 8px;'}
-  background: rgba(255,255,255,0.85);
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const CloseBtn = styled.button`
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(255,255,255,0.85);
-  border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const CardBody = styled.div`
-  padding: 16px;
-  background: #fff;
-`;
-
-const CardDesc = styled.p`
-  font-size: 14px;
-  font-weight: 700;
-  color: #222;
-  margin-bottom: 12px;
-  line-height: 1.5;
-`;
-
-const BulletGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-`;
-
-const BulletItem = styled.p`
-  font-size: 12px;
-  color: #555;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  &::before {
-    content: '';
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #ab47ff;
-    flex-shrink: 0;
-  }
-`;
-
-const AddSection = styled.div`
-  margin-bottom: 32px;
-`;
-
-const AddButton = styled.button`
-  width: 100%;
-  padding: 16px;
-  background: #fff;
-  border: 1.5px dashed #ccc;
-  border-radius: 10px;
-  font-size: 15px;
-  color: #888;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  &:hover {
-    border-color: #ab47ff;
-    color: #ab47ff;
-  }
-`;
-
-const ProjectToggleList = styled.div`
-  margin-top: 8px;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  overflow: hidden;
-  max-height: 320px;
-  overflow-y: auto;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-`;
-
-const ProjectToggleItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  background: ${({ $active }) => ($active ? '#f3e8ff' : '#fff')};
-  cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &:hover {
-    background: ${({ $active }) => ($active ? '#f3e8ff' : '#fafafa')};
-  }
-`;
-
-const ProjectToggleInfo = styled.div``;
-
-const ProjectToggleName = styled.p`
-  font-size: 15px;
-  font-weight: 600;
-  color: #222;
-`;
-
-const ProjectToggleDate = styled.p`
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 3px;
-`;
-
-const DDay = styled.p`
-  font-size: 15px;
-  font-weight: 700;
-  color: ${({ $active }) => ($active ? '#ab47ff' : '#555')};
-`;
-
-const AnalysisButton = styled.button`
-  width: 100%;
-  padding: 20px;
-  background: #ab47ff;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 700;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-
-  &:hover {
-    background: #9333ea;
-  }
-`;

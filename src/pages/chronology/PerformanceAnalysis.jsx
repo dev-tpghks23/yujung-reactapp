@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import S from './styles/ChronologyAnalysisLoadingStyle';
+import { useOutletContext, useNavigate } from 'react-router-dom';
+import S from './styles/PerformanceAnalysisStyle';
 
 const LOADING_STEPS = [
   '지각 변별 분석 중',
@@ -12,7 +13,10 @@ const LOADING_STEPS = [
 
 const TOTAL_DURATION = 10000;
 
-const ChronologyAnalysisLoading = ({ vision, analysis, onDone }) => {
+const PerformanceAnalysis = () => {
+  const { vision, analysis } = useOutletContext();
+  const navigate = useNavigate();
+
   const [progress, setProgress] = useState(0);
   const [completedSteps, setCompletedSteps] = useState([]);
 
@@ -43,7 +47,7 @@ const ChronologyAnalysisLoading = ({ vision, analysis, onDone }) => {
     );
 
     const doneTimer = setTimeout(() => {
-      onDone();
+      navigate('../result');
     }, TOTAL_DURATION + 400);
 
     return () => {
@@ -51,7 +55,7 @@ const ChronologyAnalysisLoading = ({ vision, analysis, onDone }) => {
       stepTimers.forEach(clearTimeout);
       clearTimeout(doneTimer);
     };
-  }, [onDone]);
+  }, [navigate]);
 
   return (
     <S.Wrapper>
@@ -95,4 +99,4 @@ const ChronologyAnalysisLoading = ({ vision, analysis, onDone }) => {
   );
 };
 
-export default ChronologyAnalysisLoading;
+export default PerformanceAnalysis;

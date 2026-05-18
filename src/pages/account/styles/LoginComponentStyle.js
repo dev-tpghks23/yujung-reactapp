@@ -108,18 +108,20 @@ S.SocialIcons = styled.div`
 `;
 
 S.SocialIcon = styled.button`
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: ${({ $bg }) => $bg};
-  color: ${({ $color }) => $color};
   border: ${({ $border }) => $border || 'none'};
-  ${h10Regular}
-  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+
+  &:hover {
+    opacity: 0.85;
+  }
 `;
 
 S.JoinPrompt = styled.p`
