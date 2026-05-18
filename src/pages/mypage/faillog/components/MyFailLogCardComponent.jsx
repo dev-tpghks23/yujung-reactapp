@@ -1,6 +1,5 @@
 import React from 'react';
 import CommS from '../../profile/styles/CommunityStyles';
-// 🎯 오타 수정: = 표시를 완전히 제거했습니다.
 import failLogIcon from '../resources/fail-log-card.png';
 import MyFailCardItemComponent from '../../commons/MyFailCardItemComponent';
 

@@ -11,8 +11,6 @@ import TrashComponent from './components/TrashComponent';
 import { getHeroContent } from '../heroSection/HeroData';
 import useSearchStore from '../../../components/useSearchStore';
 
-// 🎯 [에러 차단 핵심] 외부 에러 유발 컴포넌트와 깨진 임포트 구역을 완전히 삭제하고,
-// 시안 이미지(image_377407.png) 디자인 스펙을 100% 보장하는 순수 빌트인 컴포넌트를 선언합니다.
 const LocalEmptyState = ({ title, subText, buttonText, onButtonClick }) => {
   return (
     <div style={{ 
