@@ -135,17 +135,15 @@ S.SocialButton = styled.button`
 `;
 
 S.SocialIcon = styled.div`
-  width: 22px;
-  height: 22px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: ${({ $bg }) => $bg};
-  color: ${({ $color }) => $color};
   border: ${({ $border }) => $border || 'none'};
-  font-size: 12px;
-  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 `;
 
 S.PrimaryButton = styled.button`

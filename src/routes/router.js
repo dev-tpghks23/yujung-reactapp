@@ -30,6 +30,9 @@ import MyPageContainer from "../pages/mypage/MyPageContainer";
 import LogOtherContainer from "../pages/log/other/LogOtherContainer";
 import LogOtherListContainer from "../pages/log/other/LogOtherListContainer";
 import ChronologyMainContainer from "../pages/chronology/ChronologyMainContainer";
+import ChronologyMain from "../pages/chronology/ChronologyMain";
+import PerformanceAnalysis from "../pages/chronology/PerformanceAnalysis";
+import PerformanceResult from "../pages/chronology/PerformanceResult";
 import ProjectMainContainer from "../pages/project/ProjectMainContainer";
 import ProjectSelectAllContainer from "../pages/project/selectAll/ProjectSelectAllContainer";
 import ProjectDetailContainer from "../pages/project/detail/ProjectDetailContainer";
@@ -163,10 +166,14 @@ const router = createBrowserRouter([
           }
         ]
       },
-      { 
+      {
         path: "chronology",
         element: <ChronologyMainContainer />,
-        children: []
+        children: [
+          { path: "", element: <ChronologyMain /> },
+          { path: "analysis", element: <PerformanceAnalysis /> },
+          { path: "result", element: <PerformanceResult /> },
+        ]
       },
       {
         path: "projects",
