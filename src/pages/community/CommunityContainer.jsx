@@ -73,7 +73,7 @@ const popularPosts = [
     date: '2026년 3월 1일',
     title: '기출만 보다 실전에서 무너졌던 이유와 공부 루틴 재설계',
     content: '익숙한 환경에만 매달린 공부 방식이 문제였습니다. 장소, 시간, 복습 방법을 바꾸면서 실전 감각을 회복했던 과정을 정리했습니다.',
-    thumbnail: study,
+    thumbnail: null,
     profile: icon04,
     author: '탈기마스터',
     views: 99,
@@ -102,7 +102,7 @@ const CommunityContainer = () => {
     bestPost.title = "기출만 파다가 실전에서 백지 된 썰."
     bestPost.content = <>익숙한 환경에만 매달린 공부 방식이 문제였습니다. 장소, 시간, 복습 <br/> 방법을 바꾸면서 점점 실전 감각을 회복헀던 과정을 정리했습니다.</>
     bestPost.date = "2026년 3월 1일"
-    bestPost.thumbnail = study
+    bestPost.thumbnail = null
     bestPost.profile = icon04
     bestPost.author = "필기마스터"
     bestPost.views = 99

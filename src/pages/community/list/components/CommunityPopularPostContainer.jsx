@@ -11,6 +11,8 @@ import comment from '../../resources/post.svg'
 import likeFill from '../../resources/like-fill2.svg'
 import getCategoryInfo from '../../GetCategoryInfo';
 
+import imageEmpty from '../../resources/popular-image-empty.png'
+
 const CARD_W = 420;
 const FOCUS_W = 480;
 const CARD_H = 568;
@@ -135,7 +137,7 @@ const CommunityPopularPostContainer = ({ posts }) => {
               >
                 <myStyle.Card>
                   <myStyle.CardImageWrap>
-                    <myStyle.CardImage src={post.thumbnail} width={"100%"} height={"100%"}></myStyle.CardImage>
+                    <myStyle.CardImage src={post.thumbnail ? post.thumbnail : imageEmpty} width={"100%"} height={"100%"}></myStyle.CardImage>
                   </myStyle.CardImageWrap>
                   <myStyle.CardBody>
                     <myStyle.CardMeta>

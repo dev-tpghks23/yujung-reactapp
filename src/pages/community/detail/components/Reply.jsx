@@ -10,6 +10,7 @@ import { flexCenterRow } from '../../../../styles/common.js';
 import Rereply from './Rereply.jsx';
 import ReplySubmit from './ReplySubmit.jsx';
 import { useMenuContext } from './MenuContext.js';
+import { useReportContext } from './ReportContext.js';
 
 const LIMIT = 230;
 
@@ -54,6 +55,7 @@ const Reply = ({
   rereplyList = EXAMPLE.rereplyList,
 }) => {
   const { openMenuId, setOpenMenuId } = useMenuContext();
+  const { openReport } = useReportContext();
   const menuId = useRef(`reply-${Math.random()}`).current;
   const menuOpen = openMenuId === menuId;
   const toggleMenu = () => setOpenMenuId(menuOpen ? null : menuId);
@@ -86,7 +88,7 @@ const Reply = ({
                   <S.Span size="h9Regular">삭제하기</S.Span>
                 </DropdownItem>
               ) : (
-                <DropdownItem onClick={() => setOpenMenuId(null)}>
+                <DropdownItem onClick={() => { openReport('댓글', undefined, profileImg, author, content); setOpenMenuId(null); }}>
                   <S.Span size="h9Regular">신고하기</S.Span>
                 </DropdownItem>
               )}

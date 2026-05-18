@@ -9,6 +9,7 @@ import eye from '../../resources/eye.svg'
 import heart from '../../resources/like.svg'
 import post from '../../resources/post.svg'
 import heartFill from '../../resources/like-fill2.svg'
+import thumbnailEmpty from '../../resources/month-image-empty.png'
 import { useNavigate } from 'react-router-dom';
 
 const CommunityBestPost = ({
@@ -91,7 +92,7 @@ const CommunityBestPost = ({
 
                 {/* 이미지 영역 */}
                 <myStyle.BestPostImgWrapDiv>
-                  <S.Img width={"100%"} height={"100%"} src={thumbnail}></S.Img>
+                  <S.Img width={"100%"} height={"100%"} src={thumbnail ? thumbnail : thumbnailEmpty}></S.Img>
                 </myStyle.BestPostImgWrapDiv>
             </myStyle.BestPost>
         </myStyle.BestPostWrap>

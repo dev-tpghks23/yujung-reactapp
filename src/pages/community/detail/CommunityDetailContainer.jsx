@@ -12,6 +12,8 @@ import ReplySubmit from './components/ReplySubmit';
 import ReplyContainer from './components/ReplyContainer';
 import BeforeAfterPost from './components/BeforeAfterPost';
 import AiPostContainer from './components/AiPostContainer';
+import ReportPopup from './components/ReportPopup';
+import { ReportContext } from './components/ReportContext';
 
 const replyList = [
     {
@@ -171,15 +173,15 @@ const postData = {
 
 const CommunityDetailContainer = () => {
     const {id} = useParams()
+    const [reportState, setReportState] = React.useState(null);
 
-    // const handleSubmit = (data) => {
-    //     if(data.length === 0) {
-    //         alert("댓글을 입력하세요")
-    //     }
-    //     console.log(data);
-    // }
+    const openReport = (type, reportId, profileImg, author, content) => {
+        setReportState({ type, id: reportId, profileImg, author, content });
+    };
+    const closeReport = () => setReportState(null);
 
     return (
+    <ReportContext.Provider value={{ openReport }}>
     <Container>
         <Wrapper>
             {/* 제목 헤더 */}
@@ -212,7 +214,15 @@ const CommunityDetailContainer = () => {
             <Divider />
 
             {/* 중앙(목록으로,좋아요,메뉴버튼컨테이너) */}
-            <Middle isOwner={true} isLiked={true} likeCount={24} />
+            <Middle
+                id={id}
+                isOwner={true}
+                isLiked={true}
+                likeCount={24}
+                postAuthor={postData.author}
+                postProfileImg={postData.profile}
+                postContent={postData.title}
+            />
 
             {/* 댓글 컨테이너 */}
             <ReplyContainer replyList={replyList} />
@@ -228,6 +238,17 @@ const CommunityDetailContainer = () => {
             <AiPostContainer aiPostList={aiPostList} />
         </Wrapper>
     </Container>
+    {reportState && (
+        <ReportPopup
+            type={reportState.type}
+            id={reportState.id}
+            profileImg={reportState.profileImg}
+            author={reportState.author}
+            content={reportState.content}
+            onClose={closeReport}
+        />
+    )}
+    </ReportContext.Provider>
     );
 };
 

@@ -4,6 +4,8 @@ import { boxShadow, colorCSS } from '../../style';
 import Post from './Post';
 import PostListEmptyContainer from './PostListEmptyContainer';
 
+import imageEmpty from '../../resources/popular-image-empty.png'
+
 const myStyle = {}
 
 myStyle.wrapper = styled.div`
@@ -31,7 +33,7 @@ const Posts = ({postData}) => {
             views={post.views}
             likes={post.likes}
             comments={post.comments}
-            thumbnail={post.thumbnail}
+            thumbnail={post.thumbnail ? post.thumbnail : imageEmpty}
             isHrHidden={(postData.length-1) === i}
           />
         )) 
