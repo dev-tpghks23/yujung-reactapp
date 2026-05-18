@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import theme from '../../../styles/theme';
-import LogOtherHero from './LogOtherHero';
-import LogOtherSearch from './LogOtherSearch';
 
 import viewIcon from './otherLog_icon/hugeicons--view.svg';
 import heartIcon from './otherLog_icon/ph--heart-light.svg';
@@ -26,7 +24,7 @@ import Thumb5 from './otherLog_thumbNail/image 342.png';
 import Thumb6 from './otherLog_thumbNail/image 351.png';
 import Thumb7 from './otherLog_thumbNail/image 350.png';
 import Thumb8 from './otherLog_thumbNail/image 348.png';
-import Thumb9 from './otherLog_thumbNail/Group 2956.png';
+import Thumb9 from './otherLog_thumbNail/image 354.png';
 
 const LOGS = [
     {
@@ -135,12 +133,12 @@ const LOGS = [
     },
     {
         id: 9,
-        category: '건강/루틴',
-        categoryVariant: 'green',
+        category: '기타',
+        categoryVariant: 'gray',
         date: '2026.03.03',
-        title: '금연 30일, 금단현상 극복하기',
-        vision: '금연 성공해서 폐 건강 회복하기',
-        nickname: '담배에서살아남기',
+        title: '엑셀로 짠 여행 계획표가 부른 갈등',
+        vision: '여행은 과제가 아니라 휴식처럼 즐기기',
+        nickname: '여행을좋아하는가장',
         profileImg: ProfileImg9,
         views: 45,
         likes: 35,
@@ -156,11 +154,9 @@ const CATEGORY_STYLE = {
     gray:   { bg: theme.GRAYSCALE[2], color: theme.GRAYSCALE[10] },
 };
 
-const LogOtherListContainer = () => {
+const LogOtherList = () => {
     return (
         <div>
-            <LogOtherHero />
-            <LogOtherSearch />
             <S.ListWrapper>
                 <S.CardGrid>
                     {LOGS.map((log) => (
@@ -367,4 +363,4 @@ S.Thumbnail = styled.img`
     flex-shrink: 0;
 `;
 
-export default LogOtherListContainer;
+export default LogOtherList;
