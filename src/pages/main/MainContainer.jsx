@@ -10,6 +10,7 @@ const MainContainer = () => {
     return (
         <>
             {isAuthenticated ? <MainMenuContainer /> : <IntroContainer />}
+            <ChatbotContainer />
         </>
     );
 };
