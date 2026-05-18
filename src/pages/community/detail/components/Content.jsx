@@ -4,11 +4,12 @@ import styled from 'styled-components';
 import detail1 from '../../resources/detail1.png'
 import detail2 from '../../resources/detail2.png'
 import S from '../../style';
+import HtmlContent from './HtmlContent';
 
-const Content = () => {
+const Content = ({htmlContent}) => {
   return (
     <Wrapper>
-      <ContentImg src={detail1} $width={"1268px"} $height={"414px"} $marginbottom={"23px"} />
+      {/* <ContentImg src={detail1} $width={"1268px"} $height={"414px"} $marginbottom={"23px"} />
       <S.Span size={"h8Regular"} color={"faillog-black"}>
         익숙한 내 방에서만 공부하던 게 독이었습니다. 실전에서는 낯선 환경과 작은 소음에도 쉽게 흔들렸고, 알고 있던 것도 제대로 꺼내지 못했습니다. 그래서 공부량을 더 늘리는 대신<br/>
         환경부터 바꾸기로 했습니다.<br/><br/>
@@ -21,7 +22,8 @@ const Content = () => {
       지를 적으면서 실수의 패턴을 추적했습니다. <br /><br />
       결국 실전은 많이 아는 것보다 흔들려도 다시 꺼낼 수 있는 힘이 더 중요하다는 걸 느꼈습니다. 환경을 바꾸고, 루틴을 바꾸고, 실수의 원인을 적기 시작한 뒤부터 실전에서의 안정감<br />
       이 달라졌습니다.
-      </S.Span>
+      </S.Span> */}
+      <HtmlContent content={htmlContent} />
     </Wrapper>
   );
 };

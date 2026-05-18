@@ -1,0 +1,38 @@
+.preview-content p {
+  margin: 0;
+  min-height: 1.5em;
+}
+
+.preview-content figure {
+  margin: 0;
+  width: fit-content;
+}
+
+/* 크기 미조절 이미지: 에디터처럼 컨테이너 100% 채우되 800px 초과 방지 */
+.preview-content img {
+  display: block;
+  width: 100%;
+  max-width: 1270px;
+  min-width: 50px;
+}
+
+/* 크기 조절 or 정렬된 이미지: 인라인 style이 있으면 CSS width 무시 */
+.preview-content img[style] {
+  width: unset;
+  max-width: 1270px;
+  min-width: 50px;
+}
+
+.preview-content strong {
+  font-weight: bold;
+}
+
+.preview-content em {
+  font-style: italic;
+}
+
+.preview-content a {
+  color: #027DF0;
+  text-decoration: underline;
+  cursor: pointer;
+}
