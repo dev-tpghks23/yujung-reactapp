@@ -1,5 +1,6 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
+import { S } from './RadarChartStyles';
 
 /**
  * RadarChart Component
@@ -31,7 +32,7 @@ const RadarChart = ({ data, size = 300 }) => {
     });
 
     return (
-        <ChartContainer size={size}>
+        <S.ChartContainer size={size}>
             <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
                 {/* Grid Lines (Axes) */}
                 {data.map((_, i) => {
@@ -94,16 +95,8 @@ const RadarChart = ({ data, size = 300 }) => {
                     );
                 })}
             </svg>
-        </ChartContainer>
+        </S.ChartContainer>
     );
 };
-
-const ChartContainer = styled.div`
-    width: ${({ size }) => size}px;
-    height: ${({ size }) => size}px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
 
 export default RadarChart;

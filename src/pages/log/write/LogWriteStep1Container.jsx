@@ -1,10 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import theme from '../../../styles/theme';
-import visionListIcon from './write_icon/vision_list.svg';
+
 import uploadIcon from './write_icon/upload.svg';
 import deleteIcon from './write_icon/delete.svg';
+import { S } from './LogWriteStep1ContainerStyles';
+
+const VisionIconComponent = ({ className }) => (
+  <S.VisionIcon className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2.6499 3.98242H13.3166M2.6499 7.98242H13.3166M2.6499 11.9824H13.3166" stroke="currentColor" strokeWidth="1.88235" strokeLinecap="round" strokeLinejoin="round" />
+  </S.VisionIcon>
+);
 
 const LogWriteStep1Container = () => {
   const navigate = useNavigate();
@@ -90,16 +95,17 @@ const LogWriteStep1Container = () => {
 
         <S.FormContainer>
           <S.FormRow>
-            <S.FormGroup $flex={1.5}>
+            <S.FormGroup>
               <S.Label>로그 제목</S.Label>
               <S.Input
                 placeholder="예) 정보처리기사 자격증 필기 도전기"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                $width={491}
               />
             </S.FormGroup>
 
-            <S.FormGroup $flex={1.2} ref={categoryRef}>
+            <S.FormGroup ref={categoryRef}>
               <S.Label>카테고리</S.Label>
               <S.DropdownWrapper>
                 <S.DropdownHeader $isOpen={isCategoryOpen} onClick={() => setIsCategoryOpen(!isCategoryOpen)}>
@@ -130,7 +136,7 @@ const LogWriteStep1Container = () => {
             <S.LabelRow>
               <S.Label>이루고 싶은 비전</S.Label>
               <S.LoadVisionButton $isOpen={isVisionListOpen} type="button" onClick={() => setIsVisionListOpen(!isVisionListOpen)}>
-                <S.VisionIcon src={visionListIcon} alt="vision list" />
+                <VisionIconComponent />
                 기존 비전 불러오기
               </S.LoadVisionButton>
             </S.LabelRow>
@@ -138,6 +144,7 @@ const LogWriteStep1Container = () => {
               placeholder="예) 정보처리기사 취득하기"
               value={vision}
               onChange={(e) => setVision(e.target.value)}
+              $width={782}
             />
 
             {isVisionListOpen && (
@@ -198,410 +205,5 @@ const LogWriteStep1Container = () => {
     </S.Wrapper>
   );
 };
-
-const S = {};
-
-S.Wrapper = styled.div`
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 60px 20px;
-  background-color: ${({ theme }) => theme.GRAYSCALE[1]};
-`;
-
-S.ContentWrapper = styled.div`
-  width: 100%;
-  max-width: 872px;
-`;
-
-S.Header = styled.div`
-  text-align: left;
-  margin-bottom: 50px;
-`;
-
-S.Title = styled.h1`
-  font-size: 60px;
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-`;
-
-S.SubTitle = styled.p`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h8};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-`;
-
-S.StepInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 8px;
-`;
-
-S.ButtonRow = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 24px;
-`;
-
-
-S.StepBadgeRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 14px;
-`;
-
-S.StepBadge = styled.span`
-  color: ${({ theme }) => theme.PALETTE.third.main};
-  font-size: ${({ theme }) => theme.FONT_SIZE.h5};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
-  white-space: nowrap;
-`;
-
-S.StepTitle = styled.h2`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h5};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-`;
-
-S.StepDesc = styled.p`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
-  color: ${({ theme }) => theme.GRAYSCALE[9]};
-`;
-
-S.NextButton = styled.button`
-  padding: 10px 28px;
-  background-color: ${({ theme }) => theme.PALETTE.white};
-  color: ${({ theme }) => theme.GRAYSCALE[9]};
-  border: 1px solid ${({ theme }) => theme.GRAYSCALE[4]};
-  border-radius: 8px;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.PALETTE.third.main};
-    color: ${({ theme }) => theme.PALETTE.white};
-    border-color: ${({ theme }) => theme.PALETTE.third.main};
-  }
-`;
-
-S.FormContainer = styled.div`
-  position: relative;
-  width: 100%;
-  background-color: ${({ theme }) => theme.PALETTE.white};
-  border-radius: 16px;
-  padding: 40px 50px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-  border: 1px solid ${({ theme }) => theme.GRAYSCALE[3]};
-
-  /* The left purple bar */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 24px;
-    bottom: 24px;
-    left: 0px;
-    width: 5px;
-    background-color: ${({ theme }) => theme.PALETTE.third.main};
-    border-radius: 0 4px 4px 0;
-  }
-`;
-
-S.FormRow = styled.div`
-  display: flex;
-  gap: 30px;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
-
-S.FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex: ${({ $flex }) => $flex || 1};
-  position: relative;
-`;
-
-S.LabelRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-`;
-
-S.Label = styled.label`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h8};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-`;
-
-S.Input = styled.input`
-  width: 100%;
-  padding: 18px 24px;
-  border: 1px solid ${({ theme }) => theme.GRAYSCALE[3]};
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-  outline: none;
-  background-color: ${({ theme }) => theme.PALETTE.white};
-
-  &::placeholder {
-    color: ${({ theme }) => theme.GRAYSCALE[9]};
-  }
-
-  &:focus {
-    border-color: ${({ theme }) => theme.PALETTE.third.main};
-  }
-`;
-
-S.DropdownWrapper = styled.div`
-  position: relative;
-  width: 100%;
-`;
-
-S.DropdownHeader = styled.div`
-  width: 100%;
-  padding: 18px 24px;
-  border: 1px solid ${({ $isOpen }) => $isOpen ? theme.PALETTE.third.main : theme.GRAYSCALE[3]};
-  border-radius: 8px;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
-  background-color: ${({ theme }) => theme.PALETTE.white};
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: border-color 0.2s;
-`;
-
-S.DropdownText = styled.span`
-  color: ${({ $hasValue }) => $hasValue ? theme.TEXT_COLOR.basic : theme.GRAYSCALE[9]};
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-S.ArrowIcon = styled.span`
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-right: 2px solid ${({ $isOpen }) => $isOpen ? theme.PALETTE.third.main : theme.GRAYSCALE[5]};
-  border-bottom: 2px solid ${({ $isOpen }) => $isOpen ? theme.PALETTE.third.main : theme.GRAYSCALE[5]};
-  transform: ${({ $isOpen }) => $isOpen ? 'rotate(-135deg) translateY(3px)' : 'rotate(45deg) translateY(-3px)'};
-  transition: transform 0.3s ease, border-color 0.2s;
-  flex-shrink: 0;
-  margin-bottom: ${({ $isOpen }) => $isOpen ? '-4px' : '4px'};
-`;
-
-S.FloatingList = styled.ul`
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: ${({ theme }) => theme.PALETTE.white};
-  border: 1px solid ${({ theme }) => theme.GRAYSCALE[3]};
-  border-radius: 8px;
-  overflow: hidden;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-`;
-
-S.FloatingItem = styled.li`
-  padding: 14px 20px;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-  cursor: pointer;
-  background-color: ${({ $isSelected }) => ($isSelected ? theme.PALETTE.third.light : 'transparent')};
-  
-  /* Prevent layout shift by using a transparent border initially */
-  border: 1.5px solid transparent;
-  border-bottom: 1px solid ${({ theme }) => theme.GRAYSCALE[2]};
-  position: relative;
-  transition: border-color 0.1s ease;
-
-  &:last-child {
-    border-bottom: 1.5px solid transparent;
-  }
-
-  &:hover {
-    border: 1.5px solid ${({ theme }) => theme.PALETTE.third.main};
-    border-radius: 8px;
-    z-index: 1;
-    /* Maintain background color as per user request */
-    background-color: ${({ $isSelected }) => ($isSelected ? theme.PALETTE.third.light : 'transparent')};
-  }
-
-  /* Apply the same border for selected items as seen in the photo */
-  ${({ $isSelected }) => $isSelected && `
-    border: 1.5px solid ${({ theme }) => theme.PALETTE.third.main};
-    border-radius: 8px;
-    z-index: 1;
-  `}
-`;
-
-S.LoadVisionButton = styled.button`
-  padding: 10px 16px;
-  border: 1px solid ${({ $isOpen }) => $isOpen ? theme.PALETTE.third.main : theme.GRAYSCALE[3]};
-  background-color: ${({ theme }) => theme.PALETTE.white};
-  border-radius: 6px;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
-  color: ${({ $isOpen }) => $isOpen ? theme.PALETTE.third.main : theme.GRAYSCALE[9]};
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-  transition: border-color 0.2s, color 0.2s, background-color 0.2s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.PALETTE.white};
-  }
-
-  &:active {
-    border-color: ${({ theme }) => theme.PALETTE.third.main};
-    color: ${({ theme }) => theme.PALETTE.third.main};
-  }
-`;
-
-S.EmptyVision = styled.li`
-  padding: 50px 20px;
-  text-align: center;
-  color: ${({ theme }) => theme.GRAYSCALE[5]};
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
-  line-height: 1.6;
-`;
-
-S.ThumbnailRow = styled.div`
-  display: flex;
-  gap: 30px;
-  align-items: flex-start;
-`;
-
-S.UploadButtonArea = styled.div`
-  flex: 2; /* aligns width with Title input */
-  height: 64px;
-  border: 1px solid ${({ theme }) => theme.GRAYSCALE[3]};
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: ${({ theme }) => theme.PALETTE.white};
-  cursor: pointer;
-  gap: 10px;
-  transition: border-color 0.2s, background-color 0.2s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.PALETTE.white};
-  }
-
-  &:active {
-    border-color: ${({ theme }) => theme.PALETTE.third.main};
-    background-color: ${({ theme }) => theme.PALETTE.white};
-  }
-`;
-
-S.UploadIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: ${({ theme }) => theme.GRAYSCALE[9]};
-`;
-
-S.UploadIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: ${({ theme }) => theme.GRAYSCALE[9]};
-`;
-
-S.UploadText = styled.span`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h8};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
-  color: ${({ theme }) => theme.GRAYSCALE[9]};
-`;
-
-S.PreviewWrapper = styled.div`
-  flex: 1; /* aligns with category input area */
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: 100%;
-  max-width: 200px;
-  border: 1.5px solid ${({ theme }) => theme.GRAYSCALE[2]};
-  border-radius: 12px;
-  background-color: ${({ theme }) => theme.PALETTE.white};
-`;
-
-S.PreviewImage = styled.img`
-  width: 100%;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 11px 11px 0 0;
-`;
-
-S.FileNameContainer = styled.div`
-  padding: 12px 16px;
-  width: 100%;
-  box-sizing: border-box;
-`;
-
-S.PreviewFileName = styled.span`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h7};
-  color: ${({ theme }) => theme.PALETTE.third.main};
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  width: 100%;
-`;
-
-S.DeleteIcon = styled.div`
-  position: absolute;
-  top: -24px;
-  right: 0;
-  cursor: pointer;
-  z-index: 10;
-  color: ${({ theme }) => theme.TEXT_COLOR.basic};
-  transition: transform 0.2s, color 0.2s;
-
-  &:hover {
-    transform: scale(1.1);
-    color: ${({ theme }) => theme.PALETTE.fourth.main};
-  }
-`;
-
-S.VisionIcon = styled.img`
-  width: 16px;
-  height: 16px;
-`;
-
-S.UploadIconImg = styled.img`
-  width: 15px;
-  height: 15px;
-`;
-
-S.DeleteImg = styled.img`
-  width: 14px;
-  height: 14px;
-`;
 
 export default LogWriteStep1Container;

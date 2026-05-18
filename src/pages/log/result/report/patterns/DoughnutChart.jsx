@@ -1,5 +1,6 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
+import { S } from './DoughnutChartStyles';
 
 /**
  * DoughnutChart Component
@@ -19,7 +20,7 @@ const DoughnutChart = ({ externalValue = 70, internalValue = 30, size = 200 }) =
     const dashOffset = 0; // Starting from top (though SVG circles start from right, we rotate it)
 
     return (
-        <ChartWrapper size={size}>
+        <S.ChartWrapper size={size}>
             <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-90deg)' }}>
                 {/* Background (Internal Factor) */}
                 <circle
@@ -56,43 +57,12 @@ const DoughnutChart = ({ externalValue = 70, internalValue = 30, size = 200 }) =
                 </defs>
             </svg>
             
-            <CenterText>
-                <Percentage color={theme.PALETTE.fourth.main}>{externalValue}%</Percentage>
-                <Label>외부요인</Label>
-            </CenterText>
-        </ChartWrapper>
+            <S.CenterText>
+                <S.Percentage color={theme.PALETTE.fourth.main}>{externalValue}%</S.Percentage>
+                <S.Label>외부요인</S.Label>
+            </S.CenterText>
+        </S.ChartWrapper>
     );
 };
-
-const ChartWrapper = styled.div`
-    position: relative;
-    width: ${({ size }) => size}px;
-    height: ${({ size }) => size}px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const CenterText = styled.div`
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Percentage = styled.div`
-    font-size: 28px;
-    font-weight: 800;
-    color: ${({ color }) => color};
-    line-height: 1;
-`;
-
-const Label = styled.div`
-    font-size: 14px;
-    font-weight: 700;
-    color: ${({ theme }) => theme.TEXT_COLOR.basic};
-    margin-top: 4px;
-`;
 
 export default DoughnutChart;
