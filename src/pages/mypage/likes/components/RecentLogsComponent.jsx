@@ -1,67 +1,99 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import LogS from '../styles/LikesLogStyles'; 
-import cardGraphicIcon from '../resources/fail-log-card.png'; 
 
+/**
+ * @param {Array} logs - 부모(Container)에게서 전달받은 최근 확인한 로그 리스트 (recentLogs)
+ */
 const RecentLogsComponent = ({ logs = [] }) => {
-  const navigate = useNavigate(); 
-
-  const cardThemes = [
-    { bg: "#F8FAFC", text: "#1E293B" }, 
-    { bg: "#94A3B8", text: "#FFFFFF" }, 
-    { bg: "#475569", text: "#FFFFFF" }, 
-  ];
-
   return (
-    <LogS.RecentSection>
-      {/* 💡 정렬선을 맞추기 위해 래퍼 클래스로 감쌈 */}
-      <div className="ContentHeader">
-        <h2>최근 <span>확인한 페일로그</span></h2>
-        <p className="sub-desc">최근에 읽은 페일로그를 확인 할 수 있습니다.</p>
+    <div style={{ width: '100%', maxWidth: '1200px', margin: '40px auto 60px' }}>
+      {/* 섹션 헤더 타이틀 구역 */}
+      <div style={{ marginBottom: '24px' }}>
+        <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1E293B', margin: '0 0 8px 0' }}>
+          최근 확인한 페일로그
+        </h3>
+        <p style={{ fontSize: '14px', color: '#64748B', margin: 0 }}>
+          최근 3일 동안 세종님이 열람했던 다른 개발자들의 실패 기록입니다.
+        </p>
       </div>
-      
-      <LogS.RecentGrid>
-        {logs.map((log, index) => {
-          const theme = cardThemes[index % 3];
-          const isFirst = index === 0; 
 
-          return (
-            <LogS.RecentCard 
-              key={log.id} 
-              bgColor={theme.bg}
-              onClick={() => navigate(`/logs/detail/${log.id}`)}
+      {/* 가로 스크롤 혹은 유연한 배치를 위한 리스트 영역 */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', 
+        gap: '20px' 
+      }}>
+        {logs.length > 0 ? (
+          logs.map((log) => (
+            <div 
+              key={log.id}
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid #E2E8F0',
+                borderRadius: '12px',
+                padding: '20px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                minHeight: '120px',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
+              }}
             >
-              <LogS.RecentOverlay className={`card-film-overlay ${isFirst ? 'active' : ''}`} />
+              {/* 로그 타이틀 (2줄 말줄임 처리 적용) */}
+              <h4 style={{ 
+                fontSize: '15px', 
+                fontWeight: '600', 
+                color: '#334155', 
+                margin: '0 0 16px 0',
+                lineHeight: '1.4',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}>
+                {log.title}
+              </h4>
 
-              <LogS.RecentContent textColor={theme.text}>
-                <div className="TitleArea">
-                  <h4>{log.title}</h4>
-                  <p>“실기시험 실패의 원인을 찾아서” 역시 술을 마시면 안됐던 걸까?</p>
-                </div>
-
-                <div className="AuthorArea">
-                  <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Felix" alt="profile" />
+              {/* 하단 메타 정보 영역 */}
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                fontSize: '13px',
+                color: '#94A3B8'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#475569' }}>
+                  {/* 작은 아바타 인라인 플레이스홀더 */}
+                  <div style={{ 
+                    width: '18px', 
+                    height: '18px', 
+                    background: '#CBD5E1', 
+                    borderRadius: '50%',
+                    display: 'inline-block'
+                  }} />
                   <span>@{log.author}</span>
                 </div>
-
-                <div className="CardMainImage">
-                  <img src={cardGraphicIcon} alt="데이터 분석 그래픽" />
-                </div>
-
-                <div className="CardFooter">
-                  <span className="TimeText">최근 조회 : {log.date}</span>
-                  <div className="LikeIconArea" onClick={(e) => e.stopPropagation()}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill={isFirst ? "#FF5A5A" : "none"} viewBox="0 0 24 24" stroke={isFirst ? "#FF5A5A" : theme.text} opacity={isFirst ? 1 : 0.4}>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                  </div>
-                </div>
-              </LogS.RecentContent>
-            </LogS.RecentCard>
-          );
-        })}
-      </LogS.RecentGrid>
-    </LogS.RecentSection>
+                <span>{log.date}</span>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p style={{ gridColumn: '1 / -1', color: '#94A3B8', fontSize: '14px', padding: '20px 0' }}>
+            최근 확인한 페일로그 내역이 없습니다.
+          </p>
+        )}
+      </div>
+    </div>
   );
 };
 

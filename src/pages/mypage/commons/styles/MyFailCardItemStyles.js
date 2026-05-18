@@ -19,14 +19,13 @@ S.MyFailCard = styled.div`
   /* 🎯 전체 선택 시 피그마 로즈빛 테두리 라인 밀착 */
   border: 2px solid ${(props) => props.$isSelected ? "#FDA4AF" : "transparent"}; 
 
-  /* 🎯 평상시 및 호버 시 기존 고유 색상 완벽 유지 (선택 시에만 faillog_light_red 전환) */
+  /* 🎯 평상시 및 호버 시 기존 고유 색상 유지 */
   background-color: ${(props) => 
     props.$isSelected 
       ? (colorCSS["faillog_light_red"] || "#FFE4E6") 
       : (props.$bgColor || "transparent")
   };
 
-  /* 선택되지 않았고 개별 bgColor가 없을 때만 첫 행 고유 컬러 순환 */
   ${(props) => !props.$isSelected && !props.$bgColor && `
     &:nth-of-type(4n + 1) { background-color: #F1F3FB; }
     &:nth-of-type(4n + 2) { background-color: #E7EFFF; }

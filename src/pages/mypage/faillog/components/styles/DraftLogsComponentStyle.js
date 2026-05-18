@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { sizeCSS, colorCSS } from "../../../../../components/style";
 
-
 const S = {};
 
 S.DraftSection = styled.section`
@@ -38,8 +37,13 @@ S.DraftGrid = styled.div`
 S.DraftCard = styled.div`
   width: 100%;
   max-width: 410px; 
-  height: 534px;    
-  background: ${(props) => props.bgColor || "#94A3B8"};
+  height: 534px;     
+  
+  /* 🔄 [평상시] 카드 순서에 따른 파스텔톤 배경색 설정 */
+  &:nth-of-type(1) { background-color: #E7EFFF; }
+  &:nth-of-type(2) { background-color: #D8EEFD; }
+  &:nth-of-type(3) { background-color: #D7E0FF; }
+
   border-radius: 24px;
   padding: 40px 32px;
   display: flex;
@@ -64,14 +68,14 @@ S.DraftCard = styled.div`
     transition: opacity 0.25s ease;
   }
 
-  /* 🔥 [레이어 3] 최상단 콘텐츠 그룹 (글자, 태그가 이미지와 필름 위로 완전히 올라오도록 격리) */
+  /* 🔥 [레이어 3] 최상단 콘텐츠 그룹 */
   .ContentGroup {
     position: relative;
     z-index: 3;
     display: flex;
     flex-direction: column;
     height: 100%;
-    pointer-events: none; /* 클릭 이벤트를 부모 카드가 온전히 받도록 제어 */
+    pointer-events: none; 
     
     * {
       pointer-events: auto;
@@ -100,7 +104,7 @@ S.DraftCard = styled.div`
     }
   }
 
-  /* 🔥 [레이어 1] 피그마 우하단 고정 일러스트 (글자/태그 밑에 깔리도록 z-index: 1 처리) */
+  /* 🔥 [레이어 1] 피그마 우하단 고정 일러스트 */
   .CardImage {
     position: absolute;
     bottom: 0;
@@ -114,7 +118,7 @@ S.DraftCard = styled.div`
     img { 
       width: 278px !important;
       height: 209px !important;
-      margin-top: 340px !important; /* 👈 기존에 잡아두신 밀어내기 정밀 마진 유지 */
+      margin-top: 340px !important; 
       object-fit: contain;
       filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
       transition: filter 0.25s ease;
@@ -126,7 +130,7 @@ S.DraftCard = styled.div`
     margin-top: auto;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end; /* 텍스트 하단선과 태그 하단선 수평 정밀 일치 */
+    align-items: flex-end; 
     
     .InfoText {
       ${sizeCSS["h9-bold"]}
@@ -137,7 +141,7 @@ S.DraftCard = styled.div`
     
     /* 📌 피그마 시안 전용 미완성 태그 스타일 정의 */
     .StatusTag {
-      background: #FFF0F0; /* 시안 고유의 소프트 레드 배경색 */
+      background: #FFF0F0; 
       color: ${colorCSS["faillog-red"]};
       padding: 8px 16px;
       border-radius: 12px; 
@@ -151,13 +155,16 @@ S.DraftCard = styled.div`
   &:hover {
     border-color: ${colorCSS["faillog_purple"]}; 
     transform: translateY(-8px); 
-    background-color: ${colorCSS["faillog_white"]} !important; 
     
+    /* 🔄 [수정] 호버 시 흰색으로 덮어쓰지 않고, 원래 지정된 순서별 배경색이 유지되도록 강제 제거 */
+    /* background-color: ${colorCSS["faillog_white"]} !important; */
+    
+    /* 🔄 필름 투명화 -> 이 액션 덕분에 원래 깔려있던 고유의 순서별 색상이 선명하게 노출됩니다. */
     &::before {
-      opacity: 0; /* 필름 투명화 */
+      opacity: 0; 
     }
     
-    /* 글자 및 푸터 정보를 공통 폰트 컬러로 일괄 반전 */
+    /* 글자 및 푸터 정보를 공통 폰트 컬러로 일괄 반전 (밝은 배경 대비 가독성 확보) */
     .CardHeader h3, .CardHeader p, .CardFooter .InfoText {
       color: ${colorCSS["faillog-black"]} !important;
       opacity: 1 !important;
