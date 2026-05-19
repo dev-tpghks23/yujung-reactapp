@@ -26,7 +26,6 @@ import MyLikesContainer from "../pages/mypage/likes/MyLikesContainer";
 import MyFailLogsContainer from "../pages/mypage/faillog/MyFailLogsContainer";
 import MyPageContainer from "../pages/mypage/MyPageContainer";
 import LogOtherContainer from "../pages/log/other/LogOtherContainer";
-import LogOtherListContainer from "../pages/log/other/LogOtherListContainer";
 import ChronologyMainContainer from "../pages/chronology/ChronologyMainContainer";
 import ChronologyMain from "../pages/chronology/ChronologyMain";
 import PerformanceAnalysis from "../pages/chronology/PerformanceAnalysis";
@@ -47,13 +46,7 @@ const router = createBrowserRouter([
       },
       {
         path: "fail-logs",
-        element: <LogOtherContainer />,
-        children: [
-          {
-            path: "",
-            element: <LogOtherListContainer />
-          },
-        ]
+        element: <LogOtherContainer />
       },
       {
         path: "logs",

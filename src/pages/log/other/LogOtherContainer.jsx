@@ -1,14 +1,18 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import LogOtherHero from './LogOtherHero';
 import LogPopularSolution from './LogPopularSolution';
+import LogOtherHero from './LogOtherHero';
+import LogOtherSearch from './LogOtherSearch';
+import LogOtherList from './LogOtherList';
 
 
 const LogOtherContainer = () => {
     return (
         <div>
             <LogPopularSolution />
-            <Outlet />
+            <LogOtherHero />
+            <LogOtherSearch />
+            <LogOtherList />
         </div>
     );
 };
