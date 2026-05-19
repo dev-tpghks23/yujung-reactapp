@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import Preview from './Preview';
 import styled from 'styled-components';
 import S, { colorCSS, boxShadow, sizeCSS } from '../../style';
 import CategorySelect from './CategorySelect';
@@ -9,6 +10,15 @@ import italic from '../../resources/option-italic.svg';
 import picture from '../../resources/option-picture.svg';
 import hyper from '../../resources/option-hyper.svg';
 import { flexCenterRow } from '../../../../styles/common';
+
+import { EditorContent, useEditor, useEditorState } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Link from '@tiptap/extension-link';
+import ImageResize from 'tiptap-extension-resize-image';
+import Paragraph from '@tiptap/extension-paragraph';
+import Text from '@tiptap/extension-text';
+
+import '../../css/PostForm.css'
 
 const CATEGORY_OPTIONS = ['시장/창업', '공부/취업', '인간관계', '건강/루틴', '기타'];
 
@@ -29,16 +39,87 @@ const PostForm = ({
     defaultValues: {
       title: defaultTitle,
       category: defaultCategory,
-      content: defaultContent,
+      // content: defaultContent,
     },
   });
 
   const hasError = isSubmitted && (errors.title || errors.category);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const onSubmitForm = (data) => {
     const categoryIndex = CATEGORY_OPTIONS.indexOf(data.category);
-    onSubmit?.({ title: data.title, category: categoryIndex, content: data.content });
+
+    //html문자열
+    console.log(editor?.getHTML());
+    const html = editor?.getHTML() ?? '';
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    //업로드된 image배열
+    data.images = Array.from(doc.querySelectorAll('img')).map(img => img.getAttribute('src'));
+    console.log(data.images);
+
+    onSubmit?.({ title: data.title, category: categoryIndex, content: html, images: data.images });
   };
+
+  // tiptap 세팅
+    const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Link.configure({ openOnClick: false }),
+      ImageResize.configure({
+        minWidth: 50, // Minimum width in pixels
+        maxWidth: 1270, // Maximum width in pixels
+      }),
+      Paragraph,
+      Text
+    ],
+    content: '<img src="https://storage.ghost.io/c/ef/c4/efc4de12-d333-4292-a2f4-7c017c0cced8/content/images/size/w2000/2025/11/Gemini_Generated_Image_5fdg255fdg255fdg.png" width="590" containerstyle="width: 590px;" wrapperstyle="display: flex; margin: 0px;"><p>익숙한 내 방에서만 공부하던 게 독이었습니다. 실전에서는 낯선 환경과 작은 소음에도 쉽게 흔들렸고, 알고 있던 것도 제대로 꺼내지 못했습니다. 그래서 공부량을 더 늘리는 대신 환경부터 바꾸기로 했습니다.</p><p></p><p>집이 아닌 도서관, 카페, 스터디카페를 번갈아 이용했고 처음엔 불편했지만 점점 낯선 공간에서도 집중을 유지하는 시간이 길어졌습니다. 이전에는 긴장하면 손이 굳고 머리가 멍해 졌는데, 이제는 다시 흐름을 잡는 연습이 되기 시작했습니다.</p><img src="https://img.freepik.com/free-photo/stack-notebooks-cup-with-pencils_23-2147711407.jpg?semt=ais_hybrid&amp;w=740&amp;q=80" width="627" containerstyle="width: 627px; margin: 0px auto 0px 0px;" wrapperstyle="display: flex; margin: 0px;"><p>공부 루틴도 바꿨습니다. 예전에는 오래 앉아 있는 것 자체에 의미를 뒀지만, 지금은 30분 집중 후 짧게 쉬는 방식으로 구조를 바꿨습니다. 틀린 문제는 그냥 넘어가지 않고 왜 틀렸는 지를 적으면서 실수의 패턴을 추적했습니다.</p><p></p><p>결국 실전은 많이 아는 것보다 흔들려도 다시 꺼낼 수 있는 힘이 더 중요하다는 걸 느꼈습니다. 환경을 바꾸고, 루틴을 바꾸고, 실수의 원인을 적기 시작한 뒤부터 실전에서의 안정감 이 달라졌습니다.</p> ',
+  })
+
+  //에디터 상태값변경 (리랜더링)
+  const { isBoldActive, isItalicActive, isLinkActive } = useEditorState({
+    editor,
+    selector: (ctx) => ({
+      isLinkActive: ctx.editor?.isActive('link') ?? false,
+      isBoldActive: ctx.editor?.isActive('bold') ?? false,
+      isItalicActive: ctx.editor?.isActive('italic') ?? false
+    }),
+  });
+
+  //이미지 업로드 갯수 불러오기
+  const getImagesCount = () => {
+    const html = editor?.getHTML() ?? '';
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return Array.from(doc.querySelectorAll('img')).map(img => img.getAttribute('src')).length;
+  }
+
+  //버튼 이벤트
+  //link 토글
+  const handleOnClickLinkButton = () => {
+    if (!editor) return;
+
+    if (editor.isActive('link')) {
+      editor.chain().focus().unsetLink().run();
+    } else {
+      const url = window.prompt('URL을 입력하세요:');
+      if (!url) return;
+      editor.chain().focus().setLink({ href: url }).run();
+    }
+  };
+
+  //image버튼 (10개 제한)
+  const handleOnClickPictureButton = () => {
+
+    if(getImagesCount() >= 10) {
+      return alert("이미지는 최대 10개까지 추가 할 수 있습니다");
+    }
+
+    const url = window.prompt('URL')
+
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run()
+    }
+  }
 
   return (
     <Wrapper>
@@ -104,12 +185,15 @@ const PostForm = ({
           </Label>
           <EditorBox>
             <EditorToolbar>
-              <ToolbarBtn type="button"><ToolbarIcon src={bold} alt="bold" /></ToolbarBtn>
-              <ToolbarBtn type="button"><ToolbarIcon src={italic} alt="italic" /></ToolbarBtn>
-              <ToolbarBtn type="button"><ToolbarIcon src={picture} alt="picture" /></ToolbarBtn>
-              <ToolbarBtn type="button"><ToolbarIcon src={hyper} alt="hyperlink" /></ToolbarBtn>
+              <ToolbarBtn type="button" $isActive={isBoldActive} onClick={() => {
+                editor?.chain().focus().toggleBold().run()
+                }}><ToolbarIcon src={bold} alt="bold" /></ToolbarBtn>
+              <ToolbarBtn type="button" $isActive={isItalicActive} onClick={() => editor?.chain().focus().toggleItalic().run()}><ToolbarIcon src={italic} alt="italic" /></ToolbarBtn>
+              <ToolbarBtn type="button" onClick={handleOnClickPictureButton}><ToolbarIcon src={picture} alt="picture" /></ToolbarBtn>
+              <ToolbarBtn type="button" $isActive={isLinkActive} onClick={handleOnClickLinkButton}><ToolbarIcon src={hyper} alt="hyperlink" /></ToolbarBtn>
             </EditorToolbar>
-            <EditorTextArea {...register('content')} />
+            <EditorContent editor={editor} />
+            {/* <EditorTextArea {...register('content')} /> */}
           </EditorBox>
         </FieldBlock>
 
@@ -119,11 +203,17 @@ const PostForm = ({
           <CancelBtn type="button" onClick={onCancel}>
             <S.Span size="h8Bold">취소</S.Span>
           </CancelBtn>
+          <PreviewBtn type="button" onClick={() => setPreviewOpen(true)}>
+            <S.Span size="h8Bold">미리보기</S.Span>
+          </PreviewBtn>
           <SubmitBtn type="submit">
             <S.Span size="h8Bold" color="faillog_white">{isCreate ? "게시글 등록" : "게시글 수정"}</S.Span>
           </SubmitBtn>
         </ButtonRow>
       </form>
+      {previewOpen && (
+        <Preview content={editor?.getHTML() ?? ''} onClose={() => setPreviewOpen(false)} />
+      )}
     </Wrapper>
   );
 };
@@ -208,9 +298,9 @@ const ErrorMsg = styled.div`
 const EditorBox = styled.div`
   width: 772px;
   height: 464px;
-  border: 1px solid ${colorCSS["faillog_gray9"]};
+  /* border: 1px solid ${colorCSS["faillog_gray9"]}; */
   border-radius: 15px;
-  overflow: hidden;
+  /* overflow: hidden; */
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -225,16 +315,26 @@ const EditorToolbar = styled.div`
   gap: 18px;
   padding: 0 16px;
   box-sizing: border-box;
+  border-radius: 15px 15px 0px 0px;
+  border: 1px solid ${colorCSS["faillog_gray9"]};
   flex-shrink: 0;
-  border-bottom: 1px solid ${colorCSS["faillog_gray9"]};
+  /* border-bottom: 1px solid ${colorCSS["faillog_gray9"]}; */
 `
 
 const ToolbarBtn = styled.button`
-  background: none;
+  width: 28px;
+  height: 28px;
   border: none;
+  border-radius: 6px;
   padding: 0;
   cursor: pointer;
   ${flexCenterRow}
+  background-color: ${({ $isActive }) => $isActive ? colorCSS["faillog_gray8"] : 'transparent'};
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background-color: ${({ $isActive }) => $isActive ? colorCSS["faillog_gray8"] : colorCSS["faillog_gray2"]};
+  }
 `
 
 const ToolbarIcon = styled.img`
@@ -277,6 +377,15 @@ const CancelBtn = styled.button`
   width: 100px;
   height: 40px;
   border: 1px solid ${colorCSS["faillog_gray9"]};
+  border-radius: 10px;
+  background: ${colorCSS["faillog_white"]};
+  cursor: pointer;
+`
+
+const PreviewBtn = styled.button`
+  width: 100px;
+  height: 40px;
+  border: 1px solid ${colorCSS["faillog_purple"]};
   border-radius: 10px;
   background: ${colorCSS["faillog_white"]};
   cursor: pointer;

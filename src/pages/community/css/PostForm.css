@@ -1,0 +1,49 @@
+.tiptap,
+.ProseMirror {
+  border: 1px solid #ccc;
+  padding: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+
+  width: 100%;
+  height: 416px;
+  overflow: auto;
+
+  border-radius: 0px 0px 15px 15px
+}
+
+.tiptap:focus,
+.ProseMirror:focus {
+  border-color: #7c3aed;
+  /* box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2); */
+}
+
+.ProseMirror strong {
+  font-weight: bold;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror a {
+  color: #027DF0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ProseMirror img {
+  max-width: 1270px;
+  min-width: 50px;
+  height: auto;
+  display: block;
+}
+
+/* resize UI 내부 아이콘은 24px 고정, inline 유지 */
+.ProseMirror [data-resize-image-ui] img {
+  min-width: unset;
+  max-width: unset;
+  width: 24px;
+  height: 24px;
+  display: inline;
+}
