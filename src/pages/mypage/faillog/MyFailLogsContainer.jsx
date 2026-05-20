@@ -13,6 +13,7 @@ import useSearchStore from '../../../components/useSearchStore';
 import { DUMMY_FAIL_LOGS } from '../data/dummyData';
 import EmptyStateComponent from '../commons/EmptyStateComponent';
 import CommS from '../profile/styles/CommunityStyles';
+import PopupComponent from '../../../components/commons/PopupComponent';
 
 const MyFailLogsContainer = () => {
   const navigate = useNavigate();
@@ -22,6 +23,10 @@ const MyFailLogsContainer = () => {
   
   // 📌 팁: 이 배열을 [] 빈 배열로 비우면 공백 상태가 활성화되고, 데이터가 들어오면 원래 리스트가 뜹니다.
   const [allLogs, setAllLogs] = useState(DUMMY_FAIL_LOGS);
+  const [popup, setPopup] = useState(null);
+  const closePopup = () => setPopup(null);
+  const showAlert = (message) => setPopup({ message, onConfirm: closePopup });
+  const showConfirm = (message, onConfirm) => setPopup({ message, onConfirm, onCancel: closePopup });
 
   const [trashedLogs, setTrashedLogs] = useState([]);
   const [filteredLogs, setFilteredLogs] = useState([]);
@@ -75,14 +80,15 @@ const MyFailLogsContainer = () => {
   };
 
   const handleDeleteLogs = () => {
-    if (selectedDeleteIds.length === 0) return alert("삭제할 페일로그를 선택해주세요.");
-    if (window.confirm(`선택한 ${selectedDeleteIds.length}개의 페일로그를 휴지통으로 이동하시겠습니까?`)) {
+    if (selectedDeleteIds.length === 0) return;
+    showConfirm('로그를 삭제 하시겠습니까?', () => {
       const logsToTrash = allLogs.filter((log) => selectedDeleteIds.includes(log.id));
       setTrashedLogs((prev) => [...prev, ...logsToTrash]);
       setAllLogs((prev) => prev.filter((log) => !selectedDeleteIds.includes(log.id)));
       setSelectedDeleteIds([]);
       setCurrentPage(1);
-    }
+      closePopup();
+    });
   };
 
   const handleToggleTrashEditMode = (e) => {
@@ -107,28 +113,40 @@ const MyFailLogsContainer = () => {
   };
 
   const handleRestoreSelectedLogs = () => {
-    if (selectedTrashIds.length === 0) return alert("복구할 페일로그를 선택해주세요.");
-    const targets = trashedLogs.filter((log) => selectedTrashIds.includes(log.id));
-    setAllLogs((prev) => [...targets, ...prev]);
-    setTrashedLogs((prev) => prev.filter((log) => !selectedTrashIds.includes(log.id)));
-    setSelectedTrashIds([]);
-    setIsTrashEditMode(false); 
-    alert("선택한 페일로그가 목록으로 복구되었습니다.");
+    if (selectedTrashIds.length === 0) return;
+    showConfirm('로그를 복원 하시겠습니까?', () => {
+      const targets = trashedLogs.filter((log) => selectedTrashIds.includes(log.id));
+      setAllLogs((prev) => [...targets, ...prev]);
+      setTrashedLogs((prev) => prev.filter((log) => !selectedTrashIds.includes(log.id)));
+      setSelectedTrashIds([]);
+      setIsTrashEditMode(false);
+      closePopup();
+      showAlert('로그가 복원되었습니다.');
+    });
   };
 
   const handleDeleteForeverSelectedLogs = () => {
-    if (selectedTrashIds.length === 0) return alert("영구 삭제할 페일로그를 선택해주세요.");
-    if (window.confirm(`선택한 ${selectedTrashIds.length}개의 페일로그를 영구 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+    if (selectedTrashIds.length === 0) return;
+    showConfirm('로그를 삭제 하시겠습니까?', () => {
       setTrashedLogs((prev) => prev.filter((log) => !selectedTrashIds.includes(log.id)));
       setSelectedTrashIds([]);
-      setIsTrashEditMode(false); 
-    }
+      setIsTrashEditMode(false);
+      closePopup();
+      showAlert('로그가 삭제되었습니다.');
+    });
   };
 
   // 페일로그 데이터 존재 여부 판별
   const hasNoCards = allLogs.length === 0;
 
   return (
+    <>
+    <PopupComponent
+      isOpen={!!popup}
+      message={popup?.message}
+      onConfirm={popup?.onConfirm}
+      onCancel={popup?.onCancel}
+    />
     <PageS.MainWrapper>
       <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} />
       <DraftLogsComponent draftLogs={draftLogs} />
@@ -180,6 +198,7 @@ const MyFailLogsContainer = () => {
         />
       </div>
     </PageS.MainWrapper>
+    </>
   );
 };
 

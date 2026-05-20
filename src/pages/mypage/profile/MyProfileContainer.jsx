@@ -60,14 +60,17 @@ const MyProfileContainer = () => {
   };
 
   const handleNicknameChange = (newNickname) => {
-    setMemberInfo((prev) => ({
-      ...prev,
-      memberNickname: newNickname,
-    }));
+    setMemberInfo((prev) => ({ ...prev, memberNickname: newNickname }));
   };
 
-  const handlePasswordChange = () => {
-    navigate('/change-password');
+  const handleEmailChange = (newEmail) => {
+    setMemberInfo((prev) => ({ ...prev, memberEmail: newEmail }));
+  };
+
+  const handleUnregister = () => navigate('/delete');
+
+  const handlePasswordChange = (newPassword) => {
+    setMemberInfo((prev) => ({ ...prev, memberPassword: newPassword }));
   };
 
   return (
@@ -98,11 +101,14 @@ const MyProfileContainer = () => {
 
         <InfoS.BottomAccountArea>
           <AccountDataComponent
+            memberNickname={memberInfo.memberNickname}
             memberEmail={memberInfo.memberEmail}
             memberName={memberInfo.memberName}
             memberPhone={memberInfo.memberPhone}
             memberPhoneVerified={memberInfo.memberPhoneVerified}
-            onPasswordChange={handlePasswordChange}
+            onEmailSubmit={handleEmailChange}
+            onPasswordSubmit={handlePasswordChange}
+            onUnregister={handleUnregister}
           />
         </InfoS.BottomAccountArea>
       </InfoS.InfoManagementSection>
