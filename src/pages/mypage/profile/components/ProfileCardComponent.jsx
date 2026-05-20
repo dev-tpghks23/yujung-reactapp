@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
-import S from '../styles/MyProfileStyle'; // 스타일 경로 확인 필수
-import defaltProfileImage from '../resouces/default.png'
+import S from '../styles/MyProfileStyle';
+import defaltProfileImage from '../resouces/default.png';
+import cameraIcon from '../../../../components/resources/camera.svg';
+import PopupComponent from '../../../../components/commons/PopupComponent';
 
 const ProfileCardComponent = ({
   memberNickname,
@@ -12,6 +14,7 @@ const ProfileCardComponent = ({
   const [isEditing, setIsEditing] = useState(false);
   // 입력 중인 임시 닉네임 관리
   const [tempNickname, setTempNickname] = useState(memberNickname || '');
+  const [showImageAlert, setShowImageAlert] = useState(false);
   const fileInputRef = useRef(null);
   const profileSrc = memberProfileImageUrl || defaltProfileImage;
 
@@ -23,9 +26,11 @@ const ProfileCardComponent = ({
   // 파일 선택되었을 때 실행
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && onImageChange){
+    if (file && onImageChange) {
       onImageChange(file);
+      setShowImageAlert(true);
     }
+    e.target.value = '';
   }
 
   // 저장 버튼 클릭 시
@@ -43,6 +48,12 @@ const ProfileCardComponent = ({
   };
 
   return (
+    <>
+    <PopupComponent
+      isOpen={showImageAlert}
+      message="사진이 변경되었습니다."
+      onConfirm={() => setShowImageAlert(false)}
+    />
     <S.ProfileCard>
       {/* 1. 프로필 이미지 영역 */}
       <div className="profileImageContainer">
@@ -58,13 +69,12 @@ const ProfileCardComponent = ({
         onChange={handleFileChange}
       />
 
-        <button 
-          className="image-edit-btn" 
+        <button
+          className="image-edit-btn"
           onClick={handleImageButtonClick}
           type="button"
         >
-          📸 
-          {/* 아이콘 집어넣을 것 */}
+          <img src={cameraIcon} alt="프로필 사진 변경" style={{ width: '16px', height: '16px' }} />
         </button>
       </div>
 
@@ -108,6 +118,7 @@ const ProfileCardComponent = ({
         * FailLog에서 사용할 내 프로필 이미지를 설정해주세요.
       </p>
     </S.ProfileCard>
+    </>
   );
 };
 

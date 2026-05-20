@@ -1,5 +1,7 @@
 import React from 'react';
-import S from '../styles/MyProfileStyle'; // 경로 확인 필수
+import S from '../styles/MyProfileStyle';
+import likeFillIcon from '../../../../components/resources/like-fill2.svg';
+import postIcon from '../../../../components/resources/post.svg';
 
 const MyCommunityPostCard = ({ post, isSelected, onSelect, onNavigate }) => {
   const { category, title, content, author, date, likes, comments, imageUrl } = post;
@@ -37,8 +39,14 @@ const MyCommunityPostCard = ({ post, isSelected, onSelect, onNavigate }) => {
             <S.AuthorName>{author}</S.AuthorName>
           </S.AuthorInfo>
           <S.PostStats>
-            <S.StatItem>❤️ {likes}</S.StatItem>
-            <S.StatItem>💬 {comments}</S.StatItem>
+            <S.StatItem>
+              <img src={likeFillIcon} alt="좋아요" style={{ width: '14px', height: '14px' }} />
+              {likes}
+            </S.StatItem>
+            <S.StatItem>
+              <img src={postIcon} alt="댓글" style={{ width: '14px', height: '14px' }} />
+              {comments}
+            </S.StatItem>
           </S.PostStats>
         </S.CardFooter>
       </S.PostContentSection>

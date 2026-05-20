@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { sizeCSS, colorCSS } from "../../../../components/style";
+import theme from "../../../../styles/theme";
 
 const S = {};
 
@@ -485,7 +486,7 @@ S.CommunityContainer = styled.div`
 `;
 
 S.HeaderSection = styled.div`
-  margin-bottom: 250px;
+  margin-bottom: 26px;
   h3 {
     ${sizeCSS["h4Bold"]};
     color: ${colorCSS["faillog-black"]};
@@ -553,32 +554,35 @@ S.EmptyStateWrapper = styled.div`
 `;
 
 S.EmptyTitle = styled.h4`
-  font-size: 45px;
-  line-height: 1.5;
-  color: #333;
+  ${sizeCSS['h3Bold']}
+  color: ${colorCSS['faillog-black']};
   margin-bottom: 20px;
-  strong { color: #5d5fef; } /* FailLog 포인트 컬러로 통일 */
+  line-height: 1.5;
+  strong, span {
+    background: ${theme.GRADIENT.blue};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 `;
 
 S.EmptySubText = styled.p`
-  font-size: 32px;
-  color: #888;
+  ${sizeCSS['h4Regular']}
+  color: ${colorCSS['faillog_gray10']};
   line-height: 1.6;
   margin-bottom: 40px;
 `;
 
 S.StartButton = styled.button`
-  background: #5d5fef;
+  background: ${theme.GRADIENT.blue};
   color: white;
   border: none;
   padding: 12px 40px;
   border-radius: 8px;
-  font-size: 28px;
-  font-weight: 600;
+  ${sizeCSS['h8-bold']}
   cursor: pointer;
-  transition: transform 0.2s;
-  &:hover { transform: scale(1.05); }
-  margin-bottom: 506px
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.88; }
 `;
 
 export default S;

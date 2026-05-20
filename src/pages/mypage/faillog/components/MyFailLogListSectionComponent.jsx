@@ -1,7 +1,6 @@
 import React from 'react';
 import CommS from '../../profile/styles/CommunityStyles';
-import LogS from '../styles/MyFailLogStyles'; 
-import ProfileS from '../../profile/styles/MyProfileStyle'; 
+import LogS from '../styles/MyFailLogStyles';
 
 import LogSearchComponent from '../../commons/LogSearchComponent';
 import EmptyStateComponent from '../../commons/EmptyStateComponent';
@@ -43,11 +42,9 @@ const MyFailLogListSectionComponent = ({
         />
       ) : (
         <>
-          <MyFailLogCardComponent 
-            filteredLogs={filteredLogs} 
-            navigate={navigate} 
+          <MyFailLogCardComponent
+            filteredLogs={filteredLogs}
             selectedDeleteIds={selectedDeleteIds}
-            onSelectOneLog={onSelectOneLog}
           />
 
           <div style={{ 
@@ -66,17 +63,13 @@ const MyFailLogListSectionComponent = ({
             />
 
             <div style={{ position: 'absolute', right: 0, bottom: '-10px' }}>
-              <PostControlBarComponent 
+              <PostControlBarComponent
                 isAllChecked={selectedDeleteIds.length === filteredLogs.length && filteredLogs.length > 0}
                 onSelectAll={onSelectAllLogs}
                 onDelete={onDeleteLogs}
-                
-                // 🎯 [실시간 카운트 동적 연동]
-                selectedCount={selectedDeleteIds.length} // 선택된 카드 개수
-                totalCount={filteredLogs.length}         // 전체 카드 개수
-                
-                showRestore={false} // 상단 목록은 복구 버튼 미노출
-                styles={ProfileS} 
+                selectedCount={selectedDeleteIds.length}
+                totalCount={filteredLogs.length}
+                showRestore={false}
               />
             </div>
           </div>

@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { sizeCSS, colorCSS } from "../../../../components/style";
+import theme from "../../../../styles/theme";
 
 const S = {};
 
@@ -30,34 +32,35 @@ S.EmptyStateWrapper = styled.div`
 `;
 
 S.EmptyTitle = styled.h3`
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: #1e293b;
-  margin-bottom: 10px;
-  strong {
-    color: #5d5fef;
+  ${sizeCSS['h3Bold']}
+  color: ${colorCSS['faillog-black']};
+  margin-bottom: 20px;
+  line-height: 1.5;
+  strong, span {
+    background: ${theme.GRADIENT.blue};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 `;
 
 S.EmptySubText = styled.p`
-  font-size: 16px;
-  color: #64748b;
+  ${sizeCSS['h4Regular']}
+  color: ${colorCSS['faillog_gray10']};
   margin-bottom: 40px;
   line-height: 1.6;
 `;
 
 S.StartButton = styled.button`
-  background: #5d5fef;
+  background: ${theme.GRADIENT.blue};
   color: white;
   padding: 12px 40px;
   border-radius: 8px;
-  font-weight: 600;
+  ${sizeCSS['h8-bold']}
   cursor: pointer;
   border: none;
-  &:hover {
-    background: #4a4cd9;
-  }
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.88; }
 `;
 
 export default S;

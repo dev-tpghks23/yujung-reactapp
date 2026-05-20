@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { sizeCSS, colorCSS } from "../../../../components/style";
 
 const S = {};
 
@@ -72,39 +73,78 @@ S.CardTitle = styled.h3`
   margin-bottom: 10px;
 `;
 
-S.DonutChart = styled.div`
+S.ChartWrapper = styled.div`
   position: relative;
-  width: 150px;
-  height: 150px;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+`;
+
+/* conic-gradient 기반 도넛 링 */
+S.DonutRing = styled.div`
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
-  background: conic-gradient(#5D5FEE 0% 70%, #E5E7EB 70% 100%);
+  background: ${({ $gradient }) => $gradient};
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+  cursor: pointer;
 
   &::after {
     content: '';
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 116px;
+    height: 116px;
     border-radius: 50%;
     background: #ffffff;
+    z-index: 1;
   }
+`;
+
+S.ChartCenter = styled.div`
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  pointer-events: none;
 
   strong {
-    position: relative;
-    font-size: 24px;
-    color: #1E293B;
+    display: block;
+    ${sizeCSS['h5Bold']}
+    color: ${colorCSS['faillog-red']};
+    line-height: 1.1;
   }
 
   span {
-    position: relative;
     display: block;
-    margin-top: 6px;
-    font-size: 12px;
-    color: #64748B;
+    margin-top: 3px;
+    ${sizeCSS['h11Regular']}
+    color: ${colorCSS['faillog-black']};
+    white-space: nowrap;
   }
+`;
+
+S.Tooltip = styled.div`
+  position: absolute;
+  background: rgba(15, 23, 42, 0.88);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+  line-height: 1.5;
+`;
+
+S.ChartEmptyText = styled.p`
+  font-size: 13px;
+  color: #94A3B8;
+  text-align: center;
+  line-height: 1.7;
+  margin: 8px 0 0;
 `;
 
 S.ChartLegend = styled.div`

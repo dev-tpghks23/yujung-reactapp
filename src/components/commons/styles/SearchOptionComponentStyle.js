@@ -1,23 +1,27 @@
 import styled from "styled-components"
 import { colorCSS } from "../../style"
-import { flexBetweenRow, flexCenterRow } from "../../../styles/common"
+import { flexCenterRow } from "../../../styles/common"
 
 const S = {}
 
 S.Wrapper = styled.div`
   position: relative;
-  width: 88px;
+  min-width: 130px;
   user-select: none;
 `
 
 S.Trigger = styled.div`
-  width: 88px;
+  width: 100%;
   height: 40px;
   border: 1px solid #D9D9D9;
   border-radius: 15px;
   background: ${colorCSS["faillog_white"]};
   cursor: pointer;
   ${flexCenterRow}
+  padding: 0 12px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  gap: 6px;
 `
 
 S.ChevronImg = styled.img`
@@ -31,8 +35,9 @@ S.OptionBox = styled.div`
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  width: 88px;
-  height: 100px;
+  width: 100%;
+  min-width: 130px;
+  height: auto;
   border-radius: 15px;
   overflow: hidden;
   z-index: 999;
@@ -42,9 +47,10 @@ S.OptionBox = styled.div`
 
 S.OptionItem = styled.div`
   width: 100%;
-  height: 33px;
+  height: 36px;
   cursor: pointer;
   ${flexCenterRow}
+  white-space: nowrap;
 
   &:hover {
     background-color: ${colorCSS['faillog_gray1']};

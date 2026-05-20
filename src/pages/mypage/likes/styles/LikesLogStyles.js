@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { sizeCSS, colorCSS } from "../../../../components/style";
+import theme from "../../../../styles/theme";
 
 const S = {};
 
@@ -326,9 +328,120 @@ S.EmptyStateWrapper = styled.div`
 `;
 
 S.EmptyTitle = styled.h3`
-  font-size: 20px;
-  font-weight: 700;
-  color: #64748B;
+  ${sizeCSS['h3Bold']}
+  color: ${colorCSS['faillog-black']};
+  margin-bottom: 20px;
+  line-height: 1.5;
+  strong, span {
+    background: ${theme.GRADIENT.blue};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+`;
+
+S.EmptySubText = styled.p`
+  ${sizeCSS['h4Regular']}
+  color: ${colorCSS['faillog_gray10']};
+  margin-bottom: 40px;
+  line-height: 1.6;
+`;
+
+S.StartButton = styled.button`
+  padding: 12px 40px;
+  background: ${theme.GRADIENT.blue};
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover { opacity: 0.9; }
+`;
+
+// ==========================================
+// ── 4. 좋아요 카드 콘텐츠 (피그마 h7-regular / h9-regular 규격) ──
+// ==========================================
+S.LikesCardContent = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+
+  .ContentGroup {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    pointer-events: none;
+    * { pointer-events: auto; }
+  }
+
+  h4 {
+    ${sizeCSS["h7-regular"]}
+    margin: 0 0 12px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .AuthorArea {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: auto;
+
+    .ProfileIcon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    span { ${sizeCSS["h9-regular"]} }
+  }
+
+  .CardMainImage {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    z-index: 1;
+    width: 110px;
+    height: 110px;
+    img { width: 100%; height: 100%; object-fit: contain; }
+  }
+
+  .CardFooter {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .TimeText { ${sizeCSS["h9-regular"]} }
+
+    .LikeArea {
+      position: relative;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+    }
+  }
+`;
+
+// ==========================================
+// ── 5. 검색 래퍼 ──
+// ==========================================
+S.SearchCenterWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 32px;
 `;
 
 export default S;
