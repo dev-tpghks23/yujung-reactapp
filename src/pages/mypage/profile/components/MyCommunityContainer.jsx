@@ -9,11 +9,16 @@ import PagenationComponent from "../../../../components/commons/PagenationCompon
 import PostControlBarComponent from "../../commons/ControlBarComponent";
 import PostGridSectionComponent from "./PostGridSectionComponent";
 import { DUMMY_COMMUNITY_POSTS } from '../../data/dummyData';
+import PopupComponent from '../../../../components/commons/PopupComponent';
 
 const PAGE_SIZE = 9;
 
 const MyCommunityContainer = () => {
   const [allPosts, setAllPosts] = useState(DUMMY_COMMUNITY_POSTS);
+  const [popup, setPopup] = useState(null);
+  const closePopup = () => setPopup(null);
+  const showAlert = (message) => setPopup({ message, onConfirm: closePopup });
+  const showConfirm = (message, onConfirm) => setPopup({ message, onConfirm, onCancel: closePopup });
   const [selectedIds, setSelectedIds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchOption, setSearchOption] = useState("제목");
@@ -77,13 +82,13 @@ const MyCommunityContainer = () => {
   };
 
   const handleDelete = () => {
-    if (selectedIds.length === 0) return alert("삭제할 게시글을 선택해주세요.");
-    
-    if (window.confirm(`${selectedIds.length}개의 게시글을 삭제하시겠습니까?`)) {
-      const nextPosts = allPosts.filter((post) => !selectedIds.includes(post.id));
-      setAllPosts(nextPosts);
+    if (selectedIds.length === 0) return;
+    showConfirm('게시글을 삭제 하시겠습니까?', () => {
+      setAllPosts((prev) => prev.filter((post) => !selectedIds.includes(post.id)));
       setSelectedIds([]);
-    }
+      closePopup();
+      showAlert('게시글이 삭제되었습니다.');
+    });
   };
 
   const handlePageChange = (page) => setCurrentPage(page);
@@ -96,6 +101,13 @@ const MyCommunityContainer = () => {
     currentPagePosts.every((post) => selectedIds.includes(post.id));
 
   return (
+    <>
+    <PopupComponent
+      isOpen={!!popup}
+      message={popup?.message}
+      onConfirm={popup?.onConfirm}
+      onCancel={popup?.onCancel}
+    />
     <S.CommunityContainer>
       <S.HeaderSection style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
@@ -170,6 +182,7 @@ const MyCommunityContainer = () => {
         />
       )}
     </S.CommunityContainer>
+    </>
   );
 };
 

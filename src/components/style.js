@@ -174,6 +174,13 @@ export const colorCSS = {
   "faillog-sector-gray" : "#F8F9FA"
 }
 
+export const gradientText = `
+    background: linear-gradient(90deg, #027df0, #ab47ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+`;
+
 export const boxShadow = {
   "boxBasic" : css`
     box-shadow: -10px 25px 30px 0px rgba(0, 0, 0, 0.07);

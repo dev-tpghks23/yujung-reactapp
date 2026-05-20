@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { sizeCSS, colorCSS } from "../../../../../components/style";
+import { sizeCSS, colorCSS, gradientText } from "../../../../../components/style";
 import theme from "../../../../../styles/theme";
 
 const S = {};
@@ -15,10 +15,7 @@ S.DraftSection = styled.section`
     margin-bottom: 30px;
     color: ${colorCSS["faillog-black"]};
     span {
-      background: ${theme.GRADIENT.blue};
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      ${gradientText}
     }
   }
 `;

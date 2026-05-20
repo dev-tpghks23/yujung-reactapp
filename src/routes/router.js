@@ -20,6 +20,7 @@ import JoinContainer from "../pages/account/join/JoinContainer";
 import LoginContainer from "../pages/account/login/LoginContainer";
 import ResetPassWordContainer from "../pages/account/resetpassword/ResetPassWordContainer";
 import FindIdContainer from "../pages/account/findid/FindIdContainer";
+import DeleteAccountContainer from "../pages/account/delete/DeleteAccountContainer";
 import MyProfileContainer from "../pages/mypage/profile/MyProfileContainer";
 import MyGuestbookContainer from "../pages/mypage/guestbook/MyGuestbookContainer";
 import MyLikesContainer from "../pages/mypage/likes/MyLikesContainer";
@@ -132,6 +133,10 @@ const router = createBrowserRouter([
           {
             path: "find-id",
             element: <FindIdContainer />
+          },
+          {
+            path: "delete",
+            element: <DeleteAccountContainer />
           }
         ]
       },

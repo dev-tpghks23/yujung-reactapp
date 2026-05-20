@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { sizeCSS, colorCSS } from "../../../../components/style";
+import { sizeCSS, colorCSS, gradientText } from "../../../../components/style";
 import theme from "../../../../styles/theme";
 
 const S = {};
@@ -333,10 +333,7 @@ S.EmptyTitle = styled.h3`
   margin-bottom: 20px;
   line-height: 1.5;
   strong, span {
-    background: ${theme.GRADIENT.blue};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    ${gradientText}
   }
 `;
 
@@ -349,14 +346,18 @@ S.EmptySubText = styled.p`
 
 S.StartButton = styled.button`
   padding: 12px 40px;
-  background: ${theme.GRADIENT.blue};
-  color: #fff;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #027df0, #ab47ff);
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  transition: background-position 0.6s ease;
+  color: white;
+  ${sizeCSS['h8-bold']}
   border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
   cursor: pointer;
-  &:hover { opacity: 0.9; }
+  box-shadow: -10px 25px 30px 0px rgba(0, 0, 0, 0.07);
+
+  &:hover { background-position: 100% 50%; }
 `;
 
 // ==========================================

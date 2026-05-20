@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { colorCSS, sizeCSS } from '../../../../components/style';
+import { colorCSS, sizeCSS, gradientText } from '../../../../components/style';
 import theme from '../../../../styles/theme';
 
 const S = {};
@@ -24,10 +24,7 @@ S.GuestbookHeader = styled.div`
     color: ${colorCSS['faillog-black']};
     margin: 0 0 10px 0;
     span {
-      background: ${theme.GRADIENT.blue};
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      ${gradientText}
     }
   }
 
@@ -401,10 +398,7 @@ S.EmptyState = styled.div`
     color: ${colorCSS['faillog-black']};
     margin: 0 0 20px;
     span {
-      background: ${theme.GRADIENT.blue};
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      ${gradientText}
     }
   }
 
@@ -416,14 +410,18 @@ S.EmptyState = styled.div`
   }
 
   button {
-    border: none;
-    background: ${theme.GRADIENT.blue};
+    padding: 12px 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #027df0, #ab47ff);
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+    transition: background-position 0.6s ease;
     color: ${colorCSS['faillog_white']};
     ${sizeCSS['h8-bold']}
-    border-radius: 8px;
-    padding: 12px 40px;
+    border: none;
     cursor: pointer;
-    &:hover { opacity: 0.88; }
+    box-shadow: -10px 25px 30px 0px rgba(0, 0, 0, 0.07);
+    &:hover { background-position: 100% 50%; }
   }
 `;
 
