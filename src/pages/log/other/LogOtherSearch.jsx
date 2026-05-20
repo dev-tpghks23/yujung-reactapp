@@ -7,10 +7,8 @@ import DownIcon from './otherLog_icon/down.svg';
 const CATEGORIES = ['전체', '공부/취업', '사업/창업', '인간관계', '건강/루틴', '기타'];
 const SORT_OPTIONS = ['최신순', '좋아요순', '조회순'];
 
-const LogOtherSearch = () => {
-    const [query, setQuery] = useState('');
-    const [selected, setSelected] = useState('전체');
-    const [sort, setSort] = useState('최신순');
+const LogOtherSearch = ({ keyword, setKeyword, category, setCategory, sort, setSort }) => {
+    const [query, setQuery] = useState('');  // 입력값 (임시)
     const [sortOpen, setSortOpen] = useState(false);
     const sortRef = useRef(null);
 
@@ -24,10 +22,21 @@ const LogOtherSearch = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    // 검색 버튼 클릭
+    const handleSearch = () => {
+        setKeyword(query);
+    };
+
+    // 엔터키 검색
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            setKeyword(query);
+        }
+    };
+
     return (
         <S.Wrapper>
             <S.Inner>
-                {/* 검색창 */}
                 <S.SearchBoxWrap>
                     <S.SearchBox>
                         <S.SearchIcon src={GeminiIcon} alt="search" />
@@ -35,21 +44,21 @@ const LogOtherSearch = () => {
                             placeholder="어떤 페일로그를 찾고 계세요?"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
+                            onKeyDown={handleKeyDown}
                         />
-                        <S.SearchBtn>
+                        <S.SearchBtn onClick={handleSearch}>
                             <S.ArrowIcon src={ArrowUpIcon} alt="submit" />
                         </S.SearchBtn>
                     </S.SearchBox>
                 </S.SearchBoxWrap>
 
-                {/* 카테고리 버튼 + 정렬 드롭다운 */}
                 <S.CategoryRow>
                     <S.CategoryList>
                         {CATEGORIES.map((cat) => (
                             <S.CategoryBtn
                                 key={cat}
-                                $active={selected === cat}
-                                onClick={() => setSelected(cat)}
+                                $active={category === cat}
+                                onClick={() => setCategory(cat)}
                             >
                                 {cat}
                             </S.CategoryBtn>
