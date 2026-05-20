@@ -12,6 +12,9 @@
 .idea/**/dictionaries
 .idea/**/shelf
 .claude
+.vscode
+.idea
+.env
 
 # AWS User-specific
 .idea/**/aws.xml
@@ -308,8 +311,4 @@ sketch
 # and uncomment the following lines
 # .pnp.*
 
-<<<<<<< HEAD
 # End of https://www.toptal.com/developers/gitignore/api/intellij,visualstudiocode,yarn,node,react
-=======
-# End of https://www.toptal.com/developers/gitignore/api/intellij,visualstudiocode,yarn,node,react
->>>>>>> f9082a6a7f672d0b802c06e4f9900eda4f2a28b0
