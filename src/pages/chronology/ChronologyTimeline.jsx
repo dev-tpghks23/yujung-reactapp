@@ -12,10 +12,32 @@ const ChronologyTimeline = ({
   onReorderTimeline,
   onRemoveTimeline,
   onAddTimeline,
+  onUpdateImage,
 }) => {
   const [showVisionDropdown, setShowVisionDropdown] = useState(false);
   const [showProjectToggle, setShowProjectToggle] = useState(false);
   const [carouselIndexes, setCarouselIndexes] = useState({});
+
+  const fileInputRef = useRef(null);
+  const pendingEdit = useRef(null); // { itemId, imgIndex }
+
+  const handleImageClick = (e, itemId, imgIndex) => {
+    e.stopPropagation();
+    pendingEdit.current = { itemId, imgIndex };
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file || !pendingEdit.current) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      onUpdateImage(pendingEdit.current.itemId, pendingEdit.current.imgIndex, ev.target.result);
+      pendingEdit.current = null;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
 
   // drag state
   const dragIndex = useRef(null);
@@ -151,10 +173,17 @@ const ChronologyTimeline = ({
                       <S.TimelineCard>
                         <S.CarouselWrapper>
                           {item.images && item.images.length > 0 ? (
-                            <S.CarouselImg
-                              src={item.images[getCarouselIndex(item.id)]}
-                              alt="timeline"
-                            />
+                            <S.ImgClickArea
+                              onClick={(e) => handleImageClick(e, item.id, getCarouselIndex(item.id))}
+                            >
+                              <S.CarouselImg
+                                src={item.images[getCarouselIndex(item.id)]}
+                                alt="timeline"
+                              />
+                              <S.ImgOverlay>
+                                <S.ImgOverlayText>클릭하여 사진 변경</S.ImgOverlayText>
+                              </S.ImgOverlay>
+                            </S.ImgClickArea>
                           ) : null}
                           {item.images && item.images.length > 1 && (
                             <>
@@ -207,6 +236,14 @@ const ChronologyTimeline = ({
       </S.AddSection>
 
       <S.AnalysisButton onClick={onStartAnalysis}>성과랭크 분석하기</S.AnalysisButton>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
     </S.Wrapper>
   );
 };

@@ -126,7 +126,7 @@ S.TimelineSection = styled.div`
   flex-direction: column;
   gap: 0;
   position: relative;
-  max-width: 800px;
+  max-width: 920px;
   margin: 0 auto;
 
   &::before {
@@ -204,7 +204,7 @@ S.CardCol = styled.div`
   width: 460px;
   flex-shrink: 0;
   padding-left: 20px;
-  margin-left: ${({ $reverse }) => $reverse ? '160px' : '0'};
+  margin-left: ${({ $reverse }) => $reverse ? '320px' : '0'};
 `;
 
 S.TimelineCard = styled.div`
@@ -215,6 +215,33 @@ S.TimelineCard = styled.div`
 
 S.CarouselWrapper = styled.div`
   position: relative;
+`;
+
+S.ImgClickArea = styled.div`
+  position: relative;
+  cursor: pointer;
+
+  &:hover > div {
+    opacity: 1;
+  }
+`;
+
+S.ImgOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+`;
+
+S.ImgOverlayText = styled.span`
+  ${h8Bold}
+  color: #ffffff;
+  letter-spacing: 0.3px;
 `;
 
 S.CarouselImg = styled.img`

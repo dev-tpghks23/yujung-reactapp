@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import useProjectStore from '../../store/projectStore';
 
@@ -83,6 +83,25 @@ const ChronologyMainContainer = () => {
 
   const [selectedProject, setSelectedProject] = useState(MOCK_PROJECTS[0]);
   const [timeline, setTimeline] = useState(MOCK_TIMELINE);
+  const [analysis, setAnalysis] = useState(MOCK_ANALYSIS);
+
+  useEffect(() => {
+    const fetchAnalysis = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:10000/api/private/chronology/analysis/${MOCK_VISION.id}`,
+          { credentials: 'include' }
+        );
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success) setAnalysis(json.data);
+        }
+      } catch (e) {
+        // 서버 연결 실패 시 mock 데이터 유지
+      }
+    };
+    fetchAnalysis();
+  }, []);
 
   const onReorderTimeline = (fromIndex, toIndex) => {
     setTimeline((prev) => {
@@ -95,6 +114,17 @@ const ChronologyMainContainer = () => {
 
   const onRemoveTimeline = (id) => {
     setTimeline((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const onUpdateImage = (itemId, imgIndex, newUrl) => {
+    setTimeline((prev) =>
+      prev.map((item) => {
+        if (item.id !== itemId) return item;
+        const images = [...item.images];
+        images[imgIndex] = newUrl;
+        return { ...item, images };
+      })
+    );
   };
 
   const onAddTimeline = (project) => {
@@ -121,12 +151,13 @@ const ChronologyMainContainer = () => {
       projects: MOCK_PROJECTS,
       addProjects,
       timeline,
-      analysis: MOCK_ANALYSIS,
+      analysis,
       selectedProject,
       onSelectProject: setSelectedProject,
       onReorderTimeline,
       onRemoveTimeline,
       onAddTimeline,
+      onUpdateImage,
     }} />
   );
 };
