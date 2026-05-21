@@ -13,21 +13,65 @@ const STANINE = [
   { stanine: 9, percent: 4,  percentile: 100 },
 ];
 
-const BellCurvePath = () => {
-  const width = 540;
-  const height = 120;
-  const points = [];
-  for (let x = 0; x <= width; x += 2) {
-    const z = ((x / width) * 6) - 3;
-    const y = Math.exp(-0.5 * z * z);
-    points.push(`${x},${height - y * height * 0.9}`);
+const BELL_W = 540;
+const BELL_H = 120;
+const PERCENTILE_BOUNDS = [0, 4, 11, 23, 40, 60, 77, 89, 96, 100];
+const SECTION_W = BELL_W / 9;
+
+const getArrowX = (topPercent) => {
+  const fromBottom = Math.max(0, Math.min(100, 100 - topPercent));
+  for (let i = 1; i < PERCENTILE_BOUNDS.length; i++) {
+    if (fromBottom <= PERCENTILE_BOUNDS[i]) {
+      const ratio = (fromBottom - PERCENTILE_BOUNDS[i - 1]) / (PERCENTILE_BOUNDS[i] - PERCENTILE_BOUNDS[i - 1]);
+      return (i - 1 + ratio) * SECTION_W;
+    }
   }
+  return BELL_W;
+};
+
+const getBellY = (x) => {
+  const z = ((x / BELL_W) * 6) - 3;
+  return BELL_H - Math.exp(-0.5 * z * z) * BELL_H * 0.9;
+};
+
+const BellCurvePath = ({ topPercent }) => {
+  const points = [];
+  for (let x = 0; x <= BELL_W; x += 2) {
+    points.push(`${x},${getBellY(x)}`);
+  }
+
+  const ax = getArrowX(topPercent);
+  const ay = getBellY(ax);
+  const arrowTipY = ay - 6;
+  const labelY = arrowTipY - 22;
+
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="100%">
+    <svg viewBox={`0 0 ${BELL_W} ${BELL_H}`} width="100%" height="100%" overflow="visible">
       <polyline points={points.join(' ')} fill="none" stroke="#333" strokeWidth="2" />
-      {[72, 144, 216, 288, 360, 432, 504].map((x, i) => (
-        <line key={i} x1={x} y1={0} x2={x} y2={height} stroke="#888" strokeWidth="1" strokeDasharray="3,3" />
+      {[60, 120, 180, 240, 300, 360, 420, 480].map((x, i) => (
+        <line key={i} x1={x} y1={0} x2={x} y2={BELL_H} stroke="#ccc" strokeWidth="1" strokeDasharray="3,3" />
       ))}
+
+      {/* 위치 표시 세로선 */}
+      <line x1={ax} y1={arrowTipY} x2={ax} y2={BELL_H} stroke="#AB47FF" strokeWidth="1.5" strokeDasharray="4,3" />
+
+      {/* 화살표 (아래 방향 삼각형) */}
+      <polygon
+        points={`${ax},${arrowTipY} ${ax - 7},${arrowTipY - 12} ${ax + 7},${arrowTipY - 12}`}
+        fill="#AB47FF"
+      />
+
+      {/* 상위 N% 라벨 */}
+      <text
+        x={ax}
+        y={labelY}
+        textAnchor="middle"
+        fontSize="11"
+        fontWeight="700"
+        fill="#AB47FF"
+      >
+        상위 {topPercent}%
+      </text>
     </svg>
   );
 };
@@ -54,7 +98,7 @@ const ChronologyAnalysisResult = ({ vision, analysis, onBack }) => {
       </S.RankSubtitle>
 
       <S.BellCurveBox>
-        <BellCurvePath />
+        <BellCurvePath topPercent={analysis.percentile} />
         <S.StanineTable>
           <tbody>
             <S.StanineRow>

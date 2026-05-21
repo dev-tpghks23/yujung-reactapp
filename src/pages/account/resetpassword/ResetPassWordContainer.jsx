@@ -46,7 +46,8 @@ const ResetPassWordContainer = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberEmail: email, purpose: 'FIND_PW' }),
       });
-      if (!res.ok) throw new Error('인증코드 발송에 실패했습니다.');
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error('인증코드 발송에 실패했습니다.');
       setCodeSent(true);
       startTimer();
     } catch (err) {

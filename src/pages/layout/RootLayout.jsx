@@ -1,9 +1,24 @@
+import { useEffect } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 import './RootLayout.css';
 
 const RootLayout = () => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, setUser, setIsAuthenticated } = useAuthStore();
+
+  useEffect(() => {
+    fetch('http://localhost:10000/private/member/me', { credentials: 'include' })
+      .then((res) => res.ok ? res.json() : null)
+      .then((json) => {
+        if (json?.success && json?.data) {
+          setUser(json.data);
+          setIsAuthenticated(true);
+        } else if (!isAuthenticated) {
+          setIsAuthenticated(false);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <div>

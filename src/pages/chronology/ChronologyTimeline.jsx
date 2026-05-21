@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import S from './styles/ChronologyTimelineStyle';
 
+
 const ChronologyTimeline = ({
   vision,
   projects,
@@ -13,15 +14,24 @@ const ChronologyTimeline = ({
   onRemoveTimeline,
   onAddTimeline,
   onUpdateImage,
+  onAddAllTimeline,
 }) => {
+  const [isEditMode, setIsEditMode] = useState(false);
   const [showVisionDropdown, setShowVisionDropdown] = useState(false);
   const [showProjectToggle, setShowProjectToggle] = useState(false);
   const [carouselIndexes, setCarouselIndexes] = useState({});
-
   const fileInputRef = useRef(null);
-  const pendingEdit = useRef(null); // { itemId, imgIndex }
+  const pendingEdit = useRef(null);
+  const dragIndex = useRef(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
+  const [draggingId, setDraggingId] = useState(null);
+
+  const handleToggleEditMode = () => {
+    setIsEditMode((prev) => !prev);
+  };
 
   const handleImageClick = (e, itemId, imgIndex) => {
+    if (!isEditMode) return;
     e.stopPropagation();
     pendingEdit.current = { itemId, imgIndex };
     fileInputRef.current.click();
@@ -38,12 +48,6 @@ const ChronologyTimeline = ({
     reader.readAsDataURL(file);
     e.target.value = '';
   };
-
-  // drag state
-  const dragIndex = useRef(null);
-  const [dragOverIndex, setDragOverIndex] = useState(null);
-  const [draggingId, setDraggingId] = useState(null);
-
 
   const getCarouselIndex = (id) => carouselIndexes[id] ?? 0;
 
@@ -72,7 +76,6 @@ const ChronologyTimeline = ({
   const allItems = groups.flatMap((g) => g.items);
   const indexMap = new Map(allItems.map((item, i) => [item.id, i]));
 
-  // drag handlers
   const handleDragStart = (e, flatIndex, id) => {
     dragIndex.current = flatIndex;
     setDraggingId(id);
@@ -101,7 +104,6 @@ const ChronologyTimeline = ({
     setDraggingId(null);
   };
 
-
   return (
     <S.Wrapper>
       <S.Header>
@@ -109,6 +111,14 @@ const ChronologyTimeline = ({
           <S.PageTitle>TIME LINE</S.PageTitle>
           <S.PageSubtitle>목표에 도달하기까지 실패와 성장의 흐름을 한눈에 확인하세요.</S.PageSubtitle>
         </S.HeaderLeft>
+        <S.HeaderBtnGroup>
+          <S.EditModeBtn onClick={() => onAddAllTimeline(addProjects ?? [])}>
+            일괄등록
+          </S.EditModeBtn>
+          <S.EditModeBtn $active={isEditMode} onClick={handleToggleEditMode}>
+            {isEditMode ? '완료' : '수정하기'}
+          </S.EditModeBtn>
+        </S.HeaderBtnGroup>
       </S.Header>
 
       <S.VisionWrapper>
@@ -154,13 +164,14 @@ const ChronologyTimeline = ({
                 return (
                   <S.TimelineRow
                     key={item.id}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, flatIndex, item.id)}
-                    onDragOver={(e) => handleDragOver(e, flatIndex)}
-                    onDrop={(e) => handleDrop(e, flatIndex)}
-                    onDragEnd={handleDragEnd}
+                    draggable={isEditMode}
+                    onDragStart={isEditMode ? (e) => handleDragStart(e, flatIndex, item.id) : undefined}
+                    onDragOver={isEditMode ? (e) => handleDragOver(e, flatIndex) : undefined}
+                    onDrop={isEditMode ? (e) => handleDrop(e, flatIndex) : undefined}
+                    onDragEnd={isEditMode ? handleDragEnd : undefined}
                     $isDragging={draggingId === item.id}
                     $isDragOver={dragOverIndex === flatIndex && draggingId !== item.id}
+                    $editMode={isEditMode}
                   >
                     <S.DateCol>
                       {idx === 0 && <S.YearText>{item.year}</S.YearText>}
@@ -175,14 +186,17 @@ const ChronologyTimeline = ({
                           {item.images && item.images.length > 0 ? (
                             <S.ImgClickArea
                               onClick={(e) => handleImageClick(e, item.id, getCarouselIndex(item.id))}
+                              $editMode={isEditMode}
                             >
                               <S.CarouselImg
                                 src={item.images[getCarouselIndex(item.id)]}
                                 alt="timeline"
                               />
-                              <S.ImgOverlay>
-                                <S.ImgOverlayText>클릭하여 사진 변경</S.ImgOverlayText>
-                              </S.ImgOverlay>
+                              {isEditMode && (
+                                <S.ImgOverlay>
+                                  <S.ImgOverlayText>클릭하여 사진 변경</S.ImgOverlayText>
+                                </S.ImgOverlay>
+                              )}
                             </S.ImgClickArea>
                           ) : null}
                           {item.images && item.images.length > 1 && (
@@ -191,8 +205,13 @@ const ChronologyTimeline = ({
                               <S.CarouselBtn onClick={(e) => { e.stopPropagation(); moveCarousel(item.id, 1, item.images.length); }}>›</S.CarouselBtn>
                             </>
                           )}
-                          <S.CloseBtn onClick={(e) => { e.stopPropagation(); onRemoveTimeline(item.id); }}>×</S.CloseBtn>
+                          {isEditMode && (
+                            <S.CardBtnGroup>
+                              <S.CloseBtn onClick={(e) => { e.stopPropagation(); onRemoveTimeline(item.id); }}>×</S.CloseBtn>
+                            </S.CardBtnGroup>
+                          )}
                         </S.CarouselWrapper>
+
                         <S.CardBody>
                           <S.CardDesc>{item.description}</S.CardDesc>
                           <S.BulletGrid>
