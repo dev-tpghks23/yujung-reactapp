@@ -10,78 +10,13 @@ import useAuthStore from '../../../store/authStore';
 import GuestbookInputComponent from './components/GuestbookInputComponent';
 import GuestbookCommentItemComponent from './components/GuestbookCommentItemComponent';
 
-const M = 60 * 1000;
-const H = 60 * M;
-
-const initialComments = [
-  {
-    id: 1,
-    author: '해맑이',
-    title: '정말 공감됩니다',
-    content: '진짜 공감됩니다. 저도 집에서는 잘 되는데 시험장만 가면 아는 것도 막히더라고요.',
-    createdAt: new Date(Date.now() - 3 * M),
-    likes: 3,
-    liked: false,
-    replies: [
-      {
-        id: 11,
-        author: '해맑이',
-        content: '저도 완전히 같았어요. 환경 적응이 생각보다 훨씬 중요하더라고요.',
-        createdAt: new Date(Date.now() - 3 * M),
-        likes: 0,
-        liked: false,
-      },
-    ],
-  },
-  {
-    id: 2,
-    author: '페일러',
-    title: '다음 줄이 언제 넘어가나 했어요',
-    content: '그리고 댓글에는 글자가 여기까지 커집니다. 어디까지 커지는지 확인해본 결과 줄을 줄 줄 알았는데 너무 넓은 범위까지 갑니다.',
-    createdAt: new Date(Date.now() - 10 * M),
-    likes: 1,
-    liked: false,
-    replies: [],
-  },
-  {
-    id: 3,
-    author: '소담',
-    title: '응원합니다',
-    content: '항상 응원하고 있어요. 다음 번에는 더 좋은 결과가 있기를 바랍니다.',
-    createdAt: new Date(Date.now() - 1 * H),
-    likes: 2,
-    liked: false,
-    replies: [],
-  },
-  {
-    id: 4,
-    author: '나무',
-    title: '다음 도전도 화이팅',
-    content: '글 잘 읽었습니다. 다음 도전도 화이팅입니다!',
-    createdAt: new Date(Date.now() - 2 * H),
-    likes: 0,
-    liked: false,
-    replies: [],
-  },
-  {
-    id: 5,
-    author: '봄날',
-    title: '공부하다 힘들 때 읽기 좋아요',
-    content: '이런 글이 있어서 다시 마음을 다잡게 되네요. 감사합니다.',
-    createdAt: new Date(Date.now() - 5 * H),
-    likes: 4,
-    liked: false,
-    replies: [],
-  },
-];
-
 const MyGuestbookContainer = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { mainContent, quickMenus } = getHeroContent(pathname);
   const currentUser = useAuthStore((state) => state.user?.nickname || state.user?.name || '익명');
 
-  const [comments, setComments] = useState(initialComments);
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [replyTextMap, setReplyTextMap] = useState({});
   const [replyOpenId, setReplyOpenId] = useState(null);

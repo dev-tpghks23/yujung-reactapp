@@ -12,27 +12,6 @@ import AccountDataComponent from './components/AccountDataComponent';
 import MyCommunityContainer from './components/MyCommunityContainer';
 import HeroRotationComponent from '../heroSection/HeroRotationComponents';
 import { getHeroContent } from '../heroSection/HeroData';
-import { DUMMY_COMMUNITY_POSTS, DUMMY_FAIL_LOGS as DUMMY_FAIL_LOGS_DATA } from '../data/dummyData';
-
-const DUMMY_STATS = {
-  communityCount: DUMMY_COMMUNITY_POSTS.length,
-  logCount: DUMMY_FAIL_LOGS_DATA.length,
-  todayVisitors: 17,
-  loginStreak: 5,
-};
-
-const DUMMY_FAIL_LOGS = [
-  { id: 1, factorType: 'external' },
-  { id: 2, factorType: 'external' },
-  { id: 3, factorType: 'external' },
-  { id: 4, factorType: 'internal' },
-  { id: 5, factorType: 'internal' },
-  { id: 6, factorType: 'external' },
-  { id: 7, factorType: 'internal' },
-  { id: 8, factorType: 'external' },
-  { id: 9, factorType: 'external' },
-  { id: 10, factorType: 'internal' },
-];
 
 const MyProfileContainer = () => {
   const navigate = useNavigate();
@@ -40,13 +19,22 @@ const MyProfileContainer = () => {
   const { mainContent, quickMenus } = getHeroContent(pathname);
 
   const [memberInfo, setMemberInfo] = useState({
-    memberNickname: 'test',
+    memberNickname: '',
     memberProfileImageUrl: null,
-    memberEmail: 'test@example.com',
-    memberName: 'test',
-    memberPhone: '010-1234-5678',
-    memberPhoneVerified: 1,
+    memberEmail: '',
+    memberName: '',
+    memberPhone: '',
+    memberPhoneVerified: 0,
   });
+
+  const [stats, setStats] = useState({
+    communityCount: 0,
+    logCount: 0,
+    todayVisitors: 0,
+    loginStreak: 1,
+  });
+
+  const [chartLogs, setChartLogs] = useState([]);
 
   const handleImageChange = (file) => {
     const reader = new FileReader();
@@ -90,12 +78,12 @@ const MyProfileContainer = () => {
             onNicknameChange={handleNicknameChange}
             onImageChange={handleImageChange}
           />
-          <ProfileChartCard logs={DUMMY_FAIL_LOGS} />
+          <ProfileChartCard logs={chartLogs} />
           <ProfileStreakCard
-            communityCount={DUMMY_STATS.communityCount}
-            logCount={DUMMY_STATS.logCount}
-            todayVisitors={DUMMY_STATS.todayVisitors}
-            loginStreak={DUMMY_STATS.loginStreak}
+            communityCount={stats.communityCount}
+            logCount={stats.logCount}
+            todayVisitors={stats.todayVisitors}
+            loginStreak={stats.loginStreak}
           />
         </InfoS.TopCardGrid>
 

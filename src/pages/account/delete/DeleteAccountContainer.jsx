@@ -37,7 +37,7 @@ const DeleteAccountContainer = () => {
         onCancel={() => setShowPopup(false)}
         confirmText="네"
         cancelText="아니오"
-      />
+      /> 
       <S.Title>회원 탈퇴</S.Title>
       <S.Subtitle>탈퇴 전에 반드시 아래 내용을 확인해 주세요.</S.Subtitle>
 

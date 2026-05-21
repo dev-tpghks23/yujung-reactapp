@@ -17,17 +17,8 @@ const MyLikesContainer = () => {
   const { mainContent, quickMenus } = getHeroContent(pathname);
   const { content, setContent, setPage } = useSearchStore();
 
-  const [recentLogs] = useState([
-    { id: 101, title: '"붉은사막 30시간 해봤다" 게임주 영업익 10% 될 증거', author: "필기마스터", profileImg: null, timeText: "7시간 전" },
-    { id: 102, title: '"붉은사막 30시간 해봤다" 게임주 영업익 10% 될 증거', author: "필기마스터", profileImg: null, timeText: "7시간 전" },
-    { id: 103, title: '"붉은사막 30시간 해봤다" 게임주 영업익 10% 될 증거', author: "필기마스터", profileImg: null, timeText: "7시간 전" },
-  ]);
-
-  const [allLogs, setAllLogs] = useState([
-    { id: 1, title: '"웹프로젝트 32시간 헤맸다" 개발부 영업직 10% 팀 증가', content: '실패를 기록하면서 오히려 더 강해진 팀의 이야기입니다.', createdAt: '2026-05-14', author: '필기마스터', bgColor: '#E7EFFF', isLiked: true, likeCount: 45 },
-    { id: 2, title: '"웹프로젝트 32시간 헤맸다" 개발부 영업직 10% 팀 증가', content: '실패를 기록하면서 오히려 더 강해진 팀의 이야기입니다.', createdAt: '2026-05-13', author: '필기마스터', bgColor: '#D8EEFD', isLiked: true, likeCount: 45 },
-    { id: 3, title: '"웹프로젝트 32시간 헤맸다" 개발부 영업직 10% 팀 증가', content: '실패를 기록하면서 오히려 더 강해진 팀의 이야기입니다.', createdAt: '2026-05-12', author: '필기마스터', bgColor: '#D7E0FF', isLiked: true, likeCount: 45 },
-  ]);
+  const [recentLogs] = useState([]);
+  const [allLogs, setAllLogs] = useState([]);
 
   const [filteredLogs, setFilteredLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

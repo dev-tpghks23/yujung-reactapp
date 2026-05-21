@@ -8,13 +8,12 @@ import LogSearchComponent from "../../commons/LogSearchComponent";
 import PagenationComponent from "../../../../components/commons/PagenationComponent";
 import PostControlBarComponent from "../../commons/ControlBarComponent";
 import PostGridSectionComponent from "./PostGridSectionComponent";
-import { DUMMY_COMMUNITY_POSTS } from '../../data/dummyData';
 import PopupComponent from '../../../../components/commons/PopupComponent';
 
 const PAGE_SIZE = 9;
 
 const MyCommunityContainer = () => {
-  const [allPosts, setAllPosts] = useState(DUMMY_COMMUNITY_POSTS);
+  const [allPosts, setAllPosts] = useState([]);
   const [popup, setPopup] = useState(null);
   const closePopup = () => setPopup(null);
   const showAlert = (message) => setPopup({ message, onConfirm: closePopup });
