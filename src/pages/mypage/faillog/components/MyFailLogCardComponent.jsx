@@ -8,15 +8,7 @@ const MyFailLogCardComponent = ({ filteredLogs, selectedDeleteIds = [] }) => {
   const navigate = useNavigate();
 
   return (
-    <CommS.PostGrid
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '30px',
-        justifyContent: 'flex-start',
-        width: '100%'
-      }}
-    >
+    <CommS.PostGrid>
       {filteredLogs.map((log, index) => {
         const isSelected = selectedDeleteIds.includes(log.id);
 

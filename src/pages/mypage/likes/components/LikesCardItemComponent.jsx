@@ -44,21 +44,10 @@ const LikesCardItemComponent = ({ log = {}, iconSrc, onUnlike }) => {
           <div className="CardFooter">
             <span className="TimeText">{formatRelativeTime(log?.createdAt || log?.date) || '방금 전'}</span>
             <div className="LikeArea">
-              <button
-                onClick={handleLikeClick}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
+              <button onClick={handleLikeClick}>
                 <img
                   src={log?.isLiked ? likeFillIcon : likeIcon}
                   alt={log?.isLiked ? '좋아요 취소' : '좋아요'}
-                  style={{ width: '22px', height: '22px' }}
                 />
               </button>
             </div>

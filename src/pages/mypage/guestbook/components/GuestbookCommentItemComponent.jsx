@@ -6,7 +6,6 @@ import likeFillIcon from '../../../../components/resources/like-fill2.svg';
 import defaultProfile from '../../../../components/resources/default-profile.svg';
 import { formatRelativeTime } from '../../../../utils/relativeTime';
 
-/* 3줄 초과 시 "자세히 보기 / 접기" 토글 텍스트 컴포넌트 */
 const ClampedText = ({ content }) => {
   const [expanded, setExpanded] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
@@ -92,7 +91,6 @@ const GuestbookCommentItemComponent = ({
             <img
               src={comment.profileImg || defaultProfile}
               alt="profile"
-              style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
             />
           </S.Avatar>
           <S.CommentAuthor>{comment.author}</S.CommentAuthor>
@@ -151,7 +149,6 @@ const GuestbookCommentItemComponent = ({
               <img
                 src={comment.liked ? likeFillIcon : likeIcon}
                 alt="좋아요"
-                style={{ width: '16px', height: '16px' }}
               />
               <span>{comment.likes}</span>
             </S.Reaction>
@@ -177,8 +174,7 @@ const GuestbookCommentItemComponent = ({
                       <img
                         src={reply.profileImg || defaultProfile}
                         alt="profile"
-                        style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
-                      />
+                                />
                     </S.ReplyAvatar>
                     <S.CommentAuthor>{reply.author}</S.CommentAuthor>
                     <S.CommentTime>{formatRelativeTime(reply.createdAt)}</S.CommentTime>
@@ -235,8 +231,7 @@ const GuestbookCommentItemComponent = ({
                         <img
                           src={reply.liked ? likeFillIcon : likeIcon}
                           alt="좋아요"
-                          style={{ width: '16px', height: '16px' }}
-                        />
+                                  />
                         <span>{reply.likes}</span>
                       </S.Reaction>
                       <S.ReplyAction type="button" onClick={() => onReplyToggle(comment.id)}>

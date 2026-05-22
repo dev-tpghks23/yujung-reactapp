@@ -430,6 +430,20 @@ S.LikesCardContent = styled.div`
       z-index: 4;
       display: flex;
       align-items: center;
+
+      button {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+      }
+
+      img {
+        width: 22px;
+        height: 22px;
+      }
     }
   }
 `;

@@ -243,6 +243,10 @@ S.ProfileCard = styled.div`
       img { width: 100%; height: 100%; object-fit: cover; }
     }
 
+    input[type="file"] {
+      display: none;
+    }
+
     .image-edit-btn {
       position: absolute;
       bottom: 0;
@@ -257,6 +261,8 @@ S.ProfileCard = styled.div`
       justify-content: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       cursor: pointer;
+
+      img { width: 16px; height: 16px; }
     }
   }
 
@@ -448,6 +454,13 @@ S.AuthorInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 
 S.AuthorIcon = styled.div`
@@ -475,6 +488,11 @@ S.StatItem = styled.span`
   display: flex;
   align-items: center;
   gap: 4px;
+
+  img {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 // --- 기존 스타일들 하단에 이어서 추가 ---
@@ -486,7 +504,11 @@ S.CommunityContainer = styled.div`
 `;
 
 S.HeaderSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   margin-bottom: 26px;
+
   h3 {
     ${sizeCSS["h4Bold"]};
     color: ${colorCSS["faillog-black"]};
@@ -584,6 +606,28 @@ S.StartButton = styled.button`
   box-shadow: -10px 25px 30px 0px rgba(0, 0, 0, 0.07);
 
   &:hover { background-position: 100% 50%; }
+`;
+
+S.PaginationWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+S.ControlBarAbsolute = styled.div`
+  position: absolute;
+  right: 0;
+`;
+
+S.SearchEmptyState = styled.div`
+  text-align: center;
+  padding: 100px 0;
+  color: #64748B;
+  font-size: 15px;
 `;
 
 export default S;

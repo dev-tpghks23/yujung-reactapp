@@ -3,6 +3,7 @@ import { formatRelativeTime } from '../../../utils/relativeTime';
 import S from './styles/MyFailCardItemStyles';
 import likeIcon from '../../../components/resources/like.svg';
 import likeFillIcon from '../../../components/resources/like-fill2.svg';
+import defaultProfile from '../../../components/resources/default-profile.svg';
 
 const MyFailCardItemComponent = ({ log = {}, isSelected = false, iconSrc, onClick }) => {
   if (!log) return null;
@@ -18,9 +19,7 @@ const MyFailCardItemComponent = ({ log = {}, isSelected = false, iconSrc, onClic
           <h4>{log?.title || "제목 없는 페일로그"}</h4>
 
           <div className="AuthorArea">
-            {log?.profileImg && (
-              <img className="ProfileIcon" src={log.profileImg} alt="profile" />
-            )}
+            <img className="ProfileIcon" src={log?.profileImg || defaultProfile} alt="profile" />
             <span>{log?.author || '나의 기록'}</span>
           </div>
 

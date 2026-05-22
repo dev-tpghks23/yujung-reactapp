@@ -162,6 +162,9 @@ S.Avatar = styled.div`
   background: #eef2ff;
   color: #4338ca;
   font-weight: 800;
+  overflow: hidden;
+
+  img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
   font-size: 11px;
   display: inline-flex;
   align-items: center;
@@ -226,6 +229,8 @@ S.Reaction = styled.button`
   color: ${({ liked }) => (liked ? '#ef4444' : colorCSS['faillog_gray8'])};
   cursor: pointer;
   padding: 0;
+
+  img { width: 16px; height: 16px; }
 `;
 
 S.ReplyAction = styled.button`

@@ -5,15 +5,7 @@ import LikesCardItemComponent from './LikesCardItemComponent';
 
 const LikesLogComponent = ({ filteredLogs = [], onUnlikeOne }) => {
   return (
-    <CommS.PostGrid
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '30px',
-        justifyContent: 'flex-start',
-        width: '100%',
-      }}
-    >
+    <CommS.PostGrid>
       {filteredLogs.map((log) => (
         <LikesCardItemComponent
           key={log.id}

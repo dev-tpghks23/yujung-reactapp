@@ -233,4 +233,11 @@ S.MyFailContent = styled.div`
   }
 `;
 
+S.EmptyText = styled.p`
+  color: #94A3B8;
+  font-size: 14px;
+  padding: 40px 0;
+  text-align: center;
+`;
+
 export default S;

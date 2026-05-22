@@ -78,33 +78,16 @@ S.ChartWrapper = styled.div`
   width: 180px;
   height: 180px;
   margin: 0 auto;
-`;
-
-/* conic-gradient 기반 도넛 링 */
-S.DonutRing = styled.div`
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: ${({ $gradient }) => $gradient};
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
 
-  &::after {
-    content: '';
-    position: absolute;
-    width: 116px;
-    height: 116px;
-    border-radius: 50%;
-    background: #ffffff;
-    z-index: 1;
-  }
+  svg { display: block; }
 `;
 
 S.ChartCenter = styled.div`
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 2;
   text-align: center;
   pointer-events: none;
@@ -112,7 +95,7 @@ S.ChartCenter = styled.div`
   strong {
     display: block;
     ${sizeCSS['h5Bold']}
-    color: ${colorCSS['faillog-red']};
+    color: #2563EB;
     line-height: 1.1;
   }
 
@@ -173,14 +156,14 @@ S.LegendItem = styled.div`
 `;
 
 S.StreakHeader = styled.div`
-  text-align: center;
+  text-align: left;
 
   h3 {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 900;
     color: #1E293B;
-    margin: 0 0 12px;
-    line-height: 1.05;
+    margin: 0 0 10px;
+    line-height: 1.2;
   }
 
   p {
@@ -188,27 +171,24 @@ S.StreakHeader = styled.div`
     color: #64748B;
     line-height: 1.6;
     margin: 0;
-    max-width: 280px;
-    margin-left: auto;
-    margin-right: auto;
   }
 `;
 
 S.StreakGrid = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 18px;
-  margin-top: 22px;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 28px;
   width: 100%;
 `;
 
 S.StreakStat = styled.div`
-  background: #E7F0FF;
-  border-radius: 18px;
-  width: 88px;
-  height: 64px;
-  padding: 8px 10px;
+  flex: 1;
+  background: #F1F5F9;
+  border-radius: 14px;
+  padding: 12px 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -217,19 +197,19 @@ S.StreakStat = styled.div`
 
   strong {
     display: block;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 900;
     color: #1E293B;
-    margin-bottom: 4px;
-    line-height: 1.05;
+    margin-bottom: 5px;
+    line-height: 1.1;
   }
 
   span {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     color: #64748B;
-    line-height: 1.3;
-    white-space: normal;
+    line-height: 1.4;
+    word-break: keep-all;
   }
 `;
 

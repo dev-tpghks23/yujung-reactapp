@@ -12,6 +12,7 @@ import AccountDataComponent from './components/AccountDataComponent';
 import MyCommunityContainer from './components/MyCommunityContainer';
 import HeroRotationComponent from '../heroSection/HeroRotationComponents';
 import { getHeroContent } from '../heroSection/HeroData';
+import { DUMMY_FAIL_LOGS } from '../data/dummyData';
 
 const MyProfileContainer = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const MyProfileContainer = () => {
     loginStreak: 1,
   });
 
-  const [chartLogs, setChartLogs] = useState([]);
+  const [chartLogs, setChartLogs] = useState(DUMMY_FAIL_LOGS);
 
   const handleImageChange = (file) => {
     const reader = new FileReader();

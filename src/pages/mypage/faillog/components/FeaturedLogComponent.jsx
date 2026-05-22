@@ -22,7 +22,7 @@ const FeaturedLogComponent = ({ logs = [] }) => {
   const featuredLog = topLogs[0];
 
   return (
-    <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto 60px' }}>
+    <S.FeaturedWrapper>
       <S.SectionHeader>
         <h2>나의 <span>페일로그</span></h2>
       </S.SectionHeader>
@@ -39,20 +39,16 @@ const FeaturedLogComponent = ({ logs = [] }) => {
               <h4>{log.title}</h4>
               <div className="Meta">
                 <div className="User">
-                  <img
-                    src={log.profileImg || defaultProfile}
-                    alt="profile"
-                    style={{ width: '20px', height: '20px', borderRadius: '50%', objectFit: 'cover' }}
-                  />
+                  <img src={log.profileImg || defaultProfile} alt="profile" />
                   {log.author || '나의 기록'}
                 </div>
                 <div className="Stats">
                   <span>
-                    <img src={eyeIcon} alt="조회수" style={{ width: '16px', height: '16px' }} />
+                    <img src={eyeIcon} alt="조회수" />
                     {log.views || 0}
                   </span>
                   <span>
-                    <img src={likeFilledIcon} alt="좋아요" style={{ width: '16px', height: '16px' }} />
+                    <img src={likeFilledIcon} alt="좋아요" />
                     {log.likeCount || log.likes || 0}
                   </span>
                 </div>
@@ -70,17 +66,13 @@ const FeaturedLogComponent = ({ logs = [] }) => {
           <div className="BlackOverlay">
             <p>"{featuredLog.content?.substring(0, 70)}..."</p>
             <div className="AuthorInfo">
-              <img
-                src={featuredLog.profileImg || defaultProfile}
-                alt="profile"
-                style={{ width: '18px', height: '18px', borderRadius: '50%', objectFit: 'cover' }}
-              />
+              <img src={featuredLog.profileImg || defaultProfile} alt="profile" />
               {featuredLog.author || '나의 기록'}
             </div>
           </div>
         </S.FeaturedMainImage>
       </S.FeaturedContainer>
-    </div>
+    </S.FeaturedWrapper>
   );
 };
 

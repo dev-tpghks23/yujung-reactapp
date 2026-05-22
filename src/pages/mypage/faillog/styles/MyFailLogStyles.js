@@ -9,12 +9,15 @@ const S = {};
 // ==========================================
 S.SectionHeader = styled.div`
   margin: 60px 0 30px 0;
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   h2 {
     font-size: 32px;
     font-weight: 900;
     color: #1e293b;
-    
+
     span {
       background: linear-gradient(90deg, #6366f1, #a855f7);
       -webkit-background-clip: text;
@@ -90,6 +93,7 @@ S.FeaturedItem = styled.div`
       font-size: 14px;
       font-weight: 600;
       color: #475569;
+      img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
     }
     .Stats {
       display: flex;
@@ -97,6 +101,7 @@ S.FeaturedItem = styled.div`
       font-size: 13px;
       color: #94a3b8;
       span { display: flex; align-items: center; gap: 4px; }
+      img { width: 16px; height: 16px; }
     }
   }
 `;
@@ -135,6 +140,7 @@ S.FeaturedMainImage = styled.div`
       justify-content: flex-end;
       font-size: 14px;
       font-weight: 500;
+      img { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
     }
   }
 `;
@@ -328,15 +334,12 @@ S.SearchControlBlock = styled.div`
   margin: 0 0 24px 0; /* 🎯 가운데 정렬(auto)을 풀고 왼쪽 정렬로 고정 */
   flex-wrap: wrap;
 
-  /* 🎯 화면이 1200px 이상으로 넓어졌을 때 왼쪽 축을 자연스럽게 맞춰주는 마진 */
-  @media (min-width: 1200px) {
-    margin-left: 60px; /* 하단 카드가 왼쪽에서 떨어져 시작하는 미세 여백만큼만 조절 */
-  }
 `;
 
 S.DropdownWrapper = styled.div`
+  width: 160px;
   flex-shrink: 0;
-  
+
   & > div {
     height: 44px;
     display: flex;
@@ -345,7 +348,7 @@ S.DropdownWrapper = styled.div`
 `;
 
 S.SearchbarWrapper = styled.div`
-  width: 420px;
+  flex: 1;
   height: 44px;
   display: flex;
   align-items: center;
@@ -354,10 +357,81 @@ S.SearchbarWrapper = styled.div`
     height: 44px !important;
     box-sizing: border-box;
   }
+`;
 
-  @media (max-width: 576px) {
-    width: 100%;
+S.FeaturedWrapper = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 60px;
+`;
+
+S.TrashSeparator = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin: 100px auto 40px;
+  border-top: 1px dashed #CBD5E1;
+  padding-top: 60px;
+`;
+
+S.PaginationWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+S.ControlBarAbsolute = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: -10px;
+`;
+
+S.TrashToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
   }
+`;
+
+S.TrashToggleLabel = styled.label`
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748B;
+  cursor: pointer;
+`;
+
+S.TrashEmpty = styled.div`
+  text-align: center;
+  padding: 80px 0;
+  color: #94A3B8;
+
+  p {
+    font-size: 16px;
+    font-weight: 500;
+  }
+`;
+
+S.TrashCardWrapper = styled.div`
+  position: relative;
+`;
+
+S.TrashPaginationWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: ${(props) => (props.$active ? 1 : 0.5)};
+  pointer-events: ${(props) => (props.$active ? 'auto' : 'none')};
 `;
 
 export default S;

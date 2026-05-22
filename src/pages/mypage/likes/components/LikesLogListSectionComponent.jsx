@@ -42,19 +42,14 @@ const LikesLogListSectionComponent = ({
             onUnlikeOne={onUnlikeOne}
           />
 
-          <div style={{
-            width: '100%',
-            marginTop: '40px',
-            display: 'flex',
-            justifyContent: 'center',
-          }}>
+          <LogS.PaginationWrapper>
             <PagenationComponent
               minPage={1}
               maxPage={totalPages}
               page={currentPage}
               onPageChange={handlePageChange}
             />
-          </div>
+          </LogS.PaginationWrapper>
         </>
       )}
     </LogS.LogSection>

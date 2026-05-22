@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { DUMMY_COMMUNITY_POSTS } from "../../data/dummyData";
 import S from "../styles/MyProfileStyle";
 import LogStyles from "../../faillog/styles/MyFailLogStyles";
 import useSearchStore from "../../../../components/useSearchStore";
@@ -13,7 +14,7 @@ import PopupComponent from '../../../../components/commons/PopupComponent';
 const PAGE_SIZE = 9;
 
 const MyCommunityContainer = () => {
-  const [allPosts, setAllPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState(DUMMY_COMMUNITY_POSTS);
   const [popup, setPopup] = useState(null);
   const closePopup = () => setPopup(null);
   const showAlert = (message) => setPopup({ message, onConfirm: closePopup });
@@ -26,12 +27,10 @@ const MyCommunityContainer = () => {
   const { content, setContent, setPage } = useSearchStore();
 
   const filteredPosts = React.useMemo(() => {
-    let posts = allPosts;
-
     const keyword = content?.toLowerCase().trim() ?? "";
-    if (!keyword) return posts;
+    if (!keyword) return allPosts;
 
-    return posts.filter((post) => {
+    return allPosts.filter((post) => {
       switch (searchOption) {
         case "내용": return post.content.toLowerCase().includes(keyword);
         case "제목+내용":
@@ -95,92 +94,83 @@ const MyCommunityContainer = () => {
   const selectedCount = selectedIds.length;
   const totalCountOnPage = currentPagePosts.length;
 
-  const isAllChecked = 
-    totalCountOnPage > 0 && 
+  const isAllChecked =
+    totalCountOnPage > 0 &&
     currentPagePosts.every((post) => selectedIds.includes(post.id));
 
   return (
     <>
-    <PopupComponent
-      isOpen={!!popup}
-      message={popup?.message}
-      onConfirm={popup?.onConfirm}
-      onCancel={popup?.onCancel}
-    />
-    <S.CommunityContainer>
-      <S.HeaderSection style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <div>
-          <h3>내 커뮤니티 게시글 관리</h3>
-          <p>내가 작성한 커뮤니티 게시글을 관리할 수 있습니다.</p>
-        </div>
-      </S.HeaderSection>
+      <PopupComponent
+        isOpen={!!popup}
+        message={popup?.message}
+        onConfirm={popup?.onConfirm}
+        onCancel={popup?.onCancel}
+      />
+      <S.CommunityContainer>
+        <S.HeaderSection>
+          <div>
+            <h3>내 커뮤니티 게시글 관리</h3>
+            <p>내가 작성한 커뮤니티 게시글을 관리할 수 있습니다.</p>
+          </div>
+        </S.HeaderSection>
 
-      {currentPagePosts.length > 0 || content ? (
-        <>
-          <S.SearchCenterWrapper>
-            <LogSearchComponent
-              currentOption={searchOption}
-              onOptionChange={handleOptionChange}
-              onSearchSubmit={handleSearchSubmit}
-              styles={LogStyles}
-            />
-          </S.SearchCenterWrapper>
-          
-          {currentPagePosts.length > 0 ? (
-            <>
-              <PostGridSectionComponent 
-                posts={currentPagePosts}
-                selectedIds={selectedIds}
-                onSelectOne={handleSelectOne}
-                onNavigateOne={handleNavigate}
-                styles={S}
+        {currentPagePosts.length > 0 || content ? (
+          <>
+            <S.SearchCenterWrapper>
+              <LogSearchComponent
+                currentOption={searchOption}
+                onOptionChange={handleOptionChange}
+                onSearchSubmit={handleSearchSubmit}
+                styles={LogStyles}
               />
+            </S.SearchCenterWrapper>
 
-              <div style={{
-                position: 'relative',
-                width: '100%',
-                maxWidth: '1200px',
-                margin: '40px auto 0',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-                <PagenationComponent
-                  minPage={1}
-                  maxPage={totalPages}
-                  page={currentPage}
-                  onPageChange={handlePageChange}
+            {currentPagePosts.length > 0 ? (
+              <>
+                <PostGridSectionComponent
+                  posts={currentPagePosts}
+                  selectedIds={selectedIds}
+                  onSelectOne={handleSelectOne}
+                  onNavigateOne={handleNavigate}
+                  styles={S}
                 />
-                
-                <div style={{ position: 'absolute', right: 0 }}>
-                  <PostControlBarComponent 
-                    isAllChecked={isAllChecked}
-                    onSelectAll={handleSelectAll}
-                    selectedCount={selectedCount}
-                    totalCount={totalCountOnPage}
-                    onDelete={handleDelete}
-                    showRestore={false}
-                    styles={S}
+
+                <S.PaginationWrapper>
+                  <PagenationComponent
+                    minPage={1}
+                    maxPage={totalPages}
+                    page={currentPage}
+                    onPageChange={handlePageChange}
                   />
-                </div>
-              </div>
-            </>
-          ) : (
-            <div style={{ textAlign: "center", padding: "100px 0", color: "#64748B", fontSize: "15px" }}>
-              선택하신 조건에 맞는 게시글이 존재하지 않습니다.
-            </div>
-          )}
-        </>
-      ) : (
-        <EmptyStateComponent
-          title={<>아직 작성한 게시글이 없네요.<br /><strong>페일로그</strong>의 커뮤니티를 이용해볼까요?</>}
-          subText={<>실패를 외면하지 않고 기록할 때,<br />당신의 강력한 성장 데이터가 됩니다.</>}
-          buttonText="시작하기"
-          onButtonClick={() => navigate("/community")}
-          styles={S}
-        />
-      )}
-    </S.CommunityContainer>
+
+                  <S.ControlBarAbsolute>
+                    <PostControlBarComponent
+                      isAllChecked={isAllChecked}
+                      onSelectAll={handleSelectAll}
+                      selectedCount={selectedCount}
+                      totalCount={totalCountOnPage}
+                      onDelete={handleDelete}
+                      showRestore={false}
+                    />
+                  </S.ControlBarAbsolute>
+                </S.PaginationWrapper>
+              </>
+            ) : (
+              <S.SearchEmptyState>
+                선택하신 조건에 맞는 게시글이 존재하지 않습니다.
+              </S.SearchEmptyState>
+            )}
+          </>
+        ) : (
+          <EmptyStateComponent
+            title={<>아직 작성한 게시글이 없네요.<br /><strong>페일로그</strong>의 커뮤니티를 이용해볼까요?</>}
+            subText={<>실패를 외면하지 않고 기록할 때,<br />당신의 강력한 성장 데이터가 됩니다.</>}
+            buttonText="시작하기"
+            onButtonClick={() => navigate("/community")}
+            styles={S}
+          />
+        )}
+      </S.CommunityContainer>
     </>
   );
 };

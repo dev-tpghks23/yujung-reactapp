@@ -12,7 +12,9 @@ import { getHeroContent } from '../heroSection/HeroData';
 import useSearchStore from '../../../components/useSearchStore';
 import EmptyStateComponent from '../commons/EmptyStateComponent';
 import CommS from '../profile/styles/CommunityStyles';
+import FailS from './styles/MyFailLogStyles';
 import PopupComponent from '../../../components/commons/PopupComponent';
+import { DUMMY_FAIL_LOGS, DUMMY_DRAFT_LOGS } from '../data/dummyData';
 
 const MyFailLogsContainer = () => {
   const navigate = useNavigate();
@@ -20,8 +22,7 @@ const MyFailLogsContainer = () => {
   const { mainContent, quickMenus } = getHeroContent(pathname);
   const { content, setContent, setPage } = useSearchStore();
   
-  // 📌 팁: 이 배열을 [] 빈 배열로 비우면 공백 상태가 활성화되고, 데이터가 들어오면 원래 리스트가 뜹니다.
-  const [allLogs, setAllLogs] = useState([]);
+  const [allLogs, setAllLogs] = useState(DUMMY_FAIL_LOGS);
   const [popup, setPopup] = useState(null);
   const closePopup = () => setPopup(null);
   const showAlert = (message) => setPopup({ message, onConfirm: closePopup });
@@ -36,7 +37,7 @@ const MyFailLogsContainer = () => {
   const [isTrashEditMode, setIsTrashEditMode] = useState(false);
   const [selectedTrashIds, setSelectedTrashIds] = useState([]);
 
-  const draftLogs = [];
+  const draftLogs = DUMMY_DRAFT_LOGS;
 
   useEffect(() => {
     let filtered = allLogs;
@@ -131,7 +132,6 @@ const MyFailLogsContainer = () => {
     });
   };
 
-  // 페일로그 데이터 존재 여부 판별
   const hasNoCards = allLogs.length === 0;
 
   return (
@@ -174,14 +174,8 @@ const MyFailLogsContainer = () => {
         </>
       )}
 
-      <div style={{
-        width: '100%', 
-        maxWidth: '1200px', 
-        margin: '100px auto 40px',
-        borderTop: '1px dashed #CBD5E1',
-        paddingTop: '60px'
-      }}>
-        <TrashComponent 
+      <FailS.TrashSeparator>
+        <TrashComponent
           trashedLogs={trashedLogs}
           isTrashEditMode={isTrashEditMode}
           onToggleEditMode={handleToggleTrashEditMode}
@@ -191,7 +185,7 @@ const MyFailLogsContainer = () => {
           onRestoreSelected={handleRestoreSelectedLogs}
           onDeleteForeverSelected={handleDeleteForeverSelectedLogs}
         />
-      </div>
+      </FailS.TrashSeparator>
     </PageS.MainWrapper>
     </>
   );

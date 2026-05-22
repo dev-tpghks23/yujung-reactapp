@@ -7,10 +7,11 @@ const S = {};
 S.CommunitySection = styled.div` padding: 0 20px 50px; border-top: 1px solid #f5f5f5; margin-top: 40px; `;
 
 S.PostGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: flex-start;
+  width: 100%;
 `;
 
 S.CardWrapper = styled.div`

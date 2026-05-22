@@ -43,9 +43,7 @@ const RecentLogsComponent = ({ logs = [] }) => {
           ))}
         </S.RecentGrid>
       ) : (
-        <p style={{ color: '#94A3B8', fontSize: '14px', padding: '40px 0', textAlign: 'center' }}>
-          최근 확인한 페일로그 내역이 없습니다.
-        </p>
+        <S.EmptyText>최근 확인한 페일로그 내역이 없습니다.</S.EmptyText>
       )}
 
     </S.RecentSection>
