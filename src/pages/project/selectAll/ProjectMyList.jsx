@@ -28,7 +28,7 @@ const ProjectCard = ({ project, onClick }) => (
                         {(project.checklists || []).map((checklist) => (
                             <S.Tag key={checklist.id}>
                                 <FolderIcon />
-                                {checklist.checklistTitle}
+                                <span className="text">{checklist.checklistTitle}</span>
                             </S.Tag>
                         ))}
                     </S.TagRow>

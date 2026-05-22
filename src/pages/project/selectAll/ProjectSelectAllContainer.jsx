@@ -15,18 +15,6 @@ import ProjectOtherList from './ProjectOtherList';
 import S from './ProjectSelectAllContainerStyle';
 
 // ─────────────────────────────────────────
-// MOCK DATA (커뮤니티 프로젝트 — 추후 API로 교체)
-// ─────────────────────────────────────────
-const MOCK_COMMUNITY_PROJECTS = [
-    { id: 1, name: '하루 1시간 영어 듣기 훈련', owner: '영어원주민', ownerInitial: '영', ownerColor: theme.PALETTE.third.main, dDay: 'D+45', tags: ['미드 팟캐스트 정복', '자기 전 섀도잉하기'], accentColor: theme.PALETTE.third.main },
-    { id: 2, name: '매일 새벽 5시 기상 프로젝트', owner: '영어원주민', ownerInitial: '영', ownerColor: theme.PALETTE.fifth.main, dDay: 'D+45', tags: ['새벽 기상 스터디 참여', '모닝 스트레칭'], accentColor: theme.PALETTE.fifth.main },
-    { id: 3, name: '오전 6시 기상 + 1시간 공부 루틴', owner: '영어원주민', ownerInitial: '영', ownerColor: theme.PALETTE.yellow, dDay: 'D+45', tags: ['기상 직후 루틴 프로그램', '아침 공부법'], accentColor: theme.PALETTE.yellow },
-    { id: 4, name: '주 5일 운동 + 식단 기록', owner: '영어원주민', ownerInitial: '영', ownerColor: theme.PALETTE.secondary.main, dDay: 'D+45', tags: ['기상 직후 루틴 프로그램', '아침 공부법'], accentColor: theme.PALETTE.secondary.main },
-    { id: 5, name: '한 달에 책 4권 읽기', owner: '영어원주민', ownerInitial: '영', ownerColor: theme.PALETTE.primary.main, dDay: 'D+45', tags: ['주말 도서관 투어', '자투리 시간 독서 습관화'], accentColor: theme.PALETTE.primary.main },
-    { id: 6, name: '매일 밤 10분 영상 루틴', owner: '영어원주민', ownerInitial: '영', ownerColor: theme.PALETTE.fourth.main, dDay: 'D+45', tags: ['수면 환경 최적화 세팅', '영상 100일 챌린지'], accentColor: theme.PALETTE.fourth.main },
-];
-
-// ─────────────────────────────────────────
 // MAIN COMPONENT
 // ─────────────────────────────────────────
 const ProjectSelectAllContainer = () => {
@@ -34,11 +22,11 @@ const ProjectSelectAllContainer = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [myProjects, setMyProjects] = useState([]);
+    const [otherProjects, setOtherProjects] = useState([]); // 추가
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
 
     const ITEMS_PER_VIEW = 6;
-    const communityProjects = [...MOCK_COMMUNITY_PROJECTS, ...MOCK_COMMUNITY_PROJECTS].slice(0, 12);
 
     // ── 내 프로젝트 목록 조회 ──
     const fetchMyProjects = async () => {
@@ -50,8 +38,19 @@ const ProjectSelectAllContainer = () => {
         }
     };
 
+    // ── 다른 사람들의 프로젝트 목록 조회 ── (추가)
+    const fetchOtherProjects = async () => {
+        try {
+            const response = await axios.get('/api/project/others');
+            setOtherProjects(response.data.data || []);
+        } catch (err) {
+            console.error('다른 프로젝트 목록 조회 실패:', err);
+        }
+    };
+
     useEffect(() => {
         fetchMyProjects();
+        fetchOtherProjects(); // 추가
     }, []);
 
     // ── 프로젝트 생성 완료 후 처리 ──
@@ -106,10 +105,10 @@ const ProjectSelectAllContainer = () => {
                 <S.Inner>
                     <ProjectOtherSearch />
                     <ProjectOtherList
-                        projects={communityProjects}
+                        projects={otherProjects}  // MOCK → 실제 데이터로 교체
                         currentPage={currentPage}
                         onPageChange={setCurrentPage}
-                        maxPage={10}
+                        maxPage={Math.ceil(otherProjects.length / 6)}  // 동적으로 변경
                     />
                 </S.Inner>
             </S.CommunitySection>
