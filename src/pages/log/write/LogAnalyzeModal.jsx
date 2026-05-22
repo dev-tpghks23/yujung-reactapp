@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../api/axiosInstance';
 import theme from '../../../styles/theme';
 import closeIcon from './write_icon/close.svg';
 import backIcon from './write_icon/back.svg';
@@ -10,7 +11,7 @@ import styleObjectiveIcon from './write_icon/style_objective.svg';
 import styleColdIcon from './write_icon/style_cold.svg';
 import { S } from './LogAnalyzeModalStyles';
 
-const LogAnalyzeModal = ({ onClose }) => {
+const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
   const navigate = useNavigate();
 
   const ANALYSIS_STYLES = [
@@ -49,48 +50,103 @@ const LogAnalyzeModal = ({ onClose }) => {
   ];
 
   const [step, setStep] = useState(1);
-  const [activeCategory, setActiveCategory] = useState("사업/창업");
+  const [activeCategory, setActiveCategory] = useState(draft?.categoryName || "사업/창업");
   const [selectedLogs, setSelectedLogs] = useState([]);
   const [selectedStyle, setSelectedStyle] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [newLogId, setNewLogId] = useState(null);
 
-  const PAST_LOGS = [
-    { id: 1, category: "사업/창업", title: "B 투자사 미팅 거절", date: "2024.03.15 작성" },
-    { id: 2, category: "사업/창업", title: "A 투자사 미팅 거절", date: "2023.11.02 작성" },
-    { id: 3, category: "사업/창업", title: "C 투자사 미팅 거절", date: "2023.11.02 작성" },
-    { id: 4, category: "공부/취업", title: "정보처리기사 실기 불합격", date: "2023.09.10 작성" },
-    { id: 5, category: "인간관계", title: "팀 프로젝트 갈등", date: "2023.07.01 작성" },
-  ];
+  const [pastLogs, setPastLogs] = useState([]);
+
+  useEffect(() => {
+    const fetchPastLogs = async () => {
+      try {
+        const res = await axiosInstance.get('/api/logs/my-list');
+        if (res.data?.success) {
+          const mappedLogs = res.data.data.map(log => ({
+            id: log.id,
+            category: log.categoryName,
+            title: log.logTitle,
+            date: log.logCreatedAt + ' 작성'
+          }));
+          setPastLogs(mappedLogs);
+        }
+      } catch (err) {
+        console.error("과거 로그 조회 실패:", err);
+      }
+    };
+    fetchPastLogs();
+  }, []);
 
   const CATEGORIES = ["사업/창업", "공부/취업", "인간관계", "건강/루틴", "기타"];
 
-  const filteredLogs = PAST_LOGS.filter(log => log.category === activeCategory);
+  const filteredLogs = pastLogs.filter(log => log.category === activeCategory);
 
   useEffect(() => {
     if (step === 3) {
       setProgress(0);
+
+      // 백엔드(Spring)에 로그 분석 및 저장 요청
+      const saveLog = async () => {
+        if (draft) {
+          try {
+            const payload = {
+              title: draft.logTitle,
+              vision: draft.visionTitle,
+              categoryId: draft.categoryId,
+              category: draft.categoryName,
+              logThumbnailUrl: draft.logThumbnailUrl,
+              content: logContent || draft.logContent,
+              style: selectedStyle,
+              pastLogs: selectedLogs.map(l => l.title) // 예시로 과거 로그 제목만 전송
+            };
+            console.log("===== 분석 요청 payload =====", JSON.stringify(payload, null, 2));
+            const res = await axiosInstance.post('/api/logs/analyze', payload);
+            console.log("===== 분석 응답 =====", res.data);
+            if (res.data?.data) {
+                setNewLogId(res.data.data);
+                setProgress(100);
+                setTimeout(() => setStep(4), 300);
+            }
+            sessionStorage.removeItem('logDraft'); // 저장 성공 시 임시 데이터 삭제
+          } catch (err) {
+            console.error("로그 저장 실패:", err);
+            console.error("에러 응답 데이터:", err.response?.data);
+            console.error("에러 상태 코드:", err.response?.status);
+            alert("서버 연결에 실패했습니다. (AI 분석 서버가 켜져있는지 확인해주세요)");
+            setStep(2); // 무한 로딩 방지 및 이전 단계로 되돌림
+          }
+        }
+      };
+      saveLog();
+
       const interval = setInterval(() => {
         setProgress(prev => {
-          if (prev >= 100) {
+          if (prev >= 90) {
             clearInterval(interval);
-            setTimeout(() => setStep(4), 300);
-            return 100;
+            return 90;
           }
           return prev + 2;
         });
-      }, 40);
+      }, 150); // 약 7초 동안 90% 도달, 이후 API 완료 시 100%
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
   useEffect(() => {
     if (step === 4) {
       const timer = setTimeout(() => {
-        navigate('/logs/result/my/detail');
+        if (newLogId) {
+            navigate(`/logs/result/${newLogId}/detail`);
+        } else {
+            alert("로그 저장에 실패했습니다. 다시 시도해주세요.");
+            onClose();
+        }
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [step, navigate]);
+  }, [step, navigate, newLogId, onClose]);
 
   useEffect(() => {
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
@@ -229,7 +285,12 @@ const LogAnalyzeModal = ({ onClose }) => {
       <S.LoadingTitle>
         입력하신 데이터를 기반으로<br />패턴을 분석하고 있어요
       </S.LoadingTitle>
-      <S.LoadingSub>잠시만 기다려주세요...</S.LoadingSub>
+      <S.LoadingSub>
+        {progress < 30 && "AI 모델에 데이터를 전송하고 있습니다..."}
+        {progress >= 30 && progress < 60 && "로그의 문맥을 파악하고 과거 패턴과 비교 중입니다..."}
+        {progress >= 60 && progress < 85 && "실패 요인과 개선 액션 플랜을 도출하고 있습니다..."}
+        {progress >= 85 && "거의 다 완료되었습니다! (AI 분석은 약 10~15초 소요됩니다)"}
+      </S.LoadingSub>
       <S.ProgressBarWrapper>
         <S.ProgressBar style={{ transform: `scaleX(${progress / 100})` }} />
       </S.ProgressBarWrapper>

@@ -1,4 +1,16 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+const fadeInUp = keyframes`
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
+
 
 export const S = {};
 
@@ -348,6 +360,9 @@ S.FlowStep = styled.div`
     align-items: center;
     text-align: center;
     background-color: ${({ theme }) => theme.PALETTE.white};
+    opacity: 0;
+    animation: ${fadeInUp} 0.5s ease-out forwards;
+    animation-delay: ${({ $delay }) => $delay || 0}s;
 `;
 
 S.StepLabel = styled.div`
@@ -364,6 +379,9 @@ S.StepValue = styled.div`
 S.ArrowDown = styled.div`
     color: ${({ theme }) => theme.GRAYSCALE[4]};
     font-size: 12px;
+    opacity: 0;
+    animation: ${fadeInUp} 0.5s ease-out forwards;
+    animation-delay: ${({ $delay }) => $delay || 0}s;
 `;
 
 S.LogSection = styled.div`

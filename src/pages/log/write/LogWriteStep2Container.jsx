@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../api/axiosInstance';
 import LogAnalyzeModal from './LogAnalyzeModal';
 import writingIcon from './write_icon/writing.svg';
 import { S } from './LogWriteStep2ContainerStyles';
@@ -14,18 +15,69 @@ const LogWriteStep2Container = () => {
   const navigate = useNavigate();
   const [content, setContent] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [draft, setDraft] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Step1에서 저장한 데이터 불러오기
+  useEffect(() => {
+    const saved = sessionStorage.getItem('logDraft');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // 만약 과거 불량 데이터(categoryName이나 categoryId가 없는 상태)라면 Step1으로 쫓아냄
+      if (!parsed.categoryName || !parsed.categoryId) {
+        alert("이전 단계 데이터가 부족합니다. (버그 패치됨)\nStep 1에서 카테고리를 다시 선택해주세요!");
+        navigate('/logs/new/step1');
+        return;
+      }
+      setDraft(parsed);
+      // 내용도 복원 (임시저장용)
+      if (parsed.logContent) setContent(parsed.logContent);
+    } else {
+      // Step1 데이터가 없으면 Step1으로 리다이렉트
+      navigate('/logs/new/step1');
+    }
+  }, [navigate]);
 
   const handlePrev = () => {
     navigate("/logs/new/step1");
   };
 
-  const handleTempSave = () => {
-    alert("임시저장 되었습니다.");
+  // 임시저장 - DRAFT 상태로 백엔드에 저장
+  const handleTempSave = async () => {
+    if (!draft) return;
+    if (!content.trim()) { alert("내용을 입력해주세요."); return; }
+    setIsSaving(true);
+    try {
+      const payload = {
+        logTitle: draft.logTitle,
+        visionTitle: draft.visionTitle,
+        categoryId: draft.categoryId,
+        logThumbnailUrl: draft.logThumbnailUrl,
+        logContent: content,
+        logStatus: "DRAFT",
+        logProgress: 0,
+      };
+      const res = await axiosInstance.post('/api/logs', payload);
+      if (res.data?.success) {
+        // sessionStorage에 내용도 업데이트
+        sessionStorage.setItem('logDraft', JSON.stringify({ ...draft, logContent: content }));
+        alert("임시저장 되었습니다.");
+      }
+    } catch (err) {
+      alert("임시저장에 실패했습니다.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleAnalyze = () => {
+    if (!content.trim()) { alert("로그 내용을 입력해주세요."); return; }
+    // 모달 열기 전 content를 draft에 반영
+    sessionStorage.setItem('logDraft', JSON.stringify({ ...draft, logContent: content }));
     setIsModalOpen(true);
   };
+
+  if (!draft) return null;
 
   return (
     <S.Wrapper>
@@ -52,16 +104,16 @@ const LogWriteStep2Container = () => {
                 <S.WritingIcon $src={writingIcon} />
                 작성 중
               </S.BadgeOrange>
-              <S.BadgeBlue>공부/취업</S.BadgeBlue>
+              <S.BadgeBlue>{draft.categoryName || "카테고리"}</S.BadgeBlue>
             </S.Badges>
             <S.LogTitleRow>
-              <S.LogTitle>빅데이터분석기사 자격증 실기 도전기</S.LogTitle>
-              <S.Date>2026.04.23</S.Date>
+              <S.LogTitle>{draft.logTitle || "로그 제목"}</S.LogTitle>
+              <S.Date>{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace('.', '')}</S.Date>
             </S.LogTitleRow>
           </S.LogHeader>
 
           <S.TextArea
-            placeholder={`목표를 이루기 위해서 지금까지 어떤 일이 있었나요?\n\n예시) 기출문제만 계속 풀면서 패턴을 외우면 될 거라 생각했다. 처음 두 달은 순조로웠고, 정답률도 올라가는 것 같아서 자신감이 생겼다.\n그런데 실제 시험 날, 응용 문제들이 생각보다 많이 나왔고 나는 완전히 막혀버렸다. 아는 개념인데 조금만 비틀면 풀지 못했다.\n기출문제만 계속 풀면서 패턴을 외우면 될 거라 생각했다. 처음 두 달은 순조로웠고, 정답률도 올라가는 것 같아서 자신감이 생겼다.\n그런데 실제 시험 날, 응용 문제들이 생각보다 많이 나왔고 나는 완전히 막혀버렸다. 아는 개념인데 조금만 비틀면 풀지 못했다.\n기출문제만 계속 풀면서 패턴을 외우면 될 거라 생각했다. 처음 두 달은 순조로웠고, 정답률도 올라가는 것 같아서 자신감이 생겼다.\n그런데 실제 시험 날, 응용 문제들이 생각보다 많이 나왔고 나는 완전히 막혀버렸다. 아는 개념인데 조금만 비틀면 풀지 못했다.`}
+            placeholder={`목표를 이루기 위해서 지금까지 어떤 일이 있었나요?\n\n예시) 기출문제만 계속 풀면서 패턴을 외우면 될 거라 생각했다. 처음 두 달은 순조로웠고, 정답률도 올라가는 것 같아서 자신감이 생겼다.\n그런데 실제 시험 날, 응용 문제들이 생각보다 많이 나왔고 나는 완전히 막혀버렸다. 아는 개념인데 조금만 비틀면 풀지 못했다.`}
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
@@ -75,14 +127,20 @@ const LogWriteStep2Container = () => {
           </S.TipBox>
 
           <S.ButtonContainer>
-            <S.TempSaveButton onClick={handleTempSave}>임시저장</S.TempSaveButton>
+            <S.TempSaveButton onClick={handleTempSave} disabled={isSaving}>
+              {isSaving ? "저장 중..." : "임시저장"}
+            </S.TempSaveButton>
             <S.AnalyzeButton onClick={handleAnalyze}>분석하기</S.AnalyzeButton>
           </S.ButtonContainer>
 
         </S.FormContainer>
       </S.ContentWrapper>
 
-      {isModalOpen && <LogAnalyzeModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && <LogAnalyzeModal 
+          onClose={() => setIsModalOpen(false)} 
+          logContent={content}
+          draft={draft}
+      />}
     </S.Wrapper>
   );
 };

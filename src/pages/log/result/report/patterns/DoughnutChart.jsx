@@ -22,37 +22,25 @@ const DoughnutChart = ({ externalValue = 70, internalValue = 30, size = 200 }) =
     return (
         <S.ChartWrapper size={size}>
             <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-90deg)' }}>
-                {/* Background (Internal Factor) */}
-                <circle
+                {/* Single Seamless Ring (100%) */}
+                <S.AnimatedCircle
                     cx={center}
                     cy={center}
                     r={radius}
                     fill="none"
-                    stroke="url(#purpleGradient)"
+                    stroke="url(#seamlessGradient)"
                     strokeWidth={strokeWidth}
-                />
-                
-                {/* Foreground (External Factor) */}
-                <circle
-                    cx={center}
-                    cy={center}
-                    r={radius}
-                    fill="none"
-                    stroke="url(#blueGradient)"
-                    strokeWidth={strokeWidth}
-                    strokeDasharray={`${dashArray} ${circumference}`}
-                    strokeDashoffset={dashOffset}
-                    strokeLinecap="butt"
+                    $dashArray={circumference}
+                    $circumference={circumference}
+                    strokeDashoffset={0}
+                    strokeLinecap="round"
                 />
 
                 <defs>
-                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor={theme.PALETTE.primary.main} />
-                        <stop offset="100%" stopColor="#00C2FF" />
-                    </linearGradient>
-                    <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor={theme.PALETTE.third.main} />
-                        <stop offset="100%" stopColor="#7B39FD" />
+                    {/* Seamless Purple to Blue Gradient (Highly Distinct Colors) */}
+                    <linearGradient id="seamlessGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#D500F9" />     {/* Neon Purple */}
+                        <stop offset="100%" stopColor="#00B0FF" />   {/* Neon Blue */}
                     </linearGradient>
                 </defs>
             </svg>

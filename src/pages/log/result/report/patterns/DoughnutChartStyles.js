@@ -11,6 +11,20 @@ S.ChartWrapper = styled.div`
     align-items: center;
 `;
 
+S.AnimatedCircle = styled.circle`
+    stroke-dasharray: ${({ $dashArray, $circumference }) => `${$dashArray} ${$circumference}`};
+    animation: fillChart 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+
+    @keyframes fillChart {
+        0% {
+            stroke-dasharray: 0 ${({ $circumference }) => $circumference};
+        }
+        100% {
+            stroke-dasharray: ${({ $dashArray }) => $dashArray} ${({ $circumference }) => $circumference};
+        }
+    }
+`;
+
 S.CenterText = styled.div`
     position: absolute;
     display: flex;

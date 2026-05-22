@@ -62,6 +62,7 @@ const RadarChart = ({ data, size = 300 }) => {
 
                  {/* Data Polygon */}
                 <polygon 
+                    className="data-polygon"
                     points={points} 
                     fill={`${theme.PALETTE.third.main}33`} 
                     stroke={theme.PALETTE.third.main} 
