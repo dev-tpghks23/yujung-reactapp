@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import S from '../style'
 import myStyle from '../commons/styles/SearchOptionComponentStyle'
 
-import downImage from '../resources/down.svg'
 
 const OPTIONS = ["최신순", "좋아요 순", "조회 순"];
 
@@ -32,7 +31,7 @@ const SearchOptionComponent = ({ defaultValue = "최신순", onChange }) => {
     <myStyle.Wrapper ref={wrapperRef}>
       <myStyle.Trigger onClick={() => setIsOpen((prev) => !prev)}>
         <S.Span size="h8Regular" color="faillog-black">{selected}</S.Span>
-        <myStyle.ChevronImg isOpen={isOpen} src={downImage}></myStyle.ChevronImg>
+        <myStyle.ChevronImg isOpen={isOpen} src="/assets/picture/down.svg"></myStyle.ChevronImg>
       </myStyle.Trigger>
 
 {/* customProps은 dom에 전달하면 안된다 그러기위해 앞에 $를 붙인다. */}

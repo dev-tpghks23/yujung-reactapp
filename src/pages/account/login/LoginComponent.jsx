@@ -32,7 +32,7 @@ const LoginComponent = () => {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:10000/api/auth/login', {
+      const res = await fetch('http://localhost:10000/public/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -44,7 +44,7 @@ const LoginComponent = () => {
         throw new Error(error?.message);
       }
 
-      const meRes = await fetch('http://localhost:10000/api/members/me', {
+      const meRes = await fetch('http://localhost:10000/private/member/me', {
         credentials: 'include',
       });
 

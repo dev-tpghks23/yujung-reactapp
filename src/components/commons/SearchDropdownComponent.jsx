@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import S from '../style';
 import myStyle from '../commons/styles/SearchOptionComponentStyle';
 
-import downImage from '../resources/down.svg';
 
 const OPTIONS = ['제목', '제목+내용', '내용', '작성자', '댓글'];
 
@@ -48,7 +47,7 @@ const SearchDropdownComponent = ({ defaultValue = '제목', onChange, style }) =
         } : undefined}
       >
         <S.Span size="h8Regular" color="faillog-black">{selected}</S.Span>
-        <myStyle.ChevronImg isOpen={isOpen} src={downImage}></myStyle.ChevronImg>
+        <myStyle.ChevronImg isOpen={isOpen} src="/assets/picture/down.svg"></myStyle.ChevronImg>
       </myStyle.Trigger>
 
       {isOpen && (

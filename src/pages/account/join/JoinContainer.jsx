@@ -87,7 +87,8 @@ const JoinContainer = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberEmail: email, purpose: 'JOIN' }),
       });
-      if (!res.ok) throw new Error('인증번호 발송에 실패했습니다.');
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error('인증번호 발송에 실패했습니다.');
       setEmailSent(true);
       startEmailTimer();
     } catch (err) {
@@ -122,7 +123,8 @@ const JoinContainer = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberPhone: phone }),
       });
-      if (!res.ok) throw new Error('인증번호 발송에 실패했습니다.');
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error('인증번호 발송에 실패했습니다.');
       setPhoneSent(true);
       startPhoneTimer();
     } catch (err) {
@@ -138,7 +140,8 @@ const JoinContainer = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberPhone: phone, code: phoneCode }),
       });
-      if (!res.ok) throw new Error('인증번호가 올바르지 않습니다.');
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error('인증번호가 올바르지 않습니다.');
       setPhoneVerified(true);
       clearInterval(phoneTimerRef.current);
     } catch (err) {

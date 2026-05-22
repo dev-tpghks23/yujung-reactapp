@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { colorCSS, shadowCSS } from "../style";
 import {
   h3Extrabold, h7Extrabold, h8Bold, h8Regular,
-  h9Bold, h9Regular, h10Regular, h7Bold,
+  h9Bold, h9Regular, h10Regular, h7Bold, h10Bold,
 } from "../../../styles/common";
 
 const S = {};
@@ -56,6 +56,10 @@ S.VisionCard = styled.div`
   padding: 20px 24px;
   cursor: pointer;
   user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
 
   &:hover {
     border-color: ${colorCSS.faillog_purple};
@@ -63,7 +67,7 @@ S.VisionCard = styled.div`
 `;
 
 S.VisionLabel = styled.p`
-  ${h9Bold}
+  ${h10Bold}
   color: ${colorCSS.faillog_gray8};
   margin-bottom: 6px;
 `;
@@ -117,7 +121,7 @@ S.VisionDropdownItem = styled.div`
 `;
 
 S.VisionTitle = styled.p`
-  ${h8Bold}
+  ${h7Bold}
   color: ${colorCSS.faillog_purple};
 `;
 
@@ -219,7 +223,7 @@ S.CarouselWrapper = styled.div`
 
 S.ImgClickArea = styled.div`
   position: relative;
-  cursor: pointer;
+  cursor: ${({ $editMode }) => ($editMode ? 'pointer' : 'default')};
 
   &:hover > div {
     opacity: 1;
@@ -268,10 +272,16 @@ S.CarouselBtn = styled.button`
   justify-content: center;
 `;
 
-S.CloseBtn = styled.button`
+S.CardBtnGroup = styled.div`
   position: absolute;
   top: 8px;
   right: 8px;
+  display: flex;
+  gap: 4px;
+`;
+
+
+S.CloseBtn = styled.button`
   background: rgba(255, 255, 255, 0.85);
   border: none;
   border-radius: 50%;
@@ -283,6 +293,7 @@ S.CloseBtn = styled.button`
   align-items: center;
   justify-content: center;
 `;
+
 
 S.CardBody = styled.div`
   padding: 16px;
@@ -401,6 +412,28 @@ S.AnalysisButton = styled.button`
 
   &:hover {
     background: #9333ea;
+  }
+`;
+
+S.HeaderBtnGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+S.EditModeBtn = styled.button`
+  ${h9Bold}
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid ${({ $active }) => ($active ? colorCSS.faillog_purple : colorCSS.faillog_gray4)};
+  background: ${({ $active }) => ($active ? colorCSS.faillog_purple : colorCSS.faillog_white)};
+  color: ${({ $active }) => ($active ? colorCSS.faillog_white : colorCSS.faillog_gray8)};
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: ${colorCSS.faillog_purple};
+    color: ${({ $active }) => ($active ? colorCSS.faillog_white : colorCSS.faillog_purple)};
   }
 `;
 

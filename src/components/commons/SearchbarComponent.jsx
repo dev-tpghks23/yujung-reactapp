@@ -1,8 +1,6 @@
 import React, { useRef } from 'react';
 import myStyle from '../commons/styles/SearchbarComponentStyle'
 
-import shine from '../resources/shine.svg'
-import upArrow from '../resources/arrow-up.svg'
 
 const SearchbarComponent = ({onSubmit, placeholder = "ex)게시글을 검색해볼까요?"}) => {
 
@@ -26,14 +24,14 @@ const SearchbarComponent = ({onSubmit, placeholder = "ex)게시글을 검색해�
     <div>
       <myStyle.component>
         <myStyle.contentLeft>
-          <myStyle.image1 src={shine}></myStyle.image1>
+          <myStyle.image1 src="/assets/picture/shine.svg"></myStyle.image1>
           <myStyle.search maxLength='100'
             placeholder={placeholder} 
             ref={(el) => {input.current[0] = el}} 
             onKeyDown={handleKeyDown}></myStyle.search>
         </myStyle.contentLeft>
         <myStyle.searchButton onClick={handleOnClick}>
-          <myStyle.buttonImage src={upArrow}></myStyle.buttonImage>
+          <myStyle.buttonImage src="/assets/picture/arrow-up.svg"></myStyle.buttonImage>
         </myStyle.searchButton>
       </myStyle.component>
     </div>

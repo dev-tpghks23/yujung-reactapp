@@ -73,6 +73,7 @@ S.RankSubtitle = styled.p`
 
 S.BellCurveBox = styled.div`
   margin-bottom: 48px;
+  padding-top: 48px;
   display: flex;
   flex-direction: column;
   gap: 8px;
