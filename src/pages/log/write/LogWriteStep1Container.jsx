@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../api/axiosInstance';
 
 import uploadIcon from './write_icon/upload.svg';
 import deleteIcon from './write_icon/delete.svg';
@@ -16,28 +17,55 @@ const LogWriteStep1Container = () => {
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState(null);
   const [vision, setVision] = useState("");
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isVisionListOpen, setIsVisionListOpen] = useState(false);
   const [thumbnail, setThumbnail] = useState(null);
+  const [categories, setCategories] = useState([]);
   const fileInputRef = useRef(null);
 
-  const categories = [
-    "사업/창업",
-    "공부/취업",
-    "인간관계",
-    "건강/루틴",
-    "기타"
-  ];
+  // 카테고리 목록 백엔드에서 조회 (없으면 하드코딩 fallback)
+  useEffect(() => {
+    axiosInstance.get('/api/categories')
+      .then(res => {
+        if (res.data?.data) setCategories(res.data.data);
+      })
+      .catch(() => {
+        setCategories([
+          { id: 1, categoryName: "사업/창업" },
+          { id: 2, categoryName: "공부/취업" },
+          { id: 3, categoryName: "인간관계" },
+          { id: 4, categoryName: "건강/루틴" },
+          { id: 5, categoryName: "기타" },
+        ]);
+      });
+  }, []);
 
-  const visions = [
-    "올해 안에 정보처리기사 자격증 따기",
-    "네이버 입사하기",
-    "살 15키로 빼기",
-    "한달에 책 2권씩 읽기"
-  ];
+  // 이전에 작성 중이던 내용 복원
+  useEffect(() => {
+    const saved = sessionStorage.getItem('logDraft');
+    if (saved) {
+      const draft = JSON.parse(saved);
+      setTitle(draft.logTitle || "");
+      setVision(draft.visionTitle || "");
+      setCategory(draft.categoryName || "");
+      setCategoryId(draft.categoryId || null);
+    }
+  }, []);
 
   const handleNext = () => {
+    if (!title.trim()) { alert("로그 제목을 입력해주세요."); return; }
+    if (!categoryId) { alert("카테고리를 선택해주세요."); return; }
+    if (!vision.trim()) { alert("이루고 싶은 비전을 입력해주세요."); return; }
+
+    sessionStorage.setItem('logDraft', JSON.stringify({
+      logTitle: title,
+      visionTitle: vision,
+      categoryId: categoryId,
+      categoryName: category,
+      logThumbnailUrl: thumbnail?.uploadedUrl || null,
+    }));
     navigate("/logs/new/step2");
   };
 
@@ -62,11 +90,20 @@ const LogWriteStep1Container = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
-    setThumbnail({ url, name: file.name });
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await axiosInstance.post('/api/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setThumbnail({ url, name: file.name, uploadedUrl: res.data?.data });
+    } catch {
+      setThumbnail({ url, name: file.name, uploadedUrl: null });
+    }
   };
 
   const handleDeleteImage = () => {
@@ -114,16 +151,17 @@ const LogWriteStep1Container = () => {
                 </S.DropdownHeader>
                 {isCategoryOpen && (
                   <S.FloatingList>
-                    {categories.map((cat, idx) => (
+                    {categories.map((cat) => (
                       <S.FloatingItem
-                        key={idx}
-                        $isSelected={category === cat}
+                        key={cat.id}
+                        $isSelected={categoryId === cat.id}
                         onClick={() => {
-                          setCategory(cat);
+                          setCategory(cat.categoryName);
+                          setCategoryId(cat.id);
                           setIsCategoryOpen(false);
                         }}
                       >
-                        {cat}
+                        {cat.categoryName}
                       </S.FloatingItem>
                     ))}
                   </S.FloatingList>
@@ -146,25 +184,12 @@ const LogWriteStep1Container = () => {
               onChange={(e) => setVision(e.target.value)}
               $width={782}
             />
-
             {isVisionListOpen && (
               <S.FloatingList>
-                {visions.length > 0 ? (
-                  visions.map((pv, idx) => (
-                    <S.FloatingItem
-                      key={idx}
-                      $isSelected={vision === pv}
-                      onClick={() => handleVisionSelect(pv)}
-                    >
-                      {pv}
-                    </S.FloatingItem>
-                  ))
-                ) : (
-                  <S.EmptyVision>
-                    아직 작성된 비전이 없습니다.<br />
-                    새로운 비전을 작성해주세요.
-                  </S.EmptyVision>
-                )}
+                <S.EmptyVision>
+                  아직 작성된 비전이 없습니다.<br />
+                  새로운 비전을 작성해주세요.
+                </S.EmptyVision>
               </S.FloatingList>
             )}
           </S.FormGroup>
@@ -185,7 +210,6 @@ const LogWriteStep1Container = () => {
                 style={{ display: 'none' }}
                 onChange={handleImageUpload}
               />
-
               {thumbnail && (
                 <S.PreviewWrapper>
                   <S.PreviewImage src={thumbnail.url} alt="thumbnail" />
