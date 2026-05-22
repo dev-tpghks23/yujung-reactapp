@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import Preview from './Preview';
 import styled from 'styled-components';
@@ -108,18 +108,25 @@ const PostForm = ({
   };
 
   //image버튼 (10개 제한)
+  const fileInputRef = useRef(null);
+
   const handleOnClickPictureButton = () => {
-
-    if(getImagesCount() >= 10) {
-      return alert("이미지는 최대 10개까지 추가 할 수 있습니다");
+    if (getImagesCount() >= 10) {
+      return alert('이미지는 최대 10개까지 추가 할 수 있습니다');
     }
+    fileInputRef.current?.click();
+  };
 
-    const url = window.prompt('URL')
-
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run()
-    }
-  }
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      editor.chain().focus().setImage({ src: reader.result }).run();
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
 
   return (
     <Wrapper>
@@ -211,6 +218,14 @@ const PostForm = ({
           </SubmitBtn>
         </ButtonRow>
       </form>
+      
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+      />
       {previewOpen && (
         <Preview content={editor?.getHTML() ?? ''} onClose={() => setPreviewOpen(false)} />
       )}
@@ -369,7 +384,7 @@ const ButtonRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 25px;
+  gap: 8px;
   margin-top: 23px;
 `
 
