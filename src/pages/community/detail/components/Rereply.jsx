@@ -37,6 +37,7 @@ const Rereply = ({
   const menuOpen = openMenuId === menuId;
   const toggleMenu = () => setOpenMenuId(menuOpen ? null : menuId);
 
+  const [currentContent, setCurrentContent] = useState(content);
   const [expanded, setExpanded] = useState(false);
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -49,11 +50,26 @@ const Rereply = ({
 
   const handleEditClick = () => {
     setOpenMenuId(null);
-    setEditText(content);
+    setEditText(currentContent);
     setEditMode(true);
   };
 
   const handleEditCancel = () => setEditMode(false);
+
+  const handleEditSave = async () => {
+    if (!editText.trim()) return;
+    const res = await fetch('http://localhost:10000/api/posts/update-rereply', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: rereplyId, rereplyContent: editText }),
+    });
+    if (!res.ok) return;
+    const json = await res.json();
+    if (json.success) {
+      setCurrentContent(editText);
+      setEditMode(false);
+    }
+  };
 
   const handleDeleteConfirm = async () => {
     setDeletePopupOpen(false);
@@ -66,8 +82,8 @@ const Rereply = ({
   };
 
   const LIMIT = 230;
-  const isOverflow = content.length > LIMIT;
-  const displayText = isOverflow && !expanded ? content.slice(0, LIMIT) : content;
+  const isOverflow = currentContent.length > LIMIT;
+  const displayText = isOverflow && !expanded ? currentContent.slice(0, LIMIT) : currentContent;
 
   return (
     <>
@@ -127,7 +143,7 @@ const Rereply = ({
                 <CancelEditBtn onClick={handleEditCancel}>
                   <S.Span size="h10Bold">취소</S.Span>
                 </CancelEditBtn>
-                <SaveEditBtn>
+                <SaveEditBtn onClick={handleEditSave}>
                   <S.Span size="h10Bold" color="faillog_white">저장</S.Span>
                 </SaveEditBtn>
               </EditBtnGroup>
