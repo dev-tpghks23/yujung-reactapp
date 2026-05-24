@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import menuIcon from '../../resources/menuIcon.svg';
 import S, { colorCSS, sizeCSS } from '../../style.js';
-import { flexCenterRow } from '../../../../styles/common.js';
+import { flexBetweenRow, flexCenterRow } from '../../../../styles/common.js';
 import { useMenuContext } from './MenuContext.js';
 import { useReportContext } from './ReportContext.js';
 import PopupComponent from '../../../../components/commons/PopupComponent';
@@ -39,11 +39,21 @@ const Rereply = ({
 
   const [expanded, setExpanded] = useState(false);
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editText, setEditText] = useState(content);
 
   const handleDeleteClick = () => {
     setOpenMenuId(null);
     setDeletePopupOpen(true);
   };
+
+  const handleEditClick = () => {
+    setOpenMenuId(null);
+    setEditText(content);
+    setEditMode(true);
+  };
+
+  const handleEditCancel = () => setEditMode(false);
 
   const handleDeleteConfirm = async () => {
     setDeletePopupOpen(false);
@@ -83,9 +93,14 @@ const Rereply = ({
           {menuOpen && (
             <Dropdown>
               {isOwner ? (
-                <DropdownItem onClick={handleDeleteClick}>
-                  <S.Span size="h9Regular">삭제하기</S.Span>
-                </DropdownItem>
+                <>
+                  <DropdownItem onClick={handleEditClick}>
+                    <S.Span size="h9Regular">수정하기</S.Span>
+                  </DropdownItem>
+                  <DropdownItem onClick={handleDeleteClick}>
+                    <S.Span size="h9Regular">삭제하기</S.Span>
+                  </DropdownItem>
+                </>
               ) : (
                 <DropdownItem onClick={() => { openReport('대댓글', undefined, profileImg, author, content); setOpenMenuId(null); }}>
                   <S.Span size="h9Regular">신고하기</S.Span>
@@ -97,15 +112,38 @@ const Rereply = ({
       </TopRow>
 
       <ContentArea>
-        <ContentText>
-          {displayText}
-          {isOverflow && !expanded && '... '}
-          {isOverflow && (
-            <InlineToggle onClick={() => setExpanded(prev => !prev)}>
-              {expanded ? ' (접기)' : '(자세히보기)'}
-            </InlineToggle>
-          )}
-        </ContentText>
+        {editMode ? (
+          <>
+            <EditTextArea
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              maxLength={500}
+            />
+            <EditActionRow>
+              <S.Span size="h11Regular" color="faillog_gray8">
+                {editText.length} / 500
+              </S.Span>
+              <EditBtnGroup>
+                <CancelEditBtn onClick={handleEditCancel}>
+                  <S.Span size="h10Bold">취소</S.Span>
+                </CancelEditBtn>
+                <SaveEditBtn>
+                  <S.Span size="h10Bold" color="faillog_white">저장</S.Span>
+                </SaveEditBtn>
+              </EditBtnGroup>
+            </EditActionRow>
+          </>
+        ) : (
+          <ContentText>
+            {displayText}
+            {isOverflow && !expanded && '... '}
+            {isOverflow && (
+              <InlineToggle onClick={() => setExpanded(prev => !prev)}>
+                {expanded ? ' (접기)' : '(자세히보기)'}
+              </InlineToggle>
+            )}
+          </ContentText>
+        )}
       </ContentArea>
     </Wrapper>
     </>
@@ -193,6 +231,58 @@ const ContentText = styled.p`
 const InlineToggle = styled.span`
   ${sizeCSS["h9Regular"]}
   color: ${colorCSS["faillog_purple"]};
+  cursor: pointer;
+`
+
+const EditTextArea = styled.textarea`
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  background: ${colorCSS["faillog_white"]};
+  border: 1px solid ${colorCSS["faillog_gray3"]};
+  border-radius: 10px;
+  resize: none;
+  overflow-y: auto;
+  ${sizeCSS["h9Regular"]}
+  color: ${colorCSS["faillog-black"]};
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: ${colorCSS["faillog_purple"]};
+  }
+
+    &:hover {
+    outline: none;
+    border-color: ${colorCSS["faillog_purple"]};
+  }
+`
+
+const EditActionRow = styled.div`
+  ${flexBetweenRow}
+  margin-top: 8px;
+`
+
+const EditBtnGroup = styled.div`
+  display: flex;
+  gap: 8px;
+`
+
+const CancelEditBtn = styled.button`
+  height: 32px;
+  padding: 0 14px;
+  background: none;
+  border: 1px solid ${colorCSS["faillog_gray4"]};
+  border-radius: 8px;
+  cursor: pointer;
+`
+
+const SaveEditBtn = styled.button`
+  height: 32px;
+  padding: 0 14px;
+  background: ${colorCSS["faillog_purple"]};
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
 `
 
