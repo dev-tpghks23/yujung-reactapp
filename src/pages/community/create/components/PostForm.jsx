@@ -20,7 +20,7 @@ import Text from '@tiptap/extension-text';
 
 import '../../css/PostForm.css'
 
-const CATEGORY_OPTIONS = ['시장/창업', '공부/취업', '인간관계', '건강/루틴', '기타'];
+const CATEGORY_OPTIONS = ['공부/취업', '시장/창업', '인간관계', '건강/루틴', '기타'];
 
 const PostForm = ({
   isCreate = true,
@@ -55,8 +55,8 @@ const PostForm = ({
     const doc = new DOMParser().parseFromString(html, 'text/html');
 
     //업로드된 image배열
-    data.images = Array.from(doc.querySelectorAll('img')).map(img => img.getAttribute('src'));
-    console.log(data.images);
+    // data.images = Array.from(doc.querySelectorAll('img')).map(img => img.getAttribute('src'));
+    // console.log(data.images);
 
     onSubmit?.({ title: data.title, category: categoryIndex, content: html, images: data.images });
   };

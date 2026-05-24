@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 //import CommunitySearch from './CommunityPostListContainer';
 import { Link, Outlet } from 'react-router-dom';
 import CommunityMainHeader from './list/components/CommunityMainHeader';
@@ -13,6 +13,7 @@ import AiPostListContainer from './list/components/AiPostListContainer';
 
 import study from './resources/study.jpg'
 import icon04 from './resources/icon04.png'
+import useAuthStore from '../../store/authStore';
 
 const popularPosts = [
   {
@@ -110,7 +111,14 @@ const CommunityContainer = () => {
     bestPost.comments = 999
     bestPost.isLike = false
     bestPost.id = 3;
-    
+
+    //임시
+    const {setIsAuthenticated} = useAuthStore();
+    useEffect(() => {
+      setIsAuthenticated(true)
+    }, [])
+
+
     return (
         <div>
             
