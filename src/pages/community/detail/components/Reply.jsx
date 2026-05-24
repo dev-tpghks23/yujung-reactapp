@@ -67,6 +67,7 @@ const Reply = ({
   const menuOpen = openMenuId === menuId;
   const toggleMenu = () => setOpenMenuId(menuOpen ? null : menuId);
 
+  const [currentContent, setCurrentContent] = useState(content);
   const [expanded, setExpanded] = useState(false);
   const [replyOpen, setReplyOpen] = useState(false);
   const [liked, setLiked] = useState(isLiked);
@@ -77,11 +78,26 @@ const Reply = ({
 
   const handleEditClick = () => {
     setOpenMenuId(null);
-    setEditText(content);
+    setEditText(currentContent);
     setEditMode(true);
   };
 
   const handleEditCancel = () => setEditMode(false);
+
+  const handleEditSave = async () => {
+    if (!editText.trim()) return;
+    const res = await fetch('http://localhost:10000/api/posts/update-reply', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: replyId, replyContent: editText }),
+    });
+    if (!res.ok) return;
+    const json = await res.json();
+    if (json.success) {
+      setCurrentContent(editText);
+      setEditMode(false);
+    }
+  };
 
   const handleDeleteConfirm = async () => {
     setDeletePopupOpen(false);
@@ -130,8 +146,8 @@ console.log(`member: ${memberId} reply: ${replyId} loginid: ${loginId}`);
     }
   };
 
-  const isOverflow = content.length > LIMIT;
-  const displayText = isOverflow && !expanded ? content.slice(0, LIMIT) : content;
+  const isOverflow = currentContent.length > LIMIT;
+  const displayText = isOverflow && !expanded ? currentContent.slice(0, LIMIT) : currentContent;
   const showSection = rereplyList.length > 0 || replyOpen;
 
   return (
@@ -192,7 +208,7 @@ console.log(`member: ${memberId} reply: ${replyId} loginid: ${loginId}`);
                 <CancelEditBtn onClick={handleEditCancel}>
                   <S.Span size="h10Bold">취소</S.Span>
                 </CancelEditBtn>
-                <SaveEditBtn>
+                <SaveEditBtn onClick={handleEditSave}>
                   <S.Span size="h10Bold" color="faillog_white">저장</S.Span>
                 </SaveEditBtn>
               </EditBtnGroup>
