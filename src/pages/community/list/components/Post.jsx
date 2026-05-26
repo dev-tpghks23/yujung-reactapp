@@ -27,14 +27,15 @@ const ThumbnailWrapper = styled.div`
   height: 184px;
   /* object-fit: cover; */
   border-radius: 15px 0px 15px 0px;
-  background-color: ${colorCSS["faillog_gray9"]};
-  /* ${flexCenterRow} */
+  /* background-color: ${colorCSS["faillog_gray9"]}; */
+  overflow: hidden;
+  ${flexCenterRow}
   /* flex-shrink: 0; */
 `;
 
 const Thumbnail = styled.img`
   width: 324px;
-  height: 184px;
+  height: auto;
   /* object-fit: cover; */
   border-radius: 15px 0px 15px 0px
 
