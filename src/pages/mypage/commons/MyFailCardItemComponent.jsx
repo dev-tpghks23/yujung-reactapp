@@ -5,14 +5,18 @@ import likeIcon from '../../../components/resources/like.svg';
 import likeFillIcon from '../../../components/resources/like-fill2.svg';
 import defaultProfile from '../../../components/resources/default-profile.svg';
 
-const MyFailCardItemComponent = ({ log = {}, isSelected = false, iconSrc, onClick }) => {
+const CYCLE_COLORS = ['#F1F3FB', '#F1F3FB', '#D7EEFF', '#D7E0FF'];
+
+const MyFailCardItemComponent = ({ log = {}, isSelected = false, iconSrc, onClick, index = 0 }) => {
   if (!log) return null;
+
+  const bgColor = log?.bgColor || CYCLE_COLORS[index % CYCLE_COLORS.length];
 
   return (
     <S.MyFailCard
       $isSelected={isSelected}
       onClick={onClick}
-      $bgColor={log?.bgColor || '#F1F3FB'}
+      $bgColor={bgColor}
     >
       <S.MyFailContent>
         <div className="ContentGroup">
