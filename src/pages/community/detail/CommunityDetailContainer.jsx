@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { boxShadow, colorCSS } from '../style';
 import PostHeader from './components/PostHeader';
-import icon04 from '../resources/icon04.png';
+import icon04 from '../resources/default.png';
 import Content from './components/Content';
 import ImagesContainer from './components/ImagesContainer';
 import AuthorInfo from './components/AuthorInfo';
