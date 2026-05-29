@@ -60,7 +60,33 @@ const MyProfileContainer = ({ isPageOwner = true }) => {
         }
       })
       .catch(console.error);
+
+    axiosInstance.get('/api/logs/my-list')
+      .then((res) => {
+        if (res.data?.success && Array.isArray(res.data.data)) {
+          setStats((prev) => ({ ...prev, logCount: res.data.data.length }));
+        }
+      })
+      .catch(console.error);
   }, [isPageOwner]);
+
+  // 남의 프로필 방문 시 기록
+  useEffect(() => {
+    if (isPageOwner || !userId) return;
+    axiosInstance.post(`/private/profile/${userId}/visit`).catch(console.error);
+  }, [isPageOwner, userId]);
+
+  // 내 프로필에서 오늘 방문자 수 조회
+  useEffect(() => {
+    if (!isPageOwner || !memberInfo.memberId) return;
+    axiosInstance.get(`/private/profile/${memberInfo.memberId}/today-visitors`)
+      .then((res) => {
+        if (res.data?.success) {
+          setStats((prev) => ({ ...prev, todayVisitors: res.data.data }));
+        }
+      })
+      .catch(console.error);
+  }, [isPageOwner, memberInfo.memberId]);
 
   const isSocialLogin = memberInfo.socialMemberProvider !== 'local';
 

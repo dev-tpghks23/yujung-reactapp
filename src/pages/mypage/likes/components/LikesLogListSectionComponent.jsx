@@ -38,7 +38,11 @@ const LikesLogListSectionComponent = ({
         />
       ) : (
         <>
-          <LikesLogComponent filteredLogs={filteredLogs} />
+          <LikesLogComponent
+            filteredLogs={filteredLogs}
+            onUnlikeOne={onUnlikeOne}
+            isPageOwner={isPageOwner}
+          />
 
           <LogS.PaginationWrapper>
             <PagenationComponent

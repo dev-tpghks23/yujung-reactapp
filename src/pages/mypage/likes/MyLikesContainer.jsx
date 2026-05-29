@@ -10,6 +10,7 @@ import { getHeroContent } from '../heroSection/HeroData';
 import useSearchStore from '../../../components/useSearchStore';
 import EmptyStateComponent from '../commons/EmptyStateComponent';
 import CommS from '../profile/styles/CommunityStyles';
+import axiosInstance from '../../../api/axiosInstance';
 
 const MyLikesContainer = ({ isPageOwner = true }) => {
   const navigate = useNavigate();
@@ -25,6 +26,30 @@ const MyLikesContainer = ({ isPageOwner = true }) => {
     setRecentLogs(stored);
   }, []);
   const [allLogs, setAllLogs] = useState([]);
+
+  useEffect(() => {
+    if (!isPageOwner) return;
+    axiosInstance.get('/api/logs/liked-list')
+      .then((res) => {
+        if (res.data?.success && Array.isArray(res.data.data)) {
+          setAllLogs(res.data.data.map((item) => ({
+            id: item.id,
+            title: item.logTitle || '',
+            content: item.visionTitle || '',
+            author: item.memberNickname || '',
+            profileImg: item.memberProfileImageUrl || null,
+            createdAt: item.logCreatedAt || '',
+            date: item.logCreatedAt || '',
+            likeCount: item.likeCount || 0,
+            isLiked: true,
+            views: item.logReadCount || 0,
+            progress: item.logProgress || 0,
+            logStatus: item.logStatus,
+          })));
+        }
+      })
+      .catch(console.error);
+  }, [isPageOwner]);
 
   const [filteredLogs, setFilteredLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,6 +77,7 @@ const MyLikesContainer = ({ isPageOwner = true }) => {
   };
 
   const handleUnlikeOne = (id) => {
+    axiosInstance.post(`/api/logs/${id}/like`).catch(console.error);
     setAllLogs((prev) => prev.filter((log) => log.id !== id));
   };
 
