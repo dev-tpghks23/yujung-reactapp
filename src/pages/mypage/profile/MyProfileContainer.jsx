@@ -15,7 +15,6 @@ import PhoneVerifyPopup from './components/PhoneVerifyPopup';
 import MyCommunityContainer from './components/MyCommunityContainer';
 import HeroRotationComponent from '../heroSection/HeroRotationComponents';
 import { getHeroContent } from '../heroSection/HeroData';
-import { DUMMY_FAIL_LOGS } from '../data/dummyData';
 
 const MyProfileContainer = ({ isPageOwner = true }) => {
   const navigate = useNavigate();
@@ -41,7 +40,7 @@ const MyProfileContainer = ({ isPageOwner = true }) => {
     loginStreak: 1,
   });
 
-  const [chartLogs, setChartLogs] = useState(DUMMY_FAIL_LOGS);
+  const [chartLogs, setChartLogs] = useState([]);
   const [showPhoneVerifyPopup, setShowPhoneVerifyPopup] = useState(false);
 
   useEffect(() => {
@@ -70,7 +69,14 @@ const MyProfileContainer = ({ isPageOwner = true }) => {
       .then((res) => {
         if (res.data?.success && Array.isArray(res.data.data)) {
           setStats((prev) => ({ ...prev, logCount: res.data.data.length }));
-          setChartLogs(res.data.data);
+          setChartLogs(
+            res.data.data
+              .filter((item) => item.logResultExternalRatio != null && item.logResultInternalRatio != null)
+              .map((item) => ({
+                ...item,
+                factorType: item.logResultExternalRatio >= item.logResultInternalRatio ? 'external' : 'internal',
+              }))
+          );
         }
       })
       .catch(console.error);
