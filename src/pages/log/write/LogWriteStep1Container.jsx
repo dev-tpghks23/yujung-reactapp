@@ -23,9 +23,10 @@ const LogWriteStep1Container = () => {
   const [isVisionListOpen, setIsVisionListOpen] = useState(false);
   const [thumbnail, setThumbnail] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [pastVisions, setPastVisions] = useState([]);
   const fileInputRef = useRef(null);
 
-  // 카테고리 목록 백엔드에서 조회 (없으면 하드코딩 fallback)
+  // 카테고리 및 내 로그(과거 비전 추출용) 목록 백엔드에서 조회
   useEffect(() => {
     axiosInstance.get('/api/categories')
       .then(res => {
@@ -33,13 +34,23 @@ const LogWriteStep1Container = () => {
       })
       .catch(() => {
         setCategories([
-          { id: 1, categoryName: "사업/창업" },
-          { id: 2, categoryName: "공부/취업" },
+          { id: 1, categoryName: "공부/취업" },
+          { id: 2, categoryName: "사업/창업" },
           { id: 3, categoryName: "인간관계" },
           { id: 4, categoryName: "건강/루틴" },
           { id: 5, categoryName: "기타" },
         ]);
       });
+
+    axiosInstance.get('/api/logs/my-list')
+      .then(res => {
+        if (res.data?.data) {
+          // 중복을 제거한 과거 비전 목록 추출
+          const uniqueVisions = [...new Set(res.data.data.map(log => log.visionTitle).filter(Boolean))];
+          setPastVisions(uniqueVisions);
+        }
+      })
+      .catch(err => console.error("과거 비전 목록을 불러오는 데 실패했습니다.", err));
   }, []);
 
   // 이전에 작성 중이던 내용 복원
@@ -186,10 +197,21 @@ const LogWriteStep1Container = () => {
             />
             {isVisionListOpen && (
               <S.FloatingList>
-                <S.EmptyVision>
-                  아직 작성된 비전이 없습니다.<br />
-                  새로운 비전을 작성해주세요.
-                </S.EmptyVision>
+                {pastVisions.length === 0 ? (
+                  <S.EmptyVision>
+                    아직 작성된 비전이 없습니다.<br />
+                    새로운 비전을 작성해주세요.
+                  </S.EmptyVision>
+                ) : (
+                  pastVisions.map((pv, idx) => (
+                    <S.FloatingItem
+                      key={idx}
+                      onClick={() => handleVisionSelect(pv)}
+                    >
+                      {pv}
+                    </S.FloatingItem>
+                  ))
+                )}
               </S.FloatingList>
             )}
           </S.FormGroup>

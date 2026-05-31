@@ -257,3 +257,29 @@ S.NavButton = styled.button`
     cursor: default;
   }
 `;
+
+S.BottomActionRow = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+  width: 1298px;
+`;
+
+S.ListButton = styled.button`
+  padding: 16px 48px;
+  background-color: ${({ theme }) => theme.PALETTE.white};
+  color: ${({ theme }) => theme.TEXT_COLOR.basic};
+  border: 1px solid ${({ theme }) => theme.GRAYSCALE[4]};
+  border-radius: 12px;
+  font-size: ${({ theme }) => theme.FONT_SIZE.h7};
+  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+
+  &:hover {
+    background-color: ${({ theme }) => theme.GRAYSCALE[1]};
+    border-color: ${({ theme }) => theme.GRAYSCALE[6]};
+    transform: translateY(-2px);
+  }
+`;

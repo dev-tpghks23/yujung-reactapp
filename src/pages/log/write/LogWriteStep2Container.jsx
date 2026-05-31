@@ -108,7 +108,7 @@ const LogWriteStep2Container = () => {
             </S.Badges>
             <S.LogTitleRow>
               <S.LogTitle>{draft.logTitle || "로그 제목"}</S.LogTitle>
-              <S.Date>{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace('.', '')}</S.Date>
+              <S.Date>{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace(/\.$/, '')}</S.Date>
             </S.LogTitleRow>
           </S.LogHeader>
 

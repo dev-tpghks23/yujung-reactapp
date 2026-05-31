@@ -37,13 +37,16 @@ const LogActionPlanContainer = () => {
         attempts: {
             title: "다음에는 이렇게 시도해보자!",
             description: "환경에 휘둘리지 않기 위해 '통제할 수 있는 것'에 집중해야 합니다. 아래의 전략을 다음에 적용해보세요.",
-            items: tryPlans.map((plan, idx) => ({
-                id: idx + 1,
-                title: plan.logActionPlanTitle,
-                color: "transparent",
-                content: plan.logActionPlanContent,
-                iconSrc: planTargetIcon // Default icon
-            }))
+            items: tryPlans.map((plan, idx) => {
+                const icons = [planTargetIcon, planEnvIcon, planPartnerIcon, planChecklistIcon];
+                return {
+                    id: idx + 1,
+                    title: plan.logActionPlanTitle,
+                    color: "transparent",
+                    content: plan.logActionPlanContent,
+                    iconSrc: icons[idx % icons.length]
+                };
+            })
         },
 
         transformations: {

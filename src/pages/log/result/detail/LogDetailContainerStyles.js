@@ -72,6 +72,30 @@ S.AuthorName = styled.span`
   color: ${({ theme }) => theme.TEXT_COLOR.basic};
 `;
 
+S.StatsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+
+S.StatItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  img {
+    width: 18px;
+    height: 16px;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: ${({ theme }) => theme.FONT_SIZE.h8};
+    font-weight: ${({ theme }) => theme.FONT_WEIGHT.medium};
+    color: ${({ theme }) => theme.TEXT_COLOR.basic};
+  }
+`;
+
 S.LikeButton = styled.button`
   display: flex;
   align-items: center;
