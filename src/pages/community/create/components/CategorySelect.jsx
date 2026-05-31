@@ -5,7 +5,7 @@ import { flexBetweenRow } from '../../../../styles/common';
 
 import downImage from '../../resources/down.svg'
 
-const OPTIONS = ['사업/창업', '공부/취업', '인간관계', '건강/루틴', '기타'];
+const OPTIONS = ['공부/취업', '사업/창업', '인간관계', '건강/루틴', '기타'];
 
 const CategorySelect = ({ defaultValue = null, options = OPTIONS, onChange }) => {
 
