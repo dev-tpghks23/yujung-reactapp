@@ -15,9 +15,10 @@ import ReportPopup from './components/ReportPopup';
 import { ReportContext } from './components/ReportContext';
 import { formatRelativeTime } from '../../../utils/relativeTime';
 import PopupComponent from '../../../components/commons/PopupComponent';
+import useAuthStore from '../../../store/authStore';
 
 // TODO: 로그인 구현 후 auth context에서 가져올 것
-const CURRENT_MEMBER_ID = 1;
+// const CURRENT_MEMBER_ID = 1;
 
 const formatTimeAgo = (dateStr) => {
     if (!dateStr) return '';
@@ -40,6 +41,9 @@ const CommunityDetailContainer = () => {
     const [error, setError] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
 
+    const memberId = useAuthStore((state) => state.user?.id ?? 0);
+    // console.log(memberId);
+
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -47,7 +51,7 @@ const CommunityDetailContainer = () => {
                 const res = await fetch('http://localhost:10000/api/posts/read', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ memberId: CURRENT_MEMBER_ID, postId: Number(id) }),
+                    body: JSON.stringify({ memberId, postId: Number(id) }),
                 });
                 const json = await res.json();
                 if (json.success) {
@@ -92,7 +96,7 @@ const CommunityDetailContainer = () => {
     }));
 
     const replyList = (replies ?? []).map((r) => ({
-        loginId: CURRENT_MEMBER_ID,
+        loginId: memberId,
         memberId: r.memberId,
         replyId: r.id,
         profileImg: r.memberProfileImageUrl ?? icon04,
@@ -102,7 +106,7 @@ const CommunityDetailContainer = () => {
         isLiked: r.isLiked === 1,
         likeCount: r.likeCount ?? 0,
         rereplyList: (r.replies ?? []).map((rr) => ({
-            loginId: CURRENT_MEMBER_ID,
+            loginId: memberId,
             memberId: rr.memberId,
             rereplyId: rr.id,
             profileImg: rr.memberProfileImageUrl ?? icon04,
@@ -191,8 +195,8 @@ const CommunityDetailContainer = () => {
             <Divider />
 
             <Middle
-                loginId={CURRENT_MEMBER_ID}
-                isOwner={post.memberId === CURRENT_MEMBER_ID}
+                loginId={memberId}
+                isOwner={post.memberId === memberId}
                 isLiked={post.isLiked === 1}
                 likeCount={post.likeCount}
                 postId={post.id}
@@ -204,7 +208,7 @@ const CommunityDetailContainer = () => {
             <ReplyContainer
                 replyList={replyList}
                 postId={post.id}
-                loginId={CURRENT_MEMBER_ID}
+                loginId={memberId}
                 onReplyAdded={() => setRefreshKey(k => k + 1)}
             />
 
@@ -226,7 +230,7 @@ const CommunityDetailContainer = () => {
             profileImg={reportState.profileImg}
             author={reportState.author}
             content={reportState.content}
-            memberId={CURRENT_MEMBER_ID}
+            memberId={memberId}
             onClose={closeReport}
         />
     )}

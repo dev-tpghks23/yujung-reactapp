@@ -5,6 +5,7 @@ import Page from './components/Page';
 import { colorCSS } from '../style';
 import { flexCenterRow } from '../../../styles/common';
 import useSearchStore from './useSearchStore';
+import useAuthStore from '../../../store/authStore';
 
 const myStyle = {}
 
@@ -46,9 +47,10 @@ const CommunityListContainer = ({ initialPostList = [], initialMaxPage = 1 }) =>
     const [maxPage, setMaxPage] = useState(initialMaxPage);
 
     const isMounted = useRef(false);
+    const memberId = useAuthStore((state) => state.user?.id ?? 0);
 
     const fetchPosts = async ({ order, order2Val, cat, pg, cont }) => {
-        const query = new URLSearchParams({ order, order2: order2Val, page: pg, category: cat });
+        const query = new URLSearchParams({memberId, order, order2: order2Val, page: pg, category: cat });
         if (cont) query.set('content', cont);
         const res = await fetch(`http://localhost:10000/api/posts?${query}`);
         if (!res.ok) return;

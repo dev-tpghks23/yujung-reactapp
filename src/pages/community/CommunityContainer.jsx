@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import useAuthStore from '../../store/authStore';
 import CommunityMainHeader from './list/components/CommunityMainHeader';
 import CommunityBestPost from './list/components/CommunityBestPost';
 import CommunityPopularPostContainer from './list/components/CommunityPopularPostContainer';
@@ -8,8 +9,6 @@ import myStyle from './styles/CommunityContainerStyle'
 import CommunityListContainer from './list/CommunityListContainer'
 import S from './style'
 import AiPostListContainer from './list/components/AiPostListContainer';
-
-const CURRENT_MEMBER_ID = 1;
 
 const stripHtml = (html) => {
     if (!html) return '';
@@ -46,10 +45,12 @@ const mapPost = (p) => ({
 
 const CommunityContainer = () => {
     const [mainData, setMainData] = useState(null);
+    const memberId = useAuthStore((state) => state.user?.id ?? 0);
 
     useEffect(() => {
+        // console.log(memberId);
         const fetchMain = async () => {
-            const res = await fetch(`http://localhost:10000/api/posts/main?id=${CURRENT_MEMBER_ID}`, { method: 'POST' });
+            const res = await fetch(`http://localhost:10000/api/posts/main?id=${memberId}`, { method: 'POST' });
             if (!res.ok) return;
             const json = await res.json();
             if (!json.success) return;
