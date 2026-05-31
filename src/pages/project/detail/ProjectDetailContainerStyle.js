@@ -164,9 +164,11 @@ S.ProgressBar = styled.div`
 
 S.ProgressFill = styled.div`
 	height: 100%;
-	width: ${({ $percent }) => $percent}%;
+	width: ${({ $percent }) => $percent ?? 0}%;
+	min-width: ${({ $percent }) => $percent > 0 ? '6px' : '0'};
 	background: linear-gradient(90deg, ${theme.PALETTE.primary.main}, ${theme.PALETTE.third.main});
 	border-radius: 5px;
+	transition: width 0.6s ease;
 `;
 
 S.DDay = styled.span`

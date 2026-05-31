@@ -22,11 +22,8 @@ const ProjectSelectAllContainer = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [myProjects, setMyProjects] = useState([]);
-    const [otherProjects, setOtherProjects] = useState([]); // 추가
-    const [carouselIndex, setCarouselIndex] = useState(0);
+    const [otherProjects, setOtherProjects] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-
-    const ITEMS_PER_VIEW = 6;
 
     // ── 내 프로젝트 목록 조회 ──
     const fetchMyProjects = async () => {
@@ -81,12 +78,6 @@ const ProjectSelectAllContainer = () => {
         navigate(`/projects/${project.id}`);
     };
 
-    // ── 캐러셀 ──
-    const handlePrevCarousel = () => setCarouselIndex(prev => Math.max(prev - 3, 0));
-    const handleNextCarousel = () => setCarouselIndex(prev =>
-        Math.min(prev + 3, Math.max(0, myProjects.length - ITEMS_PER_VIEW))
-    );
-
     return (
         <S.PageWrapper>
             {/* 모달 */}
@@ -108,11 +99,7 @@ const ProjectSelectAllContainer = () => {
 
                 <ProjectMyList
                     projects={myProjects}
-                    carouselIndex={carouselIndex}
-                    onPrev={handlePrevCarousel}
-                    onNext={handleNextCarousel}
                     onCardClick={handleCardClick}
-                    itemsPerView={ITEMS_PER_VIEW}
                 />
             </S.Inner>
 

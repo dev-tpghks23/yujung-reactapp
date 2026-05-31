@@ -1,13 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import styled, { keyframes } from 'styled-components';
 import axios from '../../../api/axiosInstance';
 import theme from '../../../styles/theme';
 import S from './ProjectDetailContainerStyle';
+import {
+    flexCenter,
+    flexBetweenRow,
+    flexStartRow,
+    h4Bold,
+    h8Regular,
+    h8Bold,
+    h9Regular,
+    h9Bold,
+    h11Regular,
+} from '../../../styles/common';
 
 import ProjectDetailAction from './ProjectDetailAction';
 import ProjectDetailChecklist from './ProjectDetailChecklist';
 import ProjectDetailSuggestion from './ProjectDetailSuggestion';
-import ShareIcon from '../project_icon/icon-park-outline_share.svg';
+import CheckIconSrc from '../create/create_icon/check-small.svg';
 
 const AiBadge = () => (
     <S.AiBadge>
@@ -25,6 +37,98 @@ const AiBadge = () => (
     </S.AiBadge>
 );
 
+// ─────────────────────────────────────────
+// 내 로그 선택 모달 (프로젝트 가져오기용)
+// ─────────────────────────────────────────
+const LogSelectModal = ({ onClose, onConfirm }) => {
+    const [logs, setLogs] = useState([]);
+    const [selectedLogId, setSelectedLogId] = useState(null);
+    const [isFetching, setIsFetching] = useState(true);
+    const [isConfirming, setIsConfirming] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchLogs = async () => {
+            try {
+                const res = await axios.get('/api/logs/my-list');
+                setLogs(res.data.data || []);
+            } catch {
+                setError('로그 목록을 불러오는데 실패했습니다.');
+            } finally {
+                setIsFetching(false);
+            }
+        };
+        fetchLogs();
+    }, []);
+
+    const handleConfirm = async () => {
+        if (!selectedLogId) return;
+        setIsConfirming(true);
+        try {
+            await onConfirm(selectedLogId);
+            onClose();
+        } catch {
+            setError('프로젝트 추가에 실패했습니다. 다시 시도해주세요.');
+        } finally {
+            setIsConfirming(false);
+        }
+    };
+
+    return (
+        <LS.Overlay>
+            <LS.ModalWrap>
+                <LS.CloseBtn onClick={onClose} disabled={isConfirming}>✕</LS.CloseBtn>
+                <LS.Title>어느 페일로그의 프로젝트로 가져올까요?</LS.Title>
+                <LS.Desc>내 페일로그 중 하나를 선택하면 해당 로그의 프로젝트로 추가됩니다.</LS.Desc>
+
+                <LS.LogList>
+                    {isFetching ? (
+                        <LS.EmptyText>로그 목록을 불러오는 중...</LS.EmptyText>
+                    ) : logs.length === 0 ? (
+                        <LS.EmptyText>페일로그가 없습니다. 먼저 로그를 작성해주세요.</LS.EmptyText>
+                    ) : (
+                        logs.map((log) => (
+                            <LS.LogCard
+                                key={log.id}
+                                $active={selectedLogId === log.id}
+                                onClick={() => setSelectedLogId(log.id)}
+                            >
+                                <div>
+                                    <LS.LogCategory>{log.categoryName}</LS.LogCategory>
+                                    <LS.LogTitle>
+                                        <strong>{log.logTitle}</strong> — {log.visionTitle}
+                                    </LS.LogTitle>
+                                    <LS.LogDate>{log.logCreatedAt} 작성</LS.LogDate>
+                                </div>
+                                <LS.RadioCircle $active={selectedLogId === log.id}>
+                                    {selectedLogId === log.id && (
+                                        <LS.CheckIcon src={CheckIconSrc} alt="check" />
+                                    )}
+                                </LS.RadioCircle>
+                            </LS.LogCard>
+                        ))
+                    )}
+                </LS.LogList>
+
+                {error && <LS.ErrorText>{error}</LS.ErrorText>}
+
+                <LS.BtnRow>
+                    <LS.CancelBtn onClick={onClose} disabled={isConfirming}>취소</LS.CancelBtn>
+                    <LS.ConfirmBtn
+                        onClick={handleConfirm}
+                        disabled={!selectedLogId || isConfirming}
+                    >
+                        {isConfirming ? '추가 중...' : '이 로그의 프로젝트로 추가하기'}
+                    </LS.ConfirmBtn>
+                </LS.BtnRow>
+            </LS.ModalWrap>
+        </LS.Overlay>
+    );
+};
+
+// ─────────────────────────────────────────
+// MAIN COMPONENT
+// ─────────────────────────────────────────
 const ProjectPublicDetailContainer = () => {
     const { id: projectId } = useParams();
 
@@ -37,7 +141,8 @@ const ProjectPublicDetailContainer = () => {
     const [suggestions, setSuggestions] = useState([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [newItem, setNewItem] = useState({ title: '', memo: '', priority: null });
-    const [currentMemberId, setCurrentMemberId] = useState(null); // ✅ 추가
+    const [currentMemberId, setCurrentMemberId] = useState(null);
+    const [showLogSelectModal, setShowLogSelectModal] = useState(false);
 
     const fetchProject = async () => {
         try {
@@ -52,12 +157,11 @@ const ProjectPublicDetailContainer = () => {
             const suggestionResponse = await axios.get(`/api/suggestion/list/${projectId}`);
             setSuggestions(suggestionResponse.data.data || []);
 
-            // ✅ 현재 로그인한 유저 정보 조회
             try {
                 const meResponse = await axios.get('/private/member/me');
                 setCurrentMemberId(meResponse.data.data?.id);
             } catch {
-                setCurrentMemberId(null); // 비로그인 상태
+                setCurrentMemberId(null);
             }
 
         } catch (err) {
@@ -88,14 +192,17 @@ const ProjectPublicDetailContainer = () => {
         setShowAddModal(true);
     };
 
-    const handleCopy = async () => {
-        if (!window.confirm('이 프로젝트를 내 프로젝트로 추가하시겠습니까?')) return;
-        try {
-            await axios.post(`/api/project/copy/${projectId}`);
-            alert('내 프로젝트에 추가되었습니다!');
-        } catch (err) {
-            alert('프로젝트 추가에 실패했습니다.');
-        }
+    // 로그 선택 모달 열기
+    const handleCopyClick = () => {
+        setShowLogSelectModal(true);
+    };
+
+    // 선택한 logId로 프로젝트 복사
+    const handleCopyConfirm = async (logId) => {
+        await axios.post(`/api/project/copy/${projectId}`, null, {
+            params: { logId },
+        });
+        alert('내 프로젝트에 추가되었습니다!');
     };
 
     useEffect(() => {
@@ -129,6 +236,13 @@ const ProjectPublicDetailContainer = () => {
 
     return (
         <S.PageWrapper>
+            {showLogSelectModal && (
+                <LogSelectModal
+                    onClose={() => setShowLogSelectModal(false)}
+                    onConfirm={handleCopyConfirm}
+                />
+            )}
+
             <S.Inner>
                 <S.PageTop>
                     <S.PageTitle>PROJECT</S.PageTitle>
@@ -158,12 +272,12 @@ const ProjectPublicDetailContainer = () => {
                             <S.ProgressBar>
                                 <S.ProgressFill $percent={progressPercent} />
                             </S.ProgressBar>
-                            <S.DDay>{project.progressDay || getDDay(project.projectStartDate)}</S.DDay>
+                            <S.DDay>{getDDay(project.projectStartDate)}</S.DDay>
                         </S.ProgressRow>
                     </S.ProjectCardInner>
-                    <S.ProjectEditBtn onClick={handleCopy} title="내 프로젝트에 추가">
-                        <img src={ShareIcon} alt="내 프로젝트 추가" width="16" height="16" />
-                    </S.ProjectEditBtn>
+                    <LS.AddProjectBtn onClick={handleCopyClick}>
+                        + 내 프로젝트 추가
+                    </LS.AddProjectBtn>
                 </S.ProjectCard>
 
                 <ProjectDetailAction actions={aiSuggestions} />
@@ -194,11 +308,183 @@ const ProjectPublicDetailContainer = () => {
                     suggestions={suggestions}
                     onSubmit={handleSuggestionSubmit}
                     onAddFromSuggestion={handleAddFromSuggestion}
-                    isOwner={currentMemberId === project?.memberId} // ✅ 추가
+                    isOwner={currentMemberId === project?.memberId}
                 />
             </S.Inner>
         </S.PageWrapper>
     );
 };
+
+// ─────────────────────────────────────────
+// 로그 선택 모달 Styled Components
+// ─────────────────────────────────────────
+const spin = keyframes`to { transform: rotate(360deg); }`;
+
+const LS = {};
+
+LS.Overlay = styled.div`
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    ${flexCenter}
+`;
+
+LS.ModalWrap = styled.div`
+    width: 520px;
+    max-height: 75vh;
+    overflow-y: auto;
+    background: ${theme.PALETTE.white};
+    border-radius: 15px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+`;
+
+LS.CloseBtn = styled.button`
+    position: absolute;
+    top: 24px; right: 24px;
+    font-size: 20px;
+    color: ${theme.GRAYSCALE[7]};
+    &:disabled { opacity: 0.4; cursor: not-allowed; }
+`;
+
+LS.Title = styled.h2`
+    ${h4Bold}
+    color: ${theme.PALETTE.black};
+    margin-bottom: 8px;
+`;
+
+LS.Desc = styled.p`
+    ${h9Regular}
+    color: ${theme.GRAYSCALE[6]};
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid ${theme.GRAYSCALE[3]};
+`;
+
+LS.LogList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    min-height: 80px;
+`;
+
+LS.LogCard = styled.div`
+    ${flexBetweenRow}
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid ${({ $active }) => ($active ? theme.PALETTE.third.main : theme.GRAYSCALE[4])};
+    background: ${theme.PALETTE.white};
+    transition: border-color 0.15s;
+    &:hover { border-color: ${theme.PALETTE.third.main}; }
+`;
+
+LS.LogCategory = styled.span`
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    ${h11Regular}
+    background: ${theme.PALETTE.third.light};
+    color: ${theme.PALETTE.third.main};
+    margin-bottom: 8px;
+`;
+
+LS.LogTitle = styled.p`
+    ${h8Regular}
+    color: ${theme.GRAYSCALE[9]};
+    margin-bottom: 4px;
+    strong { ${h8Bold} color: ${theme.PALETTE.black}; }
+`;
+
+LS.LogDate = styled.p`
+    ${h9Regular}
+    color: ${theme.GRAYSCALE[6]};
+`;
+
+LS.RadioCircle = styled.div`
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    ${flexCenter}
+    border: 1px solid ${({ $active }) => ($active ? theme.PALETTE.third.main : theme.GRAYSCALE[4])};
+    background-color: ${({ $active }) => ($active ? theme.PALETTE.third.main : theme.PALETTE.white)};
+    transition: all 0.15s;
+`;
+
+LS.CheckIcon = styled.img`
+    width: 14px; height: 14px;
+    filter: brightness(0) invert(1);
+`;
+
+LS.EmptyText = styled.p`
+    ${h9Regular}
+    color: ${theme.GRAYSCALE[6]};
+    text-align: center;
+    padding: 24px 0;
+`;
+
+LS.ErrorText = styled.p`
+    ${h9Regular}
+    color: #ef4444;
+    text-align: center;
+    margin-bottom: 12px;
+`;
+
+LS.BtnRow = styled.div`
+    ${flexStartRow}
+    gap: 12px;
+`;
+
+LS.CancelBtn = styled.button`
+    height: 52px;
+    padding: 0 24px;
+    border-radius: 10px;
+    border: 1px solid ${theme.GRAYSCALE[4]};
+    background: ${theme.PALETTE.white};
+    color: ${theme.GRAYSCALE[9]};
+    ${h8Bold}
+    cursor: pointer;
+    &:hover:not(:disabled) { background: ${theme.GRAYSCALE[1]}; }
+    &:disabled { opacity: 0.4; cursor: not-allowed; }
+`;
+
+LS.ConfirmBtn = styled.button`
+    flex: 1;
+    height: 52px;
+    border-radius: 10px;
+    background: ${({ disabled }) => (disabled ? theme.GRAYSCALE[4] : theme.PALETTE.third.main)};
+    color: ${theme.PALETTE.white};
+    ${h8Bold}
+    ${flexCenter}
+    gap: 8px;
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+    transition: background 0.15s;
+    &:hover:not(:disabled) { background: #9333ea; }
+`;
+
+LS.AddProjectBtn = styled.button`
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    ${flexCenter}
+    gap: 6px;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1.5px solid ${theme.PALETTE.third.main};
+    background: ${theme.PALETTE.white};
+    color: ${theme.PALETTE.third.main};
+    ${h9Bold}
+    font-family: 'pretendard', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+    &:hover {
+        background: ${theme.PALETTE.third.main};
+        color: ${theme.PALETTE.white};
+    }
+`;
 
 export default ProjectPublicDetailContainer;

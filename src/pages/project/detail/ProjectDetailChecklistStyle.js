@@ -57,14 +57,14 @@ S.CheckItem = styled.div`
 
 S.CheckItemTop = styled.div`
 	${flexBetweenRow}
-	padding: 18px 20px;
+	position: relative;
+	padding: 18px 20px 18px 64px;
 	min-height: 100px;
 	cursor: pointer;
 `;
 
 S.CheckLeft = styled.div`
 	${flexStartRow}
-	gap: 30px;
 	flex: 1;
 `;
 
@@ -74,19 +74,23 @@ S.CheckRight = styled.div`
 `;
 
 S.CheckCircle = styled.div`
+	position: absolute;
+	left: 20px;
+	top: 50%;
+	transform: translateY(-50%);
 	width: 24px;
 	height: 24px;
 	border-radius: 50%;
 	border: 2px solid ${({ $status }) =>
 		$status === 'success' ? theme.PALETTE.secondary.main :
 		$status === 'fail' ? theme.PALETTE.fourth.main :
-		theme.GRAYSCALE[4]};
+		'transparent'};
 	background: ${({ $status }) =>
 		$status === 'success' ? theme.PALETTE.secondary.main :
 		$status === 'fail' ? theme.PALETTE.fourth.main :
 		'transparent'};
+	visibility: ${({ $status }) => $status ? 'visible' : 'hidden'};
 	${flexCenter}
-	flex-shrink: 0;
 	transition: all 0.2s;
 `;
 

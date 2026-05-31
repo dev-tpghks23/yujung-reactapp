@@ -4,7 +4,12 @@ import {
     flexStartRow,
     flexCenter,
     h6Bold,
+    h7Bold,
+    h8Bold,
     h9Bold,
+    h9Regular,
+    h10Bold,
+    h11Regular,
 } from '../../../styles/common';
 import theme from '../../../styles/theme';
 
@@ -12,19 +17,12 @@ const S = {};
 
 S.MyProjectsSection = styled.div`
     position: relative;
-    padding: 40px 0 120px;
+    padding: 40px 0 80px;
 `;
 
-S.CarouselWrap = styled.div`
+/* ── 로그 그룹 캐러셀 래퍼 ── */
+S.CarouselOuter = styled.div`
     position: relative;
-`;
-
-S.CardGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 24px;
-    row-gap: 50px;
-    align-items: start;    // 추가 - 각 카드가 독립적인 높이를 가지도록
 `;
 
 S.ArrowBtn = styled.button`
@@ -41,25 +39,106 @@ S.ArrowBtn = styled.button`
     font-size: 40px;
     z-index: 1;
     transition: all 0.15s ease;
-    &:first-child { left: -100px; }
-    &:last-child { right: -100px; }
+    &:first-child { left: -90px; }
+    &:last-child  { right: -90px; }
     &:hover:not(:disabled) {
         background: ${theme.GRAYSCALE[1]};
         border-color: ${theme.GRAYSCALE[6]};
     }
-    &:disabled { opacity: 0.3; cursor: default; }
+    &:disabled {
+        opacity: 0;
+        pointer-events: none;
+    }
 `;
 
+/* ── 로그별 섹션 ── */
+S.LogSection = styled.div`
+    margin-bottom: 20px;
+`;
+
+S.LogSectionHeader = styled.div`
+    ${flexStartRow}
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid ${theme.PALETTE.third.main};
+`;
+
+S.LogSectionTitle = styled.h3`
+    ${h7Bold}
+    color: ${theme.PALETTE.black};
+`;
+
+S.LogSectionCount = styled.span`
+    ${h10Bold}
+    color: ${theme.PALETTE.third.main};
+    background: ${theme.PALETTE.third.light};
+    padding: 3px 10px;
+    border-radius: 20px;
+`;
+
+S.EmptyState = styled.p`
+    ${h9Regular}
+    color: ${theme.GRAYSCALE[6]};
+    text-align: center;
+    padding: 60px 0;
+`;
+
+/*
+ * ── 카드 스크롤 래퍼 ──
+ * margin-left: -50px + padding-left: 50px 트릭:
+ * 카드의 box-shadow가 왼쪽으로 40px 확장되는데,
+ * overflow-x: auto는 padding 영역을 클리핑하지 않으므로
+ * padding 안으로 그림자를 숨겨 좌측 잘림 현상을 방지.
+ */
+S.CardScrollWrapper = styled.div`
+    overflow-x: auto;
+    margin-left: -50px;
+    padding-left: 50px;
+    padding-right: 35px;
+    padding-top: 12px;
+    padding-bottom: 65px;
+
+    &::-webkit-scrollbar {
+        height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+        background: ${theme.GRAYSCALE[2]};
+        border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: ${theme.PALETTE.third.main};
+        border-radius: 3px;
+    }
+`;
+
+/* ── 카드 그리드 (가로 배치) ── */
+S.CardGrid = styled.div`
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 24px;
+    width: max-content;
+`;
+
+/*
+ * 카드 너비를 Inner 컨테이너 기준으로 3등분 계산.
+ * Inner: max-width 1320px, padding 0 60px → content = min(vw, 1320) - 120px
+ * 3카드 + 2gap(48px) → card = (content - 48) / 3
+ */
 S.CardWrapper = styled.div`
     position: relative;
-    height: 180px;  // 높이 고정
+    height: 180px;
+    width: calc((min(100vw, 1320px) - 168px) / 3);
+    flex-shrink: 0;
 `;
 
 S.Card = styled.div`
     display: flex;
     flex-direction: row;
     height: 180px;
-    max-height: 180px;   // 추가
+    width: 100%;
+    box-sizing: border-box;
     background: ${theme.PALETTE.white};
     border-radius: 15px;
     border: 1px solid ${theme.GRAYSCALE[4]};
@@ -83,8 +162,8 @@ S.AccentBar = styled.div`
 S.CardContent = styled.div`
     flex: 1;
     min-width: 0;
-    width: 100%;             // 추가: 텍스트가 길어져도 100% 이상 늘어나지 않도록 방어
-    box-sizing: border-box;  // 추가
+    width: 100%;
+    box-sizing: border-box;
     padding: 18px 30px 16px 26px;
     display: flex;
     flex-direction: column;
@@ -143,7 +222,7 @@ S.CardTitle = styled.p`
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-all;
-    white-space: normal; // nowrap 대신 normal을 써야 카드가 팽창하지 않음
+    white-space: normal;
 `;
 
 S.TagRow = styled.div`
@@ -151,9 +230,9 @@ S.TagRow = styled.div`
     gap: 8px;
     flex-wrap: nowrap;
     overflow: hidden;
-    height: 28px;        // 추가 - 태그 높이 고정
-    min-height: 28px;    // 추가
-    max-height: 28px;    // 추가
+    height: 28px;
+    min-height: 28px;
+    max-height: 28px;
 `;
 
 S.Tag = styled.span`
@@ -168,7 +247,7 @@ S.Tag = styled.span`
     color: ${theme.GRAYSCALE[10]};
     flex-shrink: 1;
     min-width: 0;
-    max-width: 160px;    // 태그 최대 너비 고정
+    max-width: 160px;
     box-sizing: border-box;
     & > img, & > svg { flex-shrink: 0; }
     .text {

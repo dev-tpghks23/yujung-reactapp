@@ -248,7 +248,7 @@ const ProjectDetailContainer = () => {
                             <S.ProgressBar>
                                 <S.ProgressFill $percent={progressPercent} />
                             </S.ProgressBar>
-                            <S.DDay>{project.progressDay || getDDay(project.projectStartDate)}</S.DDay>
+                            <S.DDay>{getDDay(project.projectStartDate)}</S.DDay>
                         </S.ProgressRow>
                     </S.ProjectCardInner>
                     <S.ProjectEditBtn onClick={() => setIsEditOpen(true)}>

@@ -41,19 +41,19 @@ const ChecklistItem = ({ item, onToggle, onStatusChange, readOnly = false }) => 
     return (
         <S.CheckItem $status={item.status}>
             <S.CheckItemTop onClick={() => setExpanded(prev => !prev)}>
+                <S.CheckCircle $status={item.status} onClick={(e) => { e.stopPropagation(); }}>
+                    {item.status === 'success' && (
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path d="M2.5 7L5.5 10L11.5 4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    )}
+                    {item.status === 'fail' && (
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path d="M4 4L10 10M10 4L4 10" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
+                    )}
+                </S.CheckCircle>
                 <S.CheckLeft>
-                    <S.CheckCircle $status={item.status} onClick={(e) => { e.stopPropagation(); }}>
-                        {item.status === 'success' && (
-                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                <path d="M2.5 7L5.5 10L11.5 4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        )}
-                        {item.status === 'fail' && (
-                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                <path d="M4 4L10 10M10 4L4 10" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                            </svg>
-                        )}
-                    </S.CheckCircle>
                     {/* 수정 모드일 때만 title 입력 가능 */}
                     {isEditing ? (
                         <S.MemoInput

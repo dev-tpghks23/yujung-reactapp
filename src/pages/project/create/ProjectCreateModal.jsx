@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from '../../../api/axiosInstance';
-import { 
-    flexCenter, 
-    flexBetweenRow, 
-    flexStartRow, 
-    h4Bold, 
-    h8Regular, 
-    h8Bold, 
-    h9Regular, 
-    h9Bold, 
-    h11Regular 
+import {
+    flexCenter,
+    flexBetweenRow,
+    flexStartRow,
+    h4Bold,
+    h8Regular,
+    h8Bold,
+    h9Regular,
+    h9Bold,
+    h11Regular
 } from '../../../styles/common';
 import theme from '../../../styles/theme';
 import CheckIconSrc from './create_icon/check-small.svg';
@@ -18,8 +18,10 @@ import CheckIconSrc from './create_icon/check-small.svg';
 const CATEGORIES = ['전체', '사업/창업', '공부/취업', '인간관계', '건강/루틴', '기타'];
 
 const ProjectCreateModal = ({ onClose, onCreated }) => {
+    const [step, setStep] = useState(1);
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [selectedLogId, setSelectedLogId] = useState(null);
+    const [userGoal, setUserGoal] = useState('');
     const [logs, setLogs] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
@@ -46,7 +48,16 @@ const ProjectCreateModal = ({ onClose, onCreated }) => {
         ? logs
         : logs.filter((log) => log.categoryName === selectedCategory);
 
-    // ── 프로젝트 생성 ──
+    const selectedLog = logs.find((log) => log.id === selectedLogId);
+
+    // ── Step 1 → Step 2 ──
+    const handleNextStep = () => {
+        if (!selectedLogId) return;
+        setError(null);
+        setStep(2);
+    };
+
+    // ── 프로젝트 생성 (Step 2에서 호출) ──
     const handleSubmit = async () => {
         if (!selectedLogId) return;
 
@@ -55,6 +66,7 @@ const ProjectCreateModal = ({ onClose, onCreated }) => {
             setError(null);
             const response = await axios.post('/api/project/create', {
                 logId: selectedLogId,
+                userGoal: userGoal.trim() || null,
             });
 
             if (response.data.success) {
@@ -78,70 +90,115 @@ const ProjectCreateModal = ({ onClose, onCreated }) => {
             <S.ModalWrap>
                 <S.CloseBtn onClick={onClose} disabled={isLoading}>✕</S.CloseBtn>
 
-                <S.TitleRow>
-                    <S.Title>어떤 페일로그의 프로젝트를 생성할 계획인가요?</S.Title>
-                </S.TitleRow>
+                {step === 1 ? (
+                    <>
+                        <S.TitleRow>
+                            <S.StepIndicator>1 / 2</S.StepIndicator>
+                            <S.Title>어떤 페일로그의 프로젝트를 생성할 계획인가요?</S.Title>
+                        </S.TitleRow>
 
-                {/* 카테고리 필터 */}
-                <S.CategoryRow>
-                    {CATEGORIES.map((cat) => (
-                        <S.CategoryChip
-                            key={cat}
-                            $active={selectedCategory === cat}
-                            onClick={() => setSelectedCategory(cat)}
+                        {/* 카테고리 필터 */}
+                        <S.CategoryRow>
+                            {CATEGORIES.map((cat) => (
+                                <S.CategoryChip
+                                    key={cat}
+                                    $active={selectedCategory === cat}
+                                    onClick={() => setSelectedCategory(cat)}
+                                >
+                                    {cat}
+                                </S.CategoryChip>
+                            ))}
+                        </S.CategoryRow>
+
+                        {/* 로그 목록 */}
+                        <S.LogList>
+                            {isFetching ? (
+                                <S.EmptyText>로그 목록을 불러오는 중...</S.EmptyText>
+                            ) : filteredLogs.length === 0 ? (
+                                <S.EmptyText>해당 카테고리의 페일로그가 없습니다.</S.EmptyText>
+                            ) : (
+                                filteredLogs.map((log) => (
+                                    <S.LogCard
+                                        key={log.id}
+                                        $active={selectedLogId === log.id}
+                                        onClick={() => setSelectedLogId(log.id)}
+                                    >
+                                        <S.LogTextContent>
+                                            <S.LogCategory>{log.categoryName}</S.LogCategory>
+                                            <S.LogTitle>
+                                                <strong>{log.logTitle}</strong> - {log.visionTitle}
+                                            </S.LogTitle>
+                                            <S.LogDate>{log.logCreatedAt} 작성</S.LogDate>
+                                        </S.LogTextContent>
+                                        <S.RadioCircle $active={selectedLogId === log.id}>
+                                            {selectedLogId === log.id && (
+                                                <S.CheckIcon src={CheckIconSrc} alt="check" />
+                                            )}
+                                        </S.RadioCircle>
+                                    </S.LogCard>
+                                ))
+                            )}
+                        </S.LogList>
+
+                        {error && <S.ErrorText>{error}</S.ErrorText>}
+
+                        <S.SubmitBtn
+                            onClick={handleNextStep}
+                            disabled={!selectedLogId}
                         >
-                            {cat}
-                        </S.CategoryChip>
-                    ))}
-                </S.CategoryRow>
+                            다음 단계로
+                        </S.SubmitBtn>
+                    </>
+                ) : (
+                    <>
+                        <S.TitleRow>
+                            <S.StepIndicator>2 / 2</S.StepIndicator>
+                            <S.Title>이 프로젝트에서 달성하고 싶은 세부 목표를 알려주세요.</S.Title>
+                        </S.TitleRow>
 
-                {/* 로그 목록 */}
-                <S.LogList>
-                    {isFetching ? (
-                        <S.EmptyText>로그 목록을 불러오는 중...</S.EmptyText>
-                    ) : filteredLogs.length === 0 ? (
-                        <S.EmptyText>해당 카테고리의 페일로그가 없습니다.</S.EmptyText>
-                    ) : (
-                        filteredLogs.map((log) => (
-                            <S.LogCard
-                                key={log.id}
-                                $active={selectedLogId === log.id}
-                                onClick={() => setSelectedLogId(log.id)}
+                        {/* 선택된 로그 요약 */}
+                        {selectedLog && (
+                            <S.SelectedLogSummary>
+                                <S.SelectedLogLabel>선택된 로그</S.SelectedLogLabel>
+                                <S.SelectedLogText>
+                                    <strong>{selectedLog.logTitle}</strong> — {selectedLog.visionTitle}
+                                </S.SelectedLogText>
+                            </S.SelectedLogSummary>
+                        )}
+
+                        {/* 세부 목표 입력 */}
+                        <S.GoalTextarea
+                            placeholder="예: 매일 30분씩 영어 회화 연습하기, 주 3회 운동 루틴 만들기 등&#10;AI가 이 목표를 바탕으로 행동 추천과 체크리스트를 설계합니다."
+                            value={userGoal}
+                            onChange={(e) => setUserGoal(e.target.value)}
+                            maxLength={200}
+                            disabled={isLoading}
+                        />
+                        <S.CharCount>{userGoal.length} / 200</S.CharCount>
+
+                        {error && <S.ErrorText>{error}</S.ErrorText>}
+
+                        <S.BtnRow>
+                            <S.BackBtn onClick={() => { setStep(1); setError(null); }} disabled={isLoading}>
+                                이전
+                            </S.BackBtn>
+                            <S.SubmitBtn
+                                onClick={handleSubmit}
+                                disabled={isLoading}
+                                style={{ flex: 1 }}
                             >
-                                <div>
-                                    <S.LogCategory>{log.categoryName}</S.LogCategory>
-                                    <S.LogTitle>
-                                        <strong>{log.logTitle}</strong> - {log.visionTitle}
-                                    </S.LogTitle>
-                                    <S.LogDate>{log.logCreatedAt} 작성</S.LogDate>
-                                </div>
-                                <S.RadioCircle $active={selectedLogId === log.id}>
-                                    {selectedLogId === log.id && (
-                                        <S.CheckIcon src={CheckIconSrc} alt="check" />
-                                    )}
-                                </S.RadioCircle>
-                            </S.LogCard>
-                        ))
-                    )}
-                </S.LogList>
-
-                {/* 에러 메시지 */}
-                {error && <S.ErrorText>{error}</S.ErrorText>}
-
-                {/* 생성 버튼 */}
-                <S.SubmitBtn
-                    onClick={handleSubmit}
-                    disabled={!selectedLogId || isLoading}
-                >
-                    {isLoading ? (
-                        <>
-                            <S.Spinner />
-                            AI가 프로젝트를 생성 중입니다...
-                        </>
-                    ) : (
-                        '이 로그의 프로젝트 생성하기'
-                    )}
-                </S.SubmitBtn>
+                                {isLoading ? (
+                                    <>
+                                        <S.Spinner />
+                                        AI가 프로젝트를 생성 중입니다...
+                                    </>
+                                ) : (
+                                    'AI로 프로젝트 생성하기'
+                                )}
+                            </S.SubmitBtn>
+                        </S.BtnRow>
+                    </>
+                )}
             </S.ModalWrap>
         </S.Overlay>
     );
@@ -192,6 +249,12 @@ S.TitleRow = styled.div`
     margin-bottom: 24px;
 `;
 
+S.StepIndicator = styled.p`
+    ${h11Regular}
+    color: ${theme.PALETTE.third.main};
+    margin-bottom: 8px;
+`;
+
 S.Title = styled.h2`
     ${h4Bold}
     color: ${theme.PALETTE.black};
@@ -225,6 +288,7 @@ S.LogList = styled.div`
 
 S.LogCard = styled.div`
     ${flexBetweenRow}
+    gap: 20px;
     padding: 20px;
     border-radius: 10px;
     cursor: pointer;
@@ -235,6 +299,11 @@ S.LogCard = styled.div`
     &:hover {
         border-color: ${theme.PALETTE.third.main};
     }
+`;
+
+S.LogTextContent = styled.div`
+    flex: 1;
+    min-width: 0;
 `;
 
 S.LogCategory = styled.span`
@@ -251,6 +320,11 @@ S.LogTitle = styled.p`
     ${h8Regular}
     color: ${theme.GRAYSCALE[9]};
     margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     strong {
         ${h8Bold}
@@ -278,6 +352,88 @@ S.CheckIcon = styled.img`
     width: 14px;
     height: 14px;
     filter: brightness(0) invert(1);
+`;
+
+S.SelectedLogSummary = styled.div`
+    padding: 16px 20px;
+    border-radius: 10px;
+    background: ${theme.PALETTE.third.light};
+    border: 1px solid ${theme.PALETTE.third.main};
+    margin-bottom: 20px;
+`;
+
+S.SelectedLogLabel = styled.p`
+    ${h11Regular}
+    color: ${theme.PALETTE.third.main};
+    margin-bottom: 4px;
+`;
+
+S.SelectedLogText = styled.p`
+    ${h8Regular}
+    color: ${theme.GRAYSCALE[9]};
+    strong {
+        ${h8Bold}
+        color: ${theme.PALETTE.black};
+    }
+`;
+
+S.GoalTextarea = styled.textarea`
+    width: 100%;
+    height: 120px;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid ${theme.GRAYSCALE[4]};
+    ${h9Regular}
+    font-family: 'pretendard', sans-serif;
+    color: ${theme.PALETTE.black};
+    resize: none;
+    box-sizing: border-box;
+    line-height: 1.6;
+    transition: border-color 0.15s;
+    &:focus {
+        outline: none;
+        border-color: ${theme.PALETTE.third.main};
+    }
+    &::placeholder {
+        color: ${theme.GRAYSCALE[5]};
+        font-family: 'pretendard', sans-serif;
+    }
+    &:disabled {
+        background: ${theme.GRAYSCALE[1]};
+        cursor: not-allowed;
+    }
+`;
+
+S.CharCount = styled.p`
+    ${h11Regular}
+    color: ${theme.GRAYSCALE[5]};
+    text-align: right;
+    margin-top: 6px;
+    margin-bottom: 16px;
+`;
+
+S.BtnRow = styled.div`
+    ${flexStartRow}
+    gap: 12px;
+`;
+
+S.BackBtn = styled.button`
+    height: 52px;
+    padding: 0 24px;
+    border-radius: 10px;
+    border: 1px solid ${theme.GRAYSCALE[4]};
+    background: ${theme.PALETTE.white};
+    color: ${theme.GRAYSCALE[9]};
+    ${h8Bold}
+    cursor: pointer;
+    transition: background 0.15s;
+    &:hover:not(:disabled) {
+        background: ${theme.GRAYSCALE[1]};
+    }
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
 `;
 
 S.EmptyText = styled.p`
