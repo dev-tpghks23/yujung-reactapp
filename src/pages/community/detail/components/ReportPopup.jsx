@@ -80,8 +80,8 @@ const ReportPopup = ({ type = '댓글', id, memberId, profileImg, author, conten
         <ProfileBox>
           {profileImg && <ProfileImg src={profileImg} alt={author} />}
           <ProfileRight>
-            <S.Span size="h10Bold">{author}</S.Span>
-            <S.Span2 size="h10Regular" color="faillog_gray9" lineclamp={2}>{content}</S.Span2>
+            <S.Span size="h9Bold">{author}</S.Span>
+            <S.Span2 size="h9Regular" color="faillog_gray9" lineclamp={2}>{content}</S.Span2>
           </ProfileRight>
         </ProfileBox>
 
@@ -188,8 +188,8 @@ const ProfileBox = styled.div`
 `
 
 const ProfileImg = styled.img`
-  width: 28px;
-  height: 28px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -254,7 +254,7 @@ const ContentTextArea = styled.textarea`
   width: 568px;
   height: 100px;
   margin-top: 16px;
-  background: ${colorCSS["faillog_gray1"]};
+  background: ${colorCSS["faillog-sector-gray"]};
   border: none;
   border-radius: 10px;
   padding: 16px;

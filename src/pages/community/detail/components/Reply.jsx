@@ -163,7 +163,7 @@ console.log(`member: ${memberId} reply: ${replyId} loginid: ${loginId}`);
         <ProfileGroup>
           {profileImg && <ProfileImg src={profileImg} alt="프로필" />}
           <S.Span size="h8Bold">{author}</S.Span>
-          <S.Span size="h11Regular" color="faillog_gray9">{createdAt}</S.Span>
+          <S.Span size="h10Regular" color="faillog_gray9">{createdAt}</S.Span>
         </ProfileGroup>
 
         <MenuContainer>
@@ -274,8 +274,8 @@ const ProfileGroup = styled.div`
 `
 
 const ProfileImg = styled.img`
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   object-fit: cover;
 `
@@ -320,13 +320,14 @@ const DropdownItem = styled.div`
 
 const ContentArea = styled.div`
   margin-top: 10px;
+  margin-bottom: 10px;
 `
 
 const ContentText = styled.p`
   margin: 0;
   padding-right: 170px;
   ${sizeCSS["h9Regular"]}
-  color: ${colorCSS["faillog-black"]};
+  color: ${colorCSS["faillog_gray9"]};
   word-break: break-all;
 `
 

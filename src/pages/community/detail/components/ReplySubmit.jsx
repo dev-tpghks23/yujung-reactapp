@@ -53,7 +53,7 @@ const TextArea = styled.textarea`
   width: 1236px;
   height: 112px;
   padding: 14px 16px;
-  background: ${colorCSS["faillog_gray1"]};
+  background: ${colorCSS["faillog-sector-gray"]};
   border: 1px solid ${colorCSS["faillog_gray2"]};
   border-radius: 15px;
   resize: none;

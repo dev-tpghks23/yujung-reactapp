@@ -23,7 +23,7 @@ const PostHeader = ({ category, title, profile, author, views, date, timeAgo }) 
       <BottomRow>
         <AuthorWrap>
           <PorileImg src={profile} alt={author} />
-          <S.Span size="h10Regular" color="faillog_gray9">{author}</S.Span>
+          <S.Span size="h9Regular" color="faillog_gray9">{author}</S.Span>
         </AuthorWrap>
         <MetaWrap>
           <MetaItem>
@@ -76,8 +76,8 @@ const AuthorWrap = styled.div`
 `;
 
 const PorileImg = styled.img`
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
 `;
 
