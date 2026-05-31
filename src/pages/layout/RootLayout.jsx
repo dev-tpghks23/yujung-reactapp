@@ -26,11 +26,15 @@ const RootLayout = () => {
         if (json?.success && json?.data) {
           setUser(json.data);
           setIsAuthenticated(true);
-        } else if (!isAuthenticated) {
+        } else {
+          setUser(null);
           setIsAuthenticated(false);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        setUser(null);
+        setIsAuthenticated(false);
+      });
   }, []);
 
   return (

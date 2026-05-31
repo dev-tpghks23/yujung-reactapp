@@ -83,7 +83,7 @@ const JoinContainer = () => {
   const handleSendEmail = async () => {
     if (!email) return;
     try {
-      const res = await fetch('http://localhost:10000/public/auth/email/send', {
+      const res = await fetch('/public/auth/email/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberEmail: email, purpose: 'JOIN' }),
@@ -100,7 +100,7 @@ const JoinContainer = () => {
   const handleVerifyEmail = async () => {
     if (!emailCode) return;
     try {
-      const res = await fetch('http://localhost:10000/public/auth/email/verify', {
+      const res = await fetch('/public/auth/email/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberEmail: email, code: emailCode, purpose: 'JOIN' }),
@@ -119,7 +119,7 @@ const JoinContainer = () => {
   const handleSendPhone = async () => {
     if (!phone) return;
     try {
-      const res = await fetch('http://localhost:10000/public/auth/phone/send', {
+      const res = await fetch('/public/auth/phone/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberPhone: phone }),
@@ -136,7 +136,7 @@ const JoinContainer = () => {
   const handleVerifyPhone = async () => {
     if (!phoneCode) return;
     try {
-      const res = await fetch('http://localhost:10000/public/auth/phone/verify', {
+      const res = await fetch('/public/auth/phone/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberPhone: phone, code: phoneCode }),
@@ -152,7 +152,7 @@ const JoinContainer = () => {
 
   const handleJoin = async () => {
     try {
-      const res = await fetch('http://localhost:10000/public/auth/join', {
+      const res = await fetch('/public/auth/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

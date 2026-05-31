@@ -213,6 +213,7 @@ S.AiCardText = styled.p`
   color: ${colorCSS["faillog-black"]};
   line-height: 1.8;
   white-space: pre-line;
+  padding: 0 72px;
 `;
 
 S.AiCardLoading = styled.p`
