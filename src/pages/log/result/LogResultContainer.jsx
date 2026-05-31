@@ -32,17 +32,30 @@ const LogResultContainer = () => {
     }
   };
 
+  const saveToRecentLogs = (logInfo) => {
+    const recent = JSON.parse(localStorage.getItem('recentViewedLogs') || '[]');
+    const entry = {
+      id: logInfo.id,
+      title: logInfo.logTitle || '',
+      author: logInfo.memberNickname || '익명',
+      profileImg: logInfo.memberProfileImageUrl || null,
+      date: logInfo.logCreatedAt || '',
+    };
+    const filtered = recent.filter((item) => item.id !== entry.id);
+    localStorage.setItem('recentViewedLogs', JSON.stringify([entry, ...filtered].slice(0, 3)));
+  };
+
   // 실데이터 연동 API 호출
   useEffect(() => {
     const fetchLogData = async () => {
       try {
         setLoading(true);
-        // GET /api/logs/analyze/{logId} 호출
         const res = await axiosInstance.get(`/api/logs/analyze/${id}`);
         if (res.data?.success) {
             setLogData(res.data.data);
             setLikeCount(res.data.data.logInfo.likeCount || 0);
             setLiked(false);
+            saveToRecentLogs(res.data.data.logInfo);
         }
       } catch (err) {
         console.error("로그 데이터 불러오기 실패:", err);

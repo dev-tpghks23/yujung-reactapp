@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PageS from '../profile/styles/MyPageWrapper';
 
 import HeroRotationComponent from '../heroSection/HeroRotationComponents';
@@ -14,15 +14,31 @@ import EmptyStateComponent from '../commons/EmptyStateComponent';
 import CommS from '../profile/styles/CommunityStyles';
 import FailS from './styles/MyFailLogStyles';
 import PopupComponent from '../../../components/commons/PopupComponent';
-import { DUMMY_FAIL_LOGS, DUMMY_DRAFT_LOGS } from '../data/dummyData';
+import axiosInstance from '../../../api/axiosInstance';
 
-const MyFailLogsContainer = () => {
+const mapLog = (item) => ({
+  id: item.id,
+  title: item.logTitle || '',
+  content: item.visionTitle || '',
+  author: item.memberNickname || '나의 기록',
+  profileImg: item.memberProfileImageUrl || null,
+  createdAt: item.logCreatedAt || '',
+  date: item.logCreatedAt || '',
+  likeCount: item.likeCount || 0,
+  isLiked: false,
+  views: item.logReadCount || 0,
+  progress: item.logProgress || 0,
+  logStatus: item.logStatus,
+});
+
+const MyFailLogsContainer = ({ isPageOwner = true }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { userId } = useParams();
   const { mainContent, quickMenus } = getHeroContent(pathname);
   const { content, setContent, setPage } = useSearchStore();
   
-  const [allLogs, setAllLogs] = useState(DUMMY_FAIL_LOGS);
+  const [allLogs, setAllLogs] = useState([]);
   const [popup, setPopup] = useState(null);
   const closePopup = () => setPopup(null);
   const showAlert = (message) => setPopup({ message, onConfirm: closePopup });
@@ -37,7 +53,30 @@ const MyFailLogsContainer = () => {
   const [isTrashEditMode, setIsTrashEditMode] = useState(false);
   const [selectedTrashIds, setSelectedTrashIds] = useState([]);
 
-  const draftLogs = DUMMY_DRAFT_LOGS;
+  const [draftLogs, setDraftLogs] = useState([]);
+  const [ownerNickname, setOwnerNickname] = useState('');
+
+  useEffect(() => {
+    if (isPageOwner || !userId) return;
+    axiosInstance.get(`/api/members/${userId}`)
+      .then((res) => {
+        if (res.data?.success) setOwnerNickname(res.data.data.memberNickname || '');
+      })
+      .catch(console.error);
+  }, [isPageOwner, userId]);
+
+  useEffect(() => {
+    if (!isPageOwner) return;
+    axiosInstance.get('/api/logs/my-list')
+      .then((res) => {
+        if (res.data?.success && Array.isArray(res.data.data)) {
+          const mapped = res.data.data.map(mapLog);
+          setAllLogs(mapped.filter((log) => log.logStatus !== 'DRAFT'));
+          setDraftLogs(mapped.filter((log) => log.logStatus === 'DRAFT'));
+        }
+      })
+      .catch(console.error);
+  }, [isPageOwner]);
 
   useEffect(() => {
     let filtered = allLogs;
@@ -143,15 +182,18 @@ const MyFailLogsContainer = () => {
       onCancel={popup?.onCancel}
     />
     <PageS.MainWrapper>
-      <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} />
-      <DraftLogsComponent draftLogs={draftLogs} />
-      
+      <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} isPageOwner={isPageOwner} userId={userId} />
+      {isPageOwner && <DraftLogsComponent draftLogs={draftLogs.slice(0, 3)} />}
+
       {hasNoCards ? (
         <EmptyStateComponent
-          title={<>아직 기록된 실패가 없네요.<br /><span>첫 번째 페일로그</span>를 적어볼까요?</>}
+          title={isPageOwner
+            ? <>아직 기록된 실패가 없네요.<br /><span>첫 번째 페일로그</span>를 적어볼까요?</>
+            : <>아직 <span>{ownerNickname}</span>님의 페일로그가 없어요.</>
+          }
           subText="실패를 외면하지 않고 기록할 때, 당신의 강력한 성장 데이터가 됩니다."
-          buttonText="시작하기"
-          onButtonClick={() => navigate('/my-page/fail-logs/write')}
+          buttonText={isPageOwner ? "시작하기" : undefined}
+          onButtonClick={isPageOwner ? () => navigate('/logs/new/step1') : undefined}
           styles={CommS}
         />
       ) : (
@@ -170,22 +212,25 @@ const MyFailLogsContainer = () => {
             onSelectOneLog={handleSelectOneLog}
             onSelectAllLogs={handleSelectAllLogs}
             onDeleteLogs={handleDeleteLogs}
+            isPageOwner={isPageOwner}
           />
         </>
       )}
 
-      <FailS.TrashSeparator>
-        <TrashComponent
-          trashedLogs={trashedLogs}
-          isTrashEditMode={isTrashEditMode}
-          onToggleEditMode={handleToggleTrashEditMode}
-          selectedTrashIds={selectedTrashIds}
-          onSelectOneTrash={handleSelectOneTrash}
-          onSelectAllTrash={handleSelectAllTrash}
-          onRestoreSelected={handleRestoreSelectedLogs}
-          onDeleteForeverSelected={handleDeleteForeverSelectedLogs}
-        />
-      </FailS.TrashSeparator>
+      {isPageOwner && (
+        <FailS.TrashSeparator>
+          <TrashComponent
+            trashedLogs={trashedLogs}
+            isTrashEditMode={isTrashEditMode}
+            onToggleEditMode={handleToggleTrashEditMode}
+            selectedTrashIds={selectedTrashIds}
+            onSelectOneTrash={handleSelectOneTrash}
+            onSelectAllTrash={handleSelectAllTrash}
+            onRestoreSelected={handleRestoreSelectedLogs}
+            onDeleteForeverSelected={handleDeleteForeverSelectedLogs}
+          />
+        </FailS.TrashSeparator>
+      )}
     </PageS.MainWrapper>
     </>
   );

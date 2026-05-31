@@ -220,19 +220,20 @@ S.AccountItem = styled.div`
 S.ProfileCard = styled.div`
   background: #ffffff;
   border-radius: 24px;
-  padding: 32px 30px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 0;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   border: 1px solid #F1F5F9;
   height: 100%;
-  min-height: 320px;
+  min-height: 260px;
 
   .profileImageContainer {
     position: relative;
-    margin-bottom: 28px;
+    margin-bottom: 20px;
 
     .profileImageCircle {
       width: 120px;
@@ -268,33 +269,40 @@ S.ProfileCard = styled.div`
 
   .nickname-area {
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
+    text-align: center;
 
     .display-mode {
       display: flex;
+      align-items: center;
+      justify-content: center;
       gap: 10px;
-      
-      .nickname-input {
-        flex: 1;
-        border: none;
-        background: #F8FAFC;
-        padding: 10px 15px;
-        border-radius: 10px;
-        font-weight: 700;
-        color: #333;
-        outline: none;
+
+      .nickname-display {
+        font-size: 24px;
+        font-weight: 800;
+        color: #1E293B;
+        line-height: 1.2;
       }
 
       .nickname-change-btn {
         background: none;
         border: 1px solid #E2E8F0;
-        padding: 0 15px;
+        padding: 6px 14px;
         border-radius: 10px;
         font-size: 13px;
         color: #64748B;
         cursor: pointer;
+        flex-shrink: 0;
         &:hover { background: #F1F5F9; }
       }
+    }
+
+    .nickname-display {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1E293B;
+      line-height: 1.2;
     }
   }
 

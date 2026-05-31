@@ -14,10 +14,20 @@ const AccountDataComponent = ({
   onUnregister,
   onPasswordSubmit,
   onEmailSubmit,
+  isSocialLogin = false,
 }) => {
   const [showPasswordPopup, setShowPasswordPopup] = useState(false);
   const [showEmailPopup, setShowEmailPopup] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [socialLoginMsg, setSocialLoginMsg] = useState('');
+
+  const handlePasswordChangeClick = () => {
+    if (isSocialLogin) {
+      setSocialLoginMsg('현재 소셜로그인 상태입니다.');
+    } else {
+      setShowPasswordPopup(true);
+    }
+  };
 
   return (
     <>
@@ -25,6 +35,11 @@ const AccountDataComponent = ({
         isOpen={!!successMsg}
         message={successMsg}
         onConfirm={() => setSuccessMsg('')}
+      />
+      <PopupComponent
+        isOpen={!!socialLoginMsg}
+        message={socialLoginMsg}
+        onConfirm={() => setSocialLoginMsg('')}
       />
       <PasswordChangePopup
         isOpen={showPasswordPopup}
@@ -84,7 +99,7 @@ const AccountDataComponent = ({
           <S.AccountItem>
             <div className="ItemLabel">비밀번호 변경</div>
             <div className="ItemContent"></div>
-            <button className="ItemBtn" onClick={() => setShowPasswordPopup(true)}>변경</button>
+            <button className="ItemBtn" onClick={handlePasswordChangeClick}>변경</button>
           </S.AccountItem>
 
           <S.AccountItem>

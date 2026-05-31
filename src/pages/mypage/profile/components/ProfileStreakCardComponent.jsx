@@ -26,7 +26,7 @@ const getStreakMessage = (days) => {
  * @param {number} todayVisitors  - 오늘 방문자 수
  * @param {number} loginStreak    - 연속 로그인 일수
  */
-const ProfileStreakCard = ({
+const ProfileStreakCardComponent = ({
   communityCount = 0,
   logCount = 0,
   todayVisitors = 0,
@@ -59,4 +59,4 @@ const ProfileStreakCard = ({
   );
 };
 
-export default ProfileStreakCard;
+export default ProfileStreakCardComponent;

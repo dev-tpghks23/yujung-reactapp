@@ -17,7 +17,7 @@ const RecentLogsComponent = ({ logs = [] }) => {
           {logs.slice(0, 3).map((log) => (
             <S.RecentCard
               key={log.id}
-              onClick={() => navigate(`/logs/view/${log.id}`)}
+              onClick={() => navigate(`/logs/result/${log.id}/detail`)}
             >
               <S.RecentContent>
                 <div className="ContentGroup">

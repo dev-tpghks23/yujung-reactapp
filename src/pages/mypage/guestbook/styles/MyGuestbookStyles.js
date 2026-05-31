@@ -7,7 +7,7 @@ const S = {};
 /* ── 섹션 래퍼 ── */
 S.GuestbookSection = styled.section`
   width: 100%;
-  max-width: 1096px;
+  max-width: 1160px;
   margin: 0 auto;
   padding: 60px 0 80px;
   display: flex;
@@ -180,6 +180,21 @@ S.CommentAuthor = styled.span`
 S.CommentTime = styled.span`
   ${sizeCSS['h11-regular']}
   color: ${colorCSS['faillog_gray9']};
+`;
+
+S.AuthorLink = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover span {
+    color: ${colorCSS['faillog_purple']};
+    text-decoration: underline;
+  }
 `;
 
 /* ── 댓글 본문 ── */

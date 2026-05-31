@@ -4,7 +4,7 @@ import { flexCenterRow } from "../../../styles/common"
 
 const searchStyle = {}
 searchStyle.component = styled.div`
-  width: 958px;
+  width: 100%;
   height: 62px;
 background: linear-gradient(white, white) padding-box,
             linear-gradient(to right, ${colorCSS["faillog_blue"]}, ${colorCSS["faillog_purple"]}) border-box;
@@ -23,6 +23,7 @@ searchStyle.contentLeft = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
+  flex: 1;
 `
 
 searchStyle.image1 = styled.img`
@@ -36,7 +37,8 @@ searchStyle.buttonImage = styled.img`
 `
 
 searchStyle.search = styled.input`
-  width: 812px;
+  flex: 1;
+  min-width: 0;
   height: 32px;
   border: none;
   ${sizeCSS["h7-regular"]}

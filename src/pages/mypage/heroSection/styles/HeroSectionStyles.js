@@ -74,19 +74,19 @@ S.HeroBanner = styled.div`
 
   /* ✅ ID별 이미지 세부 조정 (배너 안으로 검거) */
   ${props => props.$id === "fail-logs" && `
-    ${S.MainGraphic} { width: 75%; bottom: -5%; right: -2%; }
+    ${S.MainGraphic} { width: 90%; bottom: -1%; right: 0%; }
   `}
 
   ${props => props.$id === "my-fail-log" && `
-    ${S.MainGraphic} { width: 62%; bottom: -2%; right: 5%; }
+    ${S.MainGraphic} { width: 60%; bottom: 0%; right: 0%; }
   `}
 
   ${props => props.$id === "likes" && `
-    ${S.MainGraphic} { width: 65%; bottom: -2%; left: 2%; }
+    ${S.MainGraphic} { width: 50%; bottom: -1%; left: 0%; }
   `}
 
   ${props => props.$id === "guestbook" && `
-    ${S.MainGraphic} { width: 70%; bottom: -8%; right: 0%; }
+    ${S.MainGraphic} { width: 60%; bottom: 0%; right: 0%; }
   `}
 
   &:hover {
@@ -108,10 +108,11 @@ const BaseCard = styled.div`
   aspect-ratio: 424 / 236;
   border-radius: 24px;
   position: relative;
-  cursor: pointer;
+  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${props => props.$disabled ? 0.5 : 1};
   display: flex;
   flex-direction: column;
-  overflow: hidden; 
+  overflow: hidden;
   padding: 8% 10%;
   transition: all 0.3s ease-in-out;
 
@@ -128,8 +129,8 @@ const BaseCard = styled.div`
   }
 
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    transform: ${props => props.$disabled ? 'none' : 'translateY(-8px)'};
+    box-shadow: ${props => props.$disabled ? 'none' : '0 12px 30px rgba(0, 0, 0, 0.1)'};
   }
 `;
 

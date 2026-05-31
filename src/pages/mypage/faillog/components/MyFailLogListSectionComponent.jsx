@@ -21,7 +21,8 @@ const MyFailLogListSectionComponent = ({
   selectedDeleteIds = [],
   onSelectOneLog,
   onSelectAllLogs,
-  onDeleteLogs
+  onDeleteLogs,
+  isPageOwner = true,
 }) => {
   return (
     <LogS.LogSection>
@@ -55,16 +56,18 @@ const MyFailLogListSectionComponent = ({
               onPageChange={handlePageChange}
             />
 
-            <LogS.ControlBarAbsolute>
-              <PostControlBarComponent
-                isAllChecked={selectedDeleteIds.length === filteredLogs.length && filteredLogs.length > 0}
-                onSelectAll={onSelectAllLogs}
-                onDelete={onDeleteLogs}
-                selectedCount={selectedDeleteIds.length}
-                totalCount={filteredLogs.length}
-                showRestore={false}
-              />
-            </LogS.ControlBarAbsolute>
+            {isPageOwner && (
+              <LogS.ControlBarAbsolute>
+                <PostControlBarComponent
+                  isAllChecked={selectedDeleteIds.length === filteredLogs.length && filteredLogs.length > 0}
+                  onSelectAll={onSelectAllLogs}
+                  onDelete={onDeleteLogs}
+                  selectedCount={selectedDeleteIds.length}
+                  totalCount={filteredLogs.length}
+                  showRestore={false}
+                />
+              </LogS.ControlBarAbsolute>
+            )}
           </LogS.PaginationWrapper>
         </>
       )}

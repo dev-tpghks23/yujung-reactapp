@@ -26,41 +26,41 @@ S.InfoManagementSection = styled.section`
   }
 `;
 
-// ✅ 1. 상단 3개 카드를 위한 그리드 (기획안의 윗줄)
+// 1. 상단 3개 카드를 위한 그리드
 S.TopCardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 1:1:1 비율로 3개 배치 */
-  grid-auto-rows: 1fr;
+  grid-template-columns: repeat(3, 1fr); 
   align-items: stretch;
   gap: 20px;
   margin-bottom: 30px;
 
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr; /* 모바일/태블릿에선 세로로 나열 */
+    grid-template-columns: 1fr;
   }
 `;
 
 S.InfoCard = styled.div`
   background: #ffffff;
   border-radius: 24px;
-  padding: 32px;
+  padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   border: 1px solid #F1F5F9;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 320px;
+  justify-content: center;
+  gap: 16px;
+  min-height: 260px;
   height: 100%;
 `;
 
 S.DonutChartArea = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: 14px;
-  padding-top: 6px;
+  gap: 8px;
 `;
 
 S.CardTitle = styled.h3`
@@ -75,8 +75,8 @@ S.CardTitle = styled.h3`
 
 S.ChartWrapper = styled.div`
   position: relative;
-  width: 180px;
-  height: 180px;
+  width: 120px;
+  height: 120px;
   margin: 0 auto;
   cursor: pointer;
 
@@ -156,7 +156,7 @@ S.LegendItem = styled.div`
 `;
 
 S.StreakHeader = styled.div`
-  text-align: left;
+  text-align: center;
 
   h3 {
     font-size: 24px;
@@ -179,8 +179,8 @@ S.StreakGrid = styled.div`
   justify-content: space-between;
   align-items: stretch;
   gap: 10px;
-  margin-top: auto;
-  padding-top: 28px;
+  margin-top: 0;
+  padding-top: 0;
   width: 100%;
 `;
 
@@ -229,27 +229,27 @@ S.AccountDataCard = styled.div`
 // --- 프로필 카드 디자인 디테일 수정 (기획안 느낌 반영) ---
 S.ProfileCard = styled.div`
   background: #ffffff;
-  border-radius: 24px; /* 좀 더 둥글게 */
-  padding: 40px 30px;
+  border-radius: 24px;
+  padding: 45px 24px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  border: 1px solid #F1F5F9; /* 기획안처럼 얇은 테두리 추가 */
-  height: 100%; /* 그리드 높이 통일 */
+  border: 1px solid #F1F5F9;
+  height: 100%;
 
   .profileImageContainer {
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 
-  .profileImageCircle { 
-    width: 140px; /* 기획안 비율에 맞춰 조금 키움 */
-    height: 140px; 
-    border-radius: 50%; 
+  .profileImageCircle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
     overflow: hidden;
-    border: 4px solid #F0F3FF;
+    border: 3px solid #F0F3FF;
     img { width: 100%; height: 100%; object-fit: cover; }
   }
 
@@ -266,9 +266,9 @@ S.ProfileCard = styled.div`
   }
 
   .profile-card-footer-text {
-    font-size: 13px;
+    font-size: 12px;
     color: #94A3B8;
-    margin-top: 20px;
+    margin-top: 10px;
   }
 `;
 

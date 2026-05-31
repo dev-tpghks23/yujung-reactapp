@@ -19,7 +19,7 @@ const MyFailLogCardComponent = ({ filteredLogs, selectedDeleteIds = [] }) => {
             index={index}
             iconSrc={failLogIcon}
             isSelected={isSelected}
-            onClick={() => navigate(`/logs/view/${log.id}`)}
+            onClick={() => navigate(`/logs/result/${log.id}/detail`)}
           />
         );
       })}

@@ -3,7 +3,7 @@ import CommS from '../../profile/styles/CommunityStyles';
 import failLogIcon from '../../faillog/resources/fail-log-card.png';
 import LikesCardItemComponent from './LikesCardItemComponent';
 
-const LikesLogComponent = ({ filteredLogs = [], onUnlikeOne }) => {
+const LikesLogComponent = ({ filteredLogs = [], onUnlikeOne, isPageOwner }) => {
   return (
     <CommS.PostGrid>
       {filteredLogs.map((log) => (
@@ -11,7 +11,7 @@ const LikesLogComponent = ({ filteredLogs = [], onUnlikeOne }) => {
           key={log.id}
           log={log}
           iconSrc={failLogIcon}
-          onUnlike={onUnlikeOne}
+          onUnlike={isPageOwner ? onUnlikeOne : undefined}
         />
       ))}
     </CommS.PostGrid>

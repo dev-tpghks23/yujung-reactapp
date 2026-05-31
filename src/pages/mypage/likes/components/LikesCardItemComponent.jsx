@@ -2,9 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import S from '../../commons/styles/MyFailCardItemStyles';
 import LS from '../styles/LikesLogStyles';
-import likeIcon from '../../../../components/resources/like.svg';
-import likeFillIcon from '../../../../components/resources/like-fill2.svg';
 import defaultProfile from '../../../../components/resources/default-profile.svg';
+import likeFillIcon from '../../../../components/resources/like-fill2.svg';
 import { formatRelativeTime } from '../../../../utils/relativeTime';
 
 const LikesCardItemComponent = ({ log = {}, iconSrc, onUnlike }) => {
@@ -13,14 +12,12 @@ const LikesCardItemComponent = ({ log = {}, iconSrc, onUnlike }) => {
   if (!log) return null;
 
   const handleCardClick = () => {
-    navigate(`/logs/view/${log.id}`);
+    navigate(`/logs/result/${log.id}/detail`);
   };
 
-  const handleLikeClick = (e) => {
+  const handleUnlike = (e) => {
     e.stopPropagation();
-    if (log?.isLiked) {
-      onUnlike?.(log.id);
-    }
+    onUnlike?.(log.id);
   };
 
   return (
@@ -43,14 +40,13 @@ const LikesCardItemComponent = ({ log = {}, iconSrc, onUnlike }) => {
 
           <div className="CardFooter">
             <span className="TimeText">{formatRelativeTime(log?.createdAt || log?.date) || '방금 전'}</span>
-            <div className="LikeArea">
-              <button onClick={handleLikeClick}>
-                <img
-                  src={log?.isLiked ? likeFillIcon : likeIcon}
-                  alt={log?.isLiked ? '좋아요 취소' : '좋아요'}
-                />
-              </button>
-            </div>
+            {onUnlike && (
+              <div className="LikeArea">
+                <button type="button" onClick={handleUnlike} aria-label="좋아요 취소">
+                  <img src={likeFillIcon} alt="좋아요 취소" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

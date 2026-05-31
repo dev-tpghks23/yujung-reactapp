@@ -8,7 +8,8 @@ const ProfileCardComponent = ({
   memberNickname,
   memberProfileImageUrl,
   onNicknameChange,
-  onImageChange
+  onImageChange,
+  isPageOwner = true,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempNickname, setTempNickname] = useState(memberNickname || '');
@@ -52,61 +53,74 @@ const ProfileCardComponent = ({
       <S.ProfileCard>
         <div className="profileImageContainer">
           <div className="profileImageCircle">
-            <img src={profileSrc} alt="프로필" />
+            <img
+                src={profileSrc}
+                alt="프로필"
+                onError={(e) => { e.target.src = defaltProfileImage; }}
+              />
           </div>
 
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-
-          <button
-            className="image-edit-btn"
-            onClick={handleImageButtonClick}
-            type="button"
-          >
-            <img src={cameraIcon} alt="프로필 사진 변경" />
-          </button>
+          {isPageOwner && (
+            <>
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+              <button
+                className="image-edit-btn"
+                onClick={handleImageButtonClick}
+                type="button"
+              >
+                <img src={cameraIcon} alt="프로필 사진 변경" />
+              </button>
+            </>
+          )}
         </div>
 
         <div className="nickname-area">
-          {!isEditing ? (
-            <div className="display-mode">
-              <input
-                type="text"
-                className="nickname-input"
-                value={memberNickname ? `${memberNickname}님` : '닉네임을 설정해주세요.'}
-                readOnly
-              />
-              <button
-                className="nickname-change-btn"
-                onClick={() => setIsEditing(true)}
-                type="button"
-              >
-                변경
-              </button>
-            </div>
-          ) : (
-            <S.NicknameInputGroup>
-              <input
-                type="text"
-                className="edit-input"
-                value={tempNickname}
-                onChange={(e) => setTempNickname(e.target.value)}
-                autoFocus
-              />
-              <div className="EditActions">
-                <button className="SaveBtn" onClick={handleSave}>저장</button>
-                <button className="CancelBtn" onClick={handleCancel}>취소</button>
+          {isPageOwner ? (
+            !isEditing ? (
+              <div className="display-mode">
+                <span className="nickname-display">
+                  {memberNickname ? `${memberNickname}님` : ''}
+                </span>
+                <button
+                  className="nickname-change-btn"
+                  onClick={() => setIsEditing(true)}
+                  type="button"
+                >
+                  변경
+                </button>
               </div>
-            </S.NicknameInputGroup>
+            ) : (
+              <S.NicknameInputGroup>
+                <input
+                  type="text"
+                  className="edit-input"
+                  value={tempNickname}
+                  onChange={(e) => setTempNickname(e.target.value)}
+                  placeholder="닉네임을 입력해주세요."
+                  autoFocus
+                />
+                <div className="EditActions">
+                  <button className="SaveBtn" onClick={handleSave}>저장</button>
+                  <button className="CancelBtn" onClick={handleCancel}>취소</button>
+                </div>
+              </S.NicknameInputGroup>
+            )
+          ) : (
+            <div className="nickname-display">
+              {memberNickname ? `${memberNickname}님` : '회원님'}
+            </div>
           )}
         </div>
 
         <p className="profile-card-footer-text">
-          * FailLog에서 사용할 내 프로필 이미지를 설정해주세요.
+          {isPageOwner
+            ? '* FailLog에서 사용할 내 프로필 이미지를 설정해주세요.'
+            : `* ${memberNickname || '회원'}님의 프로필입니다.`}
         </p>
       </S.ProfileCard>
     </>

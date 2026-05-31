@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DUMMY_COMMUNITY_POSTS } from "../../data/dummyData";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "../../../../api/axiosInstance";
 import S from "../styles/MyProfileStyle";
 import LogStyles from "../../faillog/styles/MyFailLogStyles";
 import useSearchStore from "../../../../components/useSearchStore";
@@ -13,8 +14,25 @@ import PopupComponent from '../../../../components/commons/PopupComponent';
 
 const PAGE_SIZE = 9;
 
-const MyCommunityContainer = () => {
-  const [allPosts, setAllPosts] = useState(DUMMY_COMMUNITY_POSTS);
+const stripHtml = (html) => {
+  if (!html) return '';
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || '';
+};
+
+const mapPost = (item) => ({
+  id: item.id,
+  category: item.categoryName || '',
+  title: item.postTitle || '',
+  content: stripHtml(item.postContent),
+  author: item.memberNickname || '',
+  date: (item.postCreatedAt || '').slice(0, 10).replace(/-/g, '.'),
+  likes: item.likeCount || 0,
+  comments: item.replyCount || 0,
+  imageUrl: item.postThumbnailUrl || null,
+});
+
+const MyCommunityContainer = ({ isPageOwner = true, memberNickname = '', memberId = null }) => {
   const [popup, setPopup] = useState(null);
   const closePopup = () => setPopup(null);
   const showAlert = (message) => setPopup({ message, onConfirm: closePopup });
@@ -25,6 +43,21 @@ const MyCommunityContainer = () => {
 
   const navigate = useNavigate();
   const { content, setContent, setPage } = useSearchStore();
+
+  const { data: fetchedPosts = [] } = useQuery({
+    queryKey: ['myPosts', memberId],
+    queryFn: () =>
+      axiosInstance.get('/api/posts/my-list', { params: { memberId } })
+        .then((res) => (res.data?.success && Array.isArray(res.data.data) ? res.data.data.map(mapPost) : [])),
+    enabled: isPageOwner && !!memberId,
+    staleTime: 0,
+  });
+
+  const [allPosts, setAllPosts] = useState([]);
+
+  useEffect(() => {
+    setAllPosts(fetchedPosts);
+  }, [fetchedPosts]);
 
   const filteredPosts = React.useMemo(() => {
     const keyword = content?.toLowerCase().trim() ?? "";
@@ -109,21 +142,25 @@ const MyCommunityContainer = () => {
       <S.CommunityContainer>
         <S.HeaderSection>
           <div>
-            <h3>내 커뮤니티 게시글 관리</h3>
-            <p>내가 작성한 커뮤니티 게시글을 관리할 수 있습니다.</p>
+            {isPageOwner ? (
+              <>
+                <h3>내 커뮤니티 게시글 관리</h3>
+                <p>내가 작성한 커뮤니티 게시글을 관리할 수 있습니다.</p>
+              </>
+            ) : (
+              <h3>{memberNickname || '회원'}님의 커뮤니티 게시글</h3>
+            )}
           </div>
         </S.HeaderSection>
 
         {currentPagePosts.length > 0 || content ? (
           <>
-            <S.SearchCenterWrapper>
-              <LogSearchComponent
-                currentOption={searchOption}
-                onOptionChange={handleOptionChange}
-                onSearchSubmit={handleSearchSubmit}
-                styles={LogStyles}
-              />
-            </S.SearchCenterWrapper>
+            <LogSearchComponent
+              currentOption={searchOption}
+              onOptionChange={handleOptionChange}
+              onSearchSubmit={handleSearchSubmit}
+              styles={LogStyles}
+            />
 
             {currentPagePosts.length > 0 ? (
               <>
@@ -133,6 +170,7 @@ const MyCommunityContainer = () => {
                   onSelectOne={handleSelectOne}
                   onNavigateOne={handleNavigate}
                   styles={S}
+                  isPageOwner={isPageOwner}
                 />
 
                 <S.PaginationWrapper>
@@ -143,16 +181,18 @@ const MyCommunityContainer = () => {
                     onPageChange={handlePageChange}
                   />
 
-                  <S.ControlBarAbsolute>
-                    <PostControlBarComponent
-                      isAllChecked={isAllChecked}
-                      onSelectAll={handleSelectAll}
-                      selectedCount={selectedCount}
-                      totalCount={totalCountOnPage}
-                      onDelete={handleDelete}
-                      showRestore={false}
-                    />
-                  </S.ControlBarAbsolute>
+                  {isPageOwner && (
+                    <S.ControlBarAbsolute>
+                      <PostControlBarComponent
+                        isAllChecked={isAllChecked}
+                        onSelectAll={handleSelectAll}
+                        selectedCount={selectedCount}
+                        totalCount={totalCountOnPage}
+                        onDelete={handleDelete}
+                        showRestore={false}
+                      />
+                    </S.ControlBarAbsolute>
+                  )}
                 </S.PaginationWrapper>
               </>
             ) : (

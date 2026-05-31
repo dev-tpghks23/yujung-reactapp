@@ -24,8 +24,8 @@ import FindIdContainer from "../pages/account/findid/FindIdContainer";
 import DeleteAccountContainer from "../pages/account/delete/DeleteAccountContainer";
 import MyProfileContainer from "../pages/mypage/profile/MyProfileContainer";
 import MyGuestbookContainer from "../pages/mypage/guestbook/MyGuestbookContainer";
-import MyLikesContainer from "../pages/mypage/likes/MyLikesContainer";
 import MyFailLogsContainer from "../pages/mypage/faillog/MyFailLogsContainer";
+import MyLikesContainer from "../pages/mypage/likes/MyLikesContainer";
 import MyPageContainer from "../pages/mypage/MyPageContainer";
 import LogOtherContainer from "../pages/log/other/LogOtherContainer";
 import ChronologyMainContainer from "../pages/chronology/ChronologyMainContainer";
@@ -51,6 +51,15 @@ const router = createBrowserRouter([
       {
         path: "fail-logs",
         element: <LogOtherContainer />
+      },
+      {
+        path: "user/:userId",
+        children: [
+          { path: "profile",   element: <MyProfileContainer isPageOwner={false} /> },
+          { path: "fail-logs", element: <MyFailLogsContainer isPageOwner={false} /> },
+          { path: "likes",     element: <MyLikesContainer isPageOwner={false} /> },
+          { path: "guestbook", element: <MyGuestbookContainer isPageOwner={false} /> },
+        ]
       },
       {
         path: "community",

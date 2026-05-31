@@ -5,7 +5,7 @@ import shine from '../../resources/shine.svg'
 import upArrow from '../../resources/arrow-up.svg'
 
 const SearchComponent = ({onSubmit}) => {
-
+  const placeholder = "제목 또는 내용을 검색해보세요.";
   const input = useRef([]);
 
   const handleOnClick = () => {

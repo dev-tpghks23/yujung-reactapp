@@ -4,7 +4,7 @@ import likeFillIcon from '../../../../components/resources/like-fill2.svg';
 import postIcon from '../../../../components/resources/post.svg';
 import defaultProfile from '../../../../components/resources/default-profile.svg';
 
-const MyCommunityPostCard = ({ post, isSelected, onSelect, onNavigate }) => {
+const MyCommunityPostCardComponent = ({ post, isSelected, onSelect, onNavigate, isPageOwner = true }) => {
   const { category, title, content, author, date, likes, comments, imageUrl } = post;
 
   return (
@@ -12,14 +12,16 @@ const MyCommunityPostCard = ({ post, isSelected, onSelect, onNavigate }) => {
       <S.ImageSection>
         <S.Thumbnail src={imageUrl || '/default-thumbnail.png'} alt={title} />
 
-        <S.CheckboxOverlay onClick={(e) => e.stopPropagation()}>
-          <input
-            type="checkbox"
-            checked={isSelected}
-            onClick={(e) => e.stopPropagation()}
-            onChange={onSelect}
-          />
-        </S.CheckboxOverlay>
+        {isPageOwner && (
+          <S.CheckboxOverlay onClick={(e) => e.stopPropagation()}>
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onClick={(e) => e.stopPropagation()}
+              onChange={onSelect}
+            />
+          </S.CheckboxOverlay>
+        )}
         <S.TagLabel>{category}</S.TagLabel>
       </S.ImageSection>
 
@@ -49,4 +51,4 @@ const MyCommunityPostCard = ({ post, isSelected, onSelect, onNavigate }) => {
   );
 };
 
-export default MyCommunityPostCard;
+export default MyCommunityPostCardComponent;

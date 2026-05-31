@@ -17,6 +17,7 @@ const LikesLogListSectionComponent = ({
   handlePageChange,
   navigate,
   onUnlikeOne,
+  isPageOwner = true,
 }) => {
   return (
     <LogS.LogSection>
@@ -40,6 +41,7 @@ const LikesLogListSectionComponent = ({
           <LikesLogComponent
             filteredLogs={filteredLogs}
             onUnlikeOne={onUnlikeOne}
+            isPageOwner={isPageOwner}
           />
 
           <LogS.PaginationWrapper>

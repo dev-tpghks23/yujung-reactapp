@@ -2,10 +2,18 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import S from './styles/HeroSectionStyles';
 
-const HeroRotationComponent = ({ mainContent, quickMenus }) => {
+const resolveMenuPath = (path, userId) => {
+  if (!userId) return path;
+  if (path.startsWith('/my-page/')) return path.replace('/my-page/', `/user/${userId}/`);
+  return path;
+};
+
+const HeroRotationComponent = ({ mainContent, quickMenus, isPageOwner = true, userId = null }) => {
   const navigate = useNavigate();
 
   if (!mainContent || !quickMenus) return null;
+
+  const mainPath = resolveMenuPath(mainContent.path, userId);
 
   return (
     <S.HeroSectionContainer>
@@ -14,7 +22,7 @@ const HeroRotationComponent = ({ mainContent, quickMenus }) => {
           $id={mainContent.id}
           $align={mainContent.align}
           $bgColor={mainContent.bgColor}
-          onClick={() => navigate(mainContent.path)}
+          onClick={() => navigate(mainPath)}
         >
           <div className="TextGroup">
             <h3>{mainContent.subTitle}</h3>
@@ -28,6 +36,8 @@ const HeroRotationComponent = ({ mainContent, quickMenus }) => {
 
         <S.QuickMenuGroup>
           {quickMenus.map((menu) => {
+            const isDisabled = !isPageOwner && menu.id === 'likes';
+            const resolvedPath = resolveMenuPath(menu.path, userId);
             const CardComponent =
               menu.id === "fail-logs" ? S.FailLogQuickCard :
               menu.id === "my-fail-log" ? S.MyLogCard :
@@ -37,7 +47,8 @@ const HeroRotationComponent = ({ mainContent, quickMenus }) => {
               <CardComponent
                 key={menu.id}
                 $align={menu.align}
-                onClick={() => navigate(menu.path)}
+                $disabled={isDisabled}
+                onClick={() => !isDisabled && navigate(resolvedPath)}
               >
                 <div className="CardText">
                   <h3>{menu.subTitle}</h3>
