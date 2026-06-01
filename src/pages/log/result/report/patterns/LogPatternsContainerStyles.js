@@ -350,8 +350,10 @@ S.FlowWrapper = styled.div`
 `;
 
 S.FlowStep = styled.div`
-    width: 120px;
-    height: 60px;
+    width: fit-content;
+    min-width: 120px;
+    min-height: 60px;
+    padding: 10px 20px;
     border: 2px solid ${({ borderColor }) => borderColor};
     border-radius: 12px;
     display: flex;
@@ -374,6 +376,7 @@ S.StepLabel = styled.div`
 S.StepValue = styled.div`
     font-size: 14px;
     font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+    white-space: nowrap;
 `;
 
 S.ArrowDown = styled.div`

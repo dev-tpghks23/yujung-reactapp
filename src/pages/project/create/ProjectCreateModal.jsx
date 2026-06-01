@@ -15,7 +15,7 @@ import {
 import theme from '../../../styles/theme';
 import CheckIconSrc from './create_icon/check-small.svg';
 
-const CATEGORIES = ['전체', '사업/창업', '공부/취업', '인간관계', '건강/루틴', '기타'];
+const CATEGORIES = ['전체', '공부/취업', '사업/창업', '인간관계', '건강/루틴', '기타'];
 
 const ProjectCreateModal = ({ onClose, onCreated }) => {
     const [step, setStep] = useState(1);

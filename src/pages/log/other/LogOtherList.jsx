@@ -130,7 +130,7 @@ const LogOtherList = ({ keyword, category, sort }) => {
                                         <S.Profile>
                                             <S.AvatarWrap>
                                                 <S.Avatar
-                                                    src={log.memberProfileImageUrl || PROFILE_MAP[log.id]}
+                                                    src={log.memberProfileImageUrl || PROFILE_MAP[log.id] || Profile1}
                                                     alt={log.memberNickname}
                                                 />
                                             </S.AvatarWrap>
@@ -150,7 +150,7 @@ const LogOtherList = ({ keyword, category, sort }) => {
                                 </S.CardBody>
 
                                 <S.Thumbnail
-                                    src={log.thumbnailUrl || THUMBNAIL_MAP[log.id]}
+                                    src={log.thumbnailUrl || THUMBNAIL_MAP[log.id] || Thumb1}
                                     alt={log.logTitle}
                                 />
                             </S.Card>

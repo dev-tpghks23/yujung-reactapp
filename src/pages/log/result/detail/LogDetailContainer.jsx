@@ -5,6 +5,8 @@ import heartActiveIcon from '../result_icon/heart_active.svg';
 import heartInactiveIcon from '../result_icon/heart_inactive.svg';
 import { S } from './LogDetailContainerStyles';
 
+import viewIcon from '../result_icon/view_icon.svg';
+
 const LogDetailContainer = () => {
   const { liked, likeCount, handleLike, selectedLog } = useOutletContext();
 
@@ -36,12 +38,19 @@ const LogDetailContainer = () => {
           <S.AuthorName>{selectedLog.author.name}</S.AuthorName>
         </S.AuthorInfo>
 
-        <S.LikeButton onClick={handleLike}>
-          <S.HeartIcon>
-            <img src={liked ? heartActiveIcon : heartInactiveIcon} alt="heart" />
-          </S.HeartIcon>
-          <span>{likeCount}</span>
-        </S.LikeButton>
+        <S.StatsWrapper>
+          <S.StatItem>
+            <img src={viewIcon} alt="views" />
+            <span>{selectedLog.views}</span>
+          </S.StatItem>
+
+          <S.LikeButton onClick={handleLike}>
+            <S.HeartIcon>
+              <img src={liked ? heartActiveIcon : heartInactiveIcon} alt="heart" />
+            </S.HeartIcon>
+            <span>{likeCount}</span>
+          </S.LikeButton>
+        </S.StatsWrapper>
       </S.MetaRow>
 
       {/* Vision */}

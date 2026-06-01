@@ -54,7 +54,7 @@ const LogResultContainer = () => {
         if (res.data?.success) {
             setLogData(res.data.data);
             setLikeCount(res.data.data.logInfo.likeCount || 0);
-            setLiked(false);
+            setLiked(res.data.data.logInfo.isLiked ?? res.data.data.logInfo.liked ?? false);
             saveToRecentLogs(res.data.data.logInfo);
         }
       } catch (err) {
@@ -68,10 +68,20 @@ const LogResultContainer = () => {
     }
   }, [id]);
 
-  const handleLike = () => {
-    axiosInstance.post(`/api/logs/${id}/like`).catch(console.error);
-    setLiked(prev => !prev);
-    setLikeCount(prev => liked ? prev - 1 : prev + 1);
+  const handleLike = async () => {
+    const prevLiked = liked;
+    const prevCount = likeCount;
+
+    setLiked(!prevLiked);
+    setLikeCount(prevLiked ? prevCount - 1 : prevCount + 1);
+
+    try {
+      await axiosInstance.post(`/api/logs/${id}/like`);
+    } catch (err) {
+      console.error("좋아요 처리 실패:", err);
+      setLiked(prevLiked);
+      setLikeCount(prevCount);
+    }
   };
 
   if (loading) {
@@ -135,6 +145,11 @@ const LogResultContainer = () => {
             }} />
           </S.Card>
         </S.CardWrapper>
+
+        {/* 하단 목록으로 가기 버튼 */}
+        <S.BottomActionRow>
+          <S.ListButton onClick={() => navigate('/fail-logs')}>목록으로 가기</S.ListButton>
+        </S.BottomActionRow>
       </S.ContentWrapper>
     </S.Wrapper>
   );

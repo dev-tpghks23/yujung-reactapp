@@ -46,8 +46,12 @@ const DoughnutChart = ({ externalValue = 70, internalValue = 30, size = 200 }) =
             </svg>
             
             <S.CenterText>
-                <S.Percentage color={theme.PALETTE.fourth.main}>{externalValue}%</S.Percentage>
-                <S.Label>외부요인</S.Label>
+                <S.Percentage color={internalValue > externalValue ? theme.PALETTE.third.main : theme.PALETTE.primary.main}>
+                    {Math.max(externalValue, internalValue)}%
+                </S.Percentage>
+                <S.Label>
+                    {internalValue > externalValue ? '내부요인' : '외부요인'}
+                </S.Label>
             </S.CenterText>
         </S.ChartWrapper>
     );

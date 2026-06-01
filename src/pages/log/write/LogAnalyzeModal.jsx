@@ -50,7 +50,7 @@ const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
   ];
 
   const [step, setStep] = useState(1);
-  const [activeCategory, setActiveCategory] = useState(draft?.categoryName || "사업/창업");
+  const [activeCategory, setActiveCategory] = useState(draft?.categoryName || "공부/취업");
   const [selectedLogs, setSelectedLogs] = useState([]);
   const [selectedStyle, setSelectedStyle] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -78,7 +78,7 @@ const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
     fetchPastLogs();
   }, []);
 
-  const CATEGORIES = ["사업/창업", "공부/취업", "인간관계", "건강/루틴", "기타"];
+  const CATEGORIES = ["공부/취업", "사업/창업", "인간관계", "건강/루틴", "기타"];
 
   const filteredLogs = pastLogs.filter(log => log.category === activeCategory);
 
@@ -228,7 +228,12 @@ const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
         <S.PrimaryButton onClick={() => setStep(2)}>
           {selectedLogs.length > 0 ? `${selectedLogs.length}개의 로그와 함께 분석하기` : '선택 없이 분석하기'}
         </S.PrimaryButton>
-        <S.SkipLink onClick={() => setStep(2)}>건너뛰고 이번 로그만 분석 →</S.SkipLink>
+        {selectedLogs.length > 0 && (
+          <S.SkipLink onClick={() => {
+            setSelectedLogs([]); // Clear selections when skipping
+            setStep(2);
+          }}>건너뛰고 이번 로그만 분석 →</S.SkipLink>
+        )}
       </S.BottomSection>
     </>
   );

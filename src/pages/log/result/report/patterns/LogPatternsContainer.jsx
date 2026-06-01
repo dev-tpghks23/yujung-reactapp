@@ -59,8 +59,12 @@ const LogPatternsContainer = () => {
     };
 
     // 5. Summary Section Data
+    const higherImpactFactor = factorImpact.internal > factorImpact.external 
+        ? `내부 요인 ${factorImpact.internal}%` 
+        : `외부 요인 ${factorImpact.external}%`;
+
     const summaryData = {
-        badge: `${aiResult.logResultFailureType} (외부 요인 ${factorImpact.external}%)`,
+        badge: `${aiResult.logResultFailureType} (${higherImpactFactor})`,
         title: aiResult.logResultFailureTitle,
         description: aiResult.logResultFailureDesc,
         quote: aiResult.logResultOneLineSummary,

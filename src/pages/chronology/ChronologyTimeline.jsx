@@ -78,6 +78,13 @@ const ChronologyTimeline = ({
   const allItems = groups.flatMap((g) => g.items);
   const indexMap = new Map(allItems.map((item, i) => [item.id, i]));
 
+  // 비전별 프로젝트 수 계산
+  const visionProjectCount = {};
+  projects.forEach((p) => {
+    const key = p.visionTitle || p.title;
+    visionProjectCount[key] = (visionProjectCount[key] || 0) + 1;
+  });
+
   const handleDragStart = (e, flatIndex, id) => {
     dragIndex.current = flatIndex;
     setDraggingId(id);
@@ -149,10 +156,12 @@ const ChronologyTimeline = ({
                 }}
               >
                 <S.ProjectToggleInfo>
-                  <S.ProjectToggleName>{p.title}</S.ProjectToggleName>
-                  <S.ProjectToggleDate>{p.startDate} ~ {p.endDate}</S.ProjectToggleDate>
+                  <S.ProjectToggleName>{p.visionTitle || p.title}</S.ProjectToggleName>
+                  <S.ProjectToggleDate>등록된 프로젝트</S.ProjectToggleDate>
                 </S.ProjectToggleInfo>
-                <S.DDay $active={p.id === selectedProject.id}>D + {p.dDay}</S.DDay>
+                <S.DDay $active={true}>
+                  {visionProjectCount[p.visionTitle || p.title] ?? 0}개
+                </S.DDay>
               </S.VisionDropdownItem>
             ))}
           </S.VisionDropdown>

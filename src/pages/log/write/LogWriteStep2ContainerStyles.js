@@ -136,12 +136,13 @@ S.BadgeOrange = styled.span`
   align-items: center;
   justify-content: center;
   gap: 4px;
-  width: 67px;
-  height: 20px;
+  width: auto;
+  height: 28px;
+  padding: 0 10px;
   background-color: ${({ theme }) => theme.PALETTE.fourth.light};
   color: ${({ theme }) => theme.PALETTE.fourth.main};
   border-radius: 6px;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h10};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   box-sizing: border-box;
 `;
@@ -174,12 +175,13 @@ S.BadgeBlue = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 67px;
-  height: 20px;
+  width: auto;
+  height: 28px;
+  padding: 0 12px;
   background-color: ${({ theme }) => theme.PALETTE.primary.light};
   color: ${({ theme }) => theme.PALETTE.primary.main};
   border-radius: 6px;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h10};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   box-sizing: border-box;
 `;
@@ -202,7 +204,7 @@ S.TextArea = styled.textarea`
   border: 1px solid ${({ theme }) => theme.GRAYSCALE[4]};
   border-radius: 12px;
   font-family: inherit;
-  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h8};
   line-height: 1.6;
   color: ${({ theme }) => theme.GRAYSCALE[9]};
   outline: none;
@@ -243,14 +245,14 @@ S.TipTitleRow = styled.div`
 
 S.TipTitle = styled.span`
   color: ${({ theme }) => theme.PALETTE.primary.main};
-  font-size: ${({ theme }) => theme.FONT_SIZE.h11};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   white-space: nowrap;
 `;
 
 S.TipDesc = styled.p`
   color: ${({ theme }) => theme.PALETTE.primary.main};
-  font-size: ${({ theme }) => theme.FONT_SIZE.h11}; 
+  font-size: ${({ theme }) => theme.FONT_SIZE.h9}; 
   line-height: 1.4;
   margin: 0;
   word-break: keep-all;
