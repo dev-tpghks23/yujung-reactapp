@@ -162,6 +162,14 @@ const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
     if (e.target === e.currentTarget && step < 3) onClose();
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && step < 3) onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [step, onClose]);
+
   const renderStep1 = () => (
     <>
       <S.CloseButtonWrapper>
