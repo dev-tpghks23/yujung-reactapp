@@ -692,79 +692,80 @@ S.Section5Cards = styled.div`
     gap: 24px;
 `;
 
+
 S.LogCard = styled.div`
     width: 352px;
-    height: 198px;
     background-color: ${theme.PALETTE.white};
     border: 1px solid ${theme.GRAYSCALE[4]};
-    border-radius: 15px;
-    padding: 20px 24px;
+    border-radius: 16px;
+    padding: 20px 24px 18px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    box-shadow: -10px 25px 30px 0px rgba(0, 0, 0, 0.07);
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
     opacity: 0;
     transform: translateY(40px);
     animation-delay: ${({ $delay }) => $delay || '0s'};
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.11);
+    }
 
     &[data-visible='true'] {
         animation: ${fadeUpAnim} 0.6s ease forwards;
     }
 `;
 
-S.LogCategory = styled.span`
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 60px;
-    height: 24px;
-    border-radius: 5px;
-    font-size: ${theme.FONT_SIZE.h9};
-    font-weight: ${theme.FONT_WEIGHT.regular};
+S.LogQuoteMark = styled.div`
+    width: 32px;
+    height: 32px;
     flex-shrink: 0;
-    background-color: ${({ $variant }) => CATEGORY_STYLES[$variant]?.bg || '#f0f0f0'};
-    color:            ${({ $variant }) => CATEGORY_STYLES[$variant]?.color || '#333'};
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
 `;
 
-S.LogCardTitle = styled.p`
-    font-size: ${theme.FONT_SIZE.h7};
-    font-weight: ${theme.FONT_WEIGHT.bold};
-    color: ${theme.PALETTE.black};
-    margin: 0;
-    line-height: 1.3;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
+S.LogCategory = styled.span``;
+
+S.LogCardTitle = styled.p``;
 
 S.LogCardDesc = styled.p`
-    font-size: ${theme.FONT_SIZE.h9};
+    font-size: ${theme.FONT_SIZE.h8};
     font-weight: ${theme.FONT_WEIGHT.regular};
-    color: ${theme.GRAYSCALE[10]};
+    color: ${theme.PALETTE.black};
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.6;
     flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 `;
 
 S.LogCardBottom = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid ${theme.GRAYSCALE[3]};
 `;
 
 S.LogProfile = styled.div`
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    gap: 2px;
 `;
 
 S.LogAvatarWrap = styled.div`
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    padding: 1.5px;
+    padding: 2px;
     background: linear-gradient(135deg, #027df0, #ab47ff);
     display: flex;
     align-items: center;
@@ -780,24 +781,19 @@ S.LogAvatar = styled.img`
 `;
 
 S.LogNickname = styled.span`
-    font-size: ${theme.FONT_SIZE.h9};
-    font-weight: ${theme.FONT_WEIGHT.regular};
-    color: ${theme.GRAYSCALE[10]};
+    font-size: ${theme.FONT_SIZE.h8};
+    font-weight: ${theme.FONT_WEIGHT.bold};
+    color: ${theme.PALETTE.black};
 `;
 
-S.LogStats = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 12px;
-`;
-
-S.LogStat = styled.span`
-    display: flex;
-    align-items: center;
-    gap: 4px;
+S.LogRole = styled.span`
     font-size: ${theme.FONT_SIZE.h9};
     font-weight: ${theme.FONT_WEIGHT.regular};
-    color: ${theme.GRAYSCALE[10]};
+    color: ${theme.GRAYSCALE[8]};
 `;
+
+S.LogStats = styled.div``;
+
+S.LogStat = styled.span``;
 
 export default S;
