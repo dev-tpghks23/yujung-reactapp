@@ -35,6 +35,7 @@ const LogDetailContainer = () => {
       {/* Author & Actions */}
       <S.MetaRow>
         <S.AuthorInfo>
+          <S.ProfileImage src={selectedLog.author.profileImg} alt="profile" />
           <S.AuthorName>{selectedLog.author.name}</S.AuthorName>
         </S.AuthorInfo>
 

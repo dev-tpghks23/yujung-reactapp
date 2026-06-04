@@ -73,9 +73,9 @@ const LogPatternsContainer = () => {
 
     return (
         <S.Container>
-            {/* Profile & Like Row */}
             <S.MetaRow>
                 <S.AuthorInfo>
+                    <S.ProfileImage src={selectedLog.author.profileImg} alt="profile" />
                     <S.AuthorName>{selectedLog.author.name}</S.AuthorName>
                 </S.AuthorInfo>
                 <S.LikeButton onClick={handleLike}>

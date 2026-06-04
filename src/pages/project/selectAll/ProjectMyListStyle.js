@@ -5,11 +5,9 @@ import {
     flexCenter,
     h6Bold,
     h7Bold,
-    h8Bold,
     h9Bold,
     h9Regular,
     h10Bold,
-    h11Regular,
 } from '../../../styles/common';
 import theme from '../../../styles/theme';
 
@@ -20,36 +18,7 @@ S.MyProjectsSection = styled.div`
     padding: 40px 0 80px;
 `;
 
-/* ── 로그 그룹 캐러셀 래퍼 ── */
-S.CarouselOuter = styled.div`
-    position: relative;
-`;
 
-S.ArrowBtn = styled.button`
-    ${flexCenter}
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 1px solid ${theme.GRAYSCALE[3]};
-    background: ${theme.PALETTE.white};
-    color: ${theme.GRAYSCALE[10]};
-    font-size: 40px;
-    z-index: 1;
-    transition: all 0.15s ease;
-    &:first-child { left: -90px; }
-    &:last-child  { right: -90px; }
-    &:hover:not(:disabled) {
-        background: ${theme.GRAYSCALE[1]};
-        border-color: ${theme.GRAYSCALE[6]};
-    }
-    &:disabled {
-        opacity: 0;
-        pointer-events: none;
-    }
-`;
 
 /* ── 로그별 섹션 ── */
 S.LogSection = styled.div`
@@ -149,6 +118,57 @@ S.Card = styled.div`
     &:hover {
         transform: translateY(-8px);
         box-shadow: 0 16px 40px rgba(171, 71, 255, 0.15);
+    }
+`;
+
+/* ── Pagination Styles ── */
+S.PaginationWrapper = styled.div`
+    ${flexCenter}
+    gap: 8px;
+    margin-top: 40px;
+`;
+
+S.NavButton = styled.button`
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: ${theme.PALETTE.white};
+    border: 1px solid ${theme.GRAYSCALE[3]};
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    &:hover:not(:disabled) {
+        border-color: ${theme.PALETTE.third.main};
+        svg path {
+            stroke: ${theme.PALETTE.third.main};
+        }
+    }
+`;
+
+S.PageButton = styled.button`
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: ${({ $active }) => ($active ? theme.PALETTE.third.main : theme.PALETTE.white)};
+    border: 1px solid ${({ $active }) => ($active ? theme.PALETTE.third.main : theme.GRAYSCALE[3])};
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        border-color: ${theme.PALETTE.third.main};
+        span {
+            color: ${({ $active }) => ($active ? theme.PALETTE.white : theme.PALETTE.third.main)} !important;
+        }
     }
 `;
 

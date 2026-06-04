@@ -66,6 +66,14 @@ S.AuthorInfo = styled.div`
   gap: 10px;
 `;
 
+S.ProfileImage = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid ${({ theme }) => theme.GRAYSCALE[3]};
+`;
+
 S.AuthorName = styled.span`
   font-size: ${({ theme }) => theme.FONT_SIZE.h8};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};

@@ -67,11 +67,11 @@ const ProjectSelectAllContainer = () => {
 
     // ── 프로젝트 생성 완료 후 처리 ──
     const handleCreated = (newProject) => {
-    fetchMyProjects();
-    navigate(`/projects/${newProject.id}`, {
-        state: { aiSuggestions: newProject.aiSuggestions }  // ← aiSuggestions 전달
-    });
-};
+        fetchMyProjects();
+        navigate(`/projects/${newProject.id}`, {
+            state: { aiSuggestions: newProject.aiSuggestions }  // ← aiSuggestions 전달
+        });
+    };
 
     // ── 프로젝트 카드 클릭 ──
     const handleCardClick = (project) => {
@@ -90,11 +90,11 @@ const ProjectSelectAllContainer = () => {
 
             <S.Inner>
                 <S.PageHeader>
-                    <S.PageTitle>Project</S.PageTitle>
-                    <S.SubtitleRow>
-                        <S.PageSubtitle>나의 프로젝트를 모아보세요.</S.PageSubtitle>
-                        <S.BtnCreate onClick={() => setIsModalOpen(true)}>프로젝트 생성</S.BtnCreate>
-                    </S.SubtitleRow>
+                    <S.HeaderLeft>
+                        <S.PageTitle>Project</S.PageTitle>
+                        <S.PageSubtitle>로그별 프로젝트들을 모아보세요.</S.PageSubtitle>
+                    </S.HeaderLeft>
+                    <S.BtnCreate onClick={() => setIsModalOpen(true)}>프로젝트 생성</S.BtnCreate>
                 </S.PageHeader>
 
                 <ProjectMyList

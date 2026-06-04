@@ -76,6 +76,14 @@ const MyFailLogsContainer = ({ isPageOwner = true }) => {
         }
       })
       .catch(console.error);
+
+    axiosInstance.get('/api/logs/trashed')
+      .then((res) => {
+        if (res.data?.success && Array.isArray(res.data.data)) {
+          setTrashedLogs(res.data.data.map(mapLog));
+        }
+      })
+      .catch(console.error);
   }, [isPageOwner]);
 
   useEffect(() => {
@@ -116,13 +124,24 @@ const MyFailLogsContainer = ({ isPageOwner = true }) => {
 
   const handleDeleteLogs = () => {
     if (selectedDeleteIds.length === 0) return;
-    showConfirm('로그를 삭제 하시겠습니까?', () => {
-      const logsToTrash = allLogs.filter((log) => selectedDeleteIds.includes(log.id));
-      setTrashedLogs((prev) => [...prev, ...logsToTrash]);
-      setAllLogs((prev) => prev.filter((log) => !selectedDeleteIds.includes(log.id)));
-      setSelectedDeleteIds([]);
-      setCurrentPage(1);
-      closePopup();
+    showConfirm('선택한 로그를 삭제(휴지통 이동)하시겠습니까?', async () => {
+      try {
+        const res = await axiosInstance.delete('/api/logs/trash', { data: selectedDeleteIds });
+        if (res.data?.success) {
+          const logsToTrash = allLogs.filter((log) => selectedDeleteIds.includes(log.id));
+          setTrashedLogs((prev) => [...prev, ...logsToTrash]);
+          setAllLogs((prev) => prev.filter((log) => !selectedDeleteIds.includes(log.id)));
+          setSelectedDeleteIds([]);
+          setCurrentPage(1);
+          closePopup();
+          showAlert('로그가 휴지통으로 이동되었습니다.');
+        } else {
+          showAlert(res.data?.message || '로그 삭제에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error("로그 휴지통 이동 실패:", error);
+        showAlert('로그 삭제 중 오류가 발생했습니다.');
+      }
     });
   };
 
@@ -149,25 +168,45 @@ const MyFailLogsContainer = ({ isPageOwner = true }) => {
 
   const handleRestoreSelectedLogs = () => {
     if (selectedTrashIds.length === 0) return;
-    showConfirm('로그를 복원 하시겠습니까?', () => {
-      const targets = trashedLogs.filter((log) => selectedTrashIds.includes(log.id));
-      setAllLogs((prev) => [...targets, ...prev]);
-      setTrashedLogs((prev) => prev.filter((log) => !selectedTrashIds.includes(log.id)));
-      setSelectedTrashIds([]);
-      setIsTrashEditMode(false);
-      closePopup();
-      showAlert('로그가 복원되었습니다.');
+    showConfirm('로그를 복원 하시겠습니까?', async () => {
+      try {
+        const res = await axiosInstance.post('/api/logs/restore', selectedTrashIds);
+        if (res.data?.success) {
+          const targets = trashedLogs.filter((log) => selectedTrashIds.includes(log.id));
+          setAllLogs((prev) => [...targets, ...prev]);
+          setTrashedLogs((prev) => prev.filter((log) => !selectedTrashIds.includes(log.id)));
+          setSelectedTrashIds([]);
+          setIsTrashEditMode(false);
+          closePopup();
+          showAlert('로그가 복원되었습니다.');
+        } else {
+          showAlert(res.data?.message || '로그 복원에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error("로그 복원 실패:", error);
+        showAlert('로그 복원 중 오류가 발생했습니다.');
+      }
     });
   };
 
   const handleDeleteForeverSelectedLogs = () => {
     if (selectedTrashIds.length === 0) return;
-    showConfirm('로그를 삭제 하시겠습니까?', () => {
-      setTrashedLogs((prev) => prev.filter((log) => !selectedTrashIds.includes(log.id)));
-      setSelectedTrashIds([]);
-      setIsTrashEditMode(false);
-      closePopup();
-      showAlert('로그가 삭제되었습니다.');
+    showConfirm('로그를 영구 삭제 하시겠습니까?', async () => {
+      try {
+        const res = await axiosInstance.delete('/api/logs/permanent', { data: selectedTrashIds });
+        if (res.data?.success) {
+          setTrashedLogs((prev) => prev.filter((log) => !selectedTrashIds.includes(log.id)));
+          setSelectedTrashIds([]);
+          setIsTrashEditMode(false);
+          closePopup();
+          showAlert('로그가 완전히 삭제되었습니다.');
+        } else {
+          showAlert(res.data?.message || '로그 영구 삭제에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error("로그 영구 삭제 실패:", error);
+        showAlert('로그 영구 삭제 중 오류가 발생했습니다.');
+      }
     });
   };
 

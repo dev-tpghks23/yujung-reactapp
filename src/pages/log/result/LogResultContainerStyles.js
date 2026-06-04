@@ -111,9 +111,13 @@ S.Card = styled.div`
 
 S.CarouselSection = styled.div`
   margin-top: 100px;
-  width: 1320px;
-  padding-right: 22px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   box-sizing: border-box;
+  background-color: #F8F9FA;
+  padding: 60px 0;
 `;
 
 S.CarouselTitle = styled.h3`
@@ -132,20 +136,31 @@ S.CarouselSubTitle = styled.p`
 S.CarouselContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 32px;
+  width: 100%;
+  max-width: 1440px;
   position: relative;
 `;
 
 S.SliderWindow = styled.div`
-  width: 1320px; /* 424px * 3 + 24px * 2 (gap) */
+  width: 100%;
+  max-width: 1320px;
   overflow: hidden;
   padding: 10px 0;
+`;
+
+S.PageWrapper = styled.div`
+  display: flex;
+  width: ${({ $totalPages }) => 100 / $totalPages}%;
+  gap: 24px;
+  flex-shrink: 0;
 `;
 
 S.CardList = styled.div`
   display: flex;
   gap: 24px;
-  transition: ${({ $isTransitioning }) => $isTransitioning ? 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'};
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 `;
 
@@ -155,9 +170,9 @@ S.RelatedCard = styled.div`
   border: 1px solid ${({ theme }) => theme.GRAYSCALE[4]};
   border-radius: 16px;
   padding: 32px 32px;
-  width: 424px;
+  width: calc((100% - 48px) / 3);
   height: 264px;
-  min-width: 424px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 20px rgba(0,0,0,0.04);
@@ -283,3 +298,26 @@ S.ListButton = styled.button`
     transform: translateY(-2px);
   }
 `;
+
+S.ProfileWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+`;
+
+S.ProfileImage = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid ${({ theme }) => theme.PALETTE.white};
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+`;
+
+S.Nickname = styled.span`
+  font-size: 18px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.TEXT_COLOR.basic};
+`;
+

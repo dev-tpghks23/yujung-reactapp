@@ -21,7 +21,7 @@ const ChecklistItem = ({ item, onToggle, onStatusChange, readOnly = false }) => 
     const [isEditing, setIsEditing] = useState(false);
     const [memo, setMemo] = useState(item.memo || '');
     const [title, setTitle] = useState(item.title || '');
-    const priorityConf = PRIORITY_CONFIG[item.priority] || PRIORITY_CONFIG['낮음'];
+    const priorityConf = PRIORITY_CONFIG[item.priority?.trim()] || PRIORITY_CONFIG['낮음'];
 
     const handleEditClick = () => {
         setIsEditing(true);

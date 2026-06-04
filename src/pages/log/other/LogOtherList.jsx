@@ -5,6 +5,8 @@ import S from './LogOtherListStyle';
 import viewIcon from './otherLog_icon/hugeicons--view.svg';
 import heartIcon from './otherLog_icon/ph--heart-light.svg';
 
+import DefaultThumb from './otherLog_thumbNail/Group 2956.png';
+
 import Thumb1 from './otherLog_thumbNail/image 277.png';
 import Thumb2 from './otherLog_thumbNail/image 340.png';
 import Thumb3 from './otherLog_thumbNail/image 343.png';
@@ -150,7 +152,7 @@ const LogOtherList = ({ keyword, category, sort }) => {
                                 </S.CardBody>
 
                                 <S.Thumbnail
-                                    src={log.thumbnailUrl || THUMBNAIL_MAP[log.id] || Thumb1}
+                                    src={log.thumbnailUrl || THUMBNAIL_MAP[log.id] || DefaultThumb}
                                     alt={log.logTitle}
                                 />
                             </S.Card>

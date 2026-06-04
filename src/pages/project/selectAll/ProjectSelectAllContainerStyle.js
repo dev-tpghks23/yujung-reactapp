@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import {
 	flexBetweenRow,
 	h3Bold,
-	h5Regular,
+	h7Regular,
 	h8Bold,
 } from '../../../styles/common';
 import theme from '../../../styles/theme';
@@ -23,22 +23,24 @@ S.Inner = styled.div`
 S.PageHeader = styled.div`
 	padding-top: 80px;
 	padding-bottom: 28px;
+	${flexBetweenRow}
+	align-items: flex-end;
+`;
+
+S.HeaderLeft = styled.div`
+	display: flex;
+	flex-direction: column;
 `;
 
 S.PageTitle = styled.h2`
 	${h3Bold}
 	color: ${theme.PALETTE.black};
-	margin-bottom: 10px;
-`;
-
-S.SubtitleRow = styled.div`
-	${flexBetweenRow}
-	align-items: center;
+	margin-bottom: 4px;
 `;
 
 S.PageSubtitle = styled.p`
-	${h5Regular}
-	color: ${theme.GRAYSCALE[9]};
+	${h7Regular}
+	color: ${theme.TEXT_COLOR.basic};
 `;
 
 S.BtnCreate = styled.button`

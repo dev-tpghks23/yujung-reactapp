@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../../../api/axiosInstance';
@@ -128,13 +128,25 @@ const MyProfileContainer = ({ isPageOwner = true }) => {
   const isSocialLogin = memberInfo.socialMemberProvider !== 'local';
 
   const handleImageChange = (file) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      const base64 = reader.result;
-      setMemberInfo((prev) => ({ ...prev, memberProfileImageUrl: base64 }));
-      axiosInstance.put('/private/member', { memberProfileImageUrl: base64 }).catch(console.error);
-    };
+    // 1. 폼 데이터에 파일 담기
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // 2. 서버의 파일 업로드 API 호출 (/api/upload)
+    axiosInstance.post('/api/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    .then((uploadRes) => {
+      if (uploadRes.data?.success) {
+        const fileUrl = uploadRes.data.data; // 서버가 반환한 짧은 이미지 URL (예: http://localhost:10000/uploads/...)
+        
+        // 3. UI 업데이트 및 DB에 회원 프로필 주소 저장 (/private/member)
+        setMemberInfo((prev) => ({ ...prev, memberProfileImageUrl: fileUrl }));
+        axiosInstance.put('/private/member', { memberProfileImageUrl: fileUrl })
+          .catch(console.error);
+      }
+    })
+    .catch(console.error);
   };
 
   const handleNicknameChange = (newNickname) => {
