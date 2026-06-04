@@ -54,8 +54,9 @@ const ProjectDetailSuggestion = ({ suggestion, setSuggestion, suggestions, onSub
                             style={{ cursor: 'pointer' }}
                         >
                             <S.SuggestionAvatarImg
-                                src={s.memberProfileImageUrl || '/default-profile.png'}
+                                src={s.memberProfileImageUrl || '/assets/picture/default-profile.png'}
                                 alt={s.memberNickname}
+                                onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }}
                             />
                         </S.SuggestionAvatarWrap>
                         <S.SuggestionItemContent>

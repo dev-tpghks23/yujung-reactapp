@@ -138,7 +138,7 @@ const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
     if (step === 4) {
       const timer = setTimeout(() => {
         if (newLogId) {
-            navigate(`/logs/result/${newLogId}/detail`);
+            navigate(`/logs/result/${newLogId}/report/patterns`);
         } else {
             alert("로그 저장에 실패했습니다. 다시 시도해주세요.");
             onClose();

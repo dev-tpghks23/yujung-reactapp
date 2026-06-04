@@ -12,8 +12,6 @@ const FolderIcon = () => (
     <img src={OfficeMaterialIcon} alt="folder" width="16" height="16" />
 );
 
-// 닉네임 첫 글자 추출 함수
-const getInitial = (nickname) => nickname ? nickname[0] : '?';
 
 // 프로젝트 순서에 따라 색상 순환
 const ACCENT_COLORS = [
@@ -45,8 +43,9 @@ const ProjectCard = ({ project, index }) => {
                         >
                             <S.OwnerAvatar>
                                 <img
-                                    src={project.memberProfileImageUrl || '/default-profile.png'}
+                                    src={project.memberProfileImageUrl || '/assets/picture/default-profile.png'}
                                     alt="프로필"
+                                    onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }}
                                     style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
                                 />
                             </S.OwnerAvatar>

@@ -5,8 +5,6 @@ import { S } from './LogResultContainerStyles';
 import viewIcon from './result_icon/view_icon.svg';
 import likeIcon from './result_icon/like_icon.svg';
 import theme from '../../../styles/theme';
-import defaultProfile from '../../community/resources/default.png';
-
 const LogResultContainer = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -131,7 +129,7 @@ const LogResultContainer = () => {
     date: logInfo.logCreatedAt ? logInfo.logCreatedAt.substring(0, 10).replace(/-/g, '.') : "방금 전",
     author: { 
       name: logInfo.memberNickname || "익명",
-      profileImg: logInfo.memberProfileImageUrl || defaultProfile
+      profileImg: logInfo.memberProfileImageUrl || '/assets/picture/default-profile.png'
     },
     vision: logInfo.visionTitle,
     content: logInfo.logContent,
@@ -235,7 +233,7 @@ const LogResultContainer = () => {
                                 }} 
                                 style={{ cursor: 'pointer', zIndex: 10, position: 'relative' }}
                             >
-                              <img src={log.memberProfileImageUrl || defaultProfile} alt="프로필" style={{ width: 24, height: 24, borderRadius: '50%', marginRight: 8, objectFit: 'cover' }} />
+                              <img src={log.memberProfileImageUrl || '/assets/picture/default-profile.png'} alt="프로필" onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }} style={{ width: 24, height: 24, borderRadius: '50%', marginRight: 8, objectFit: 'cover' }} />
                               <span style={{ textDecoration: 'underline' }}>{log.memberNickname || "익명"}</span>
                             </S.RelatedAuthor>
                             <S.RelatedStats>

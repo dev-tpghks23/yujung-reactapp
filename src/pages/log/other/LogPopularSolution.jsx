@@ -49,8 +49,9 @@ const LogPopularSolution = () => {
                                 <S.Profile>
                                     <S.ProfileCircle>
                                         <S.ProfileImg
-                                            src={card.memberProfileImageUrl || '/default-profile.png'}
+                                            src={card.memberProfileImageUrl || '/assets/picture/default-profile.png'}
                                             alt={card.memberNickname}
+                                            onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }}
                                         />
                                     </S.ProfileCircle>
                                     <S.Nickname>{card.memberNickname}</S.Nickname>

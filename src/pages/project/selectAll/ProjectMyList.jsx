@@ -53,8 +53,9 @@ const ProjectCard = ({ project, onClick }) => {
                     >
                         <S.OwnerAvatar>
                             <img
-                                src={project.memberProfileImageUrl || '/default-profile.png'}
+                                src={project.memberProfileImageUrl || '/assets/picture/default-profile.png'}
                                 alt="프로필"
+                                onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }}
                                 style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
                             />
                         </S.OwnerAvatar>
