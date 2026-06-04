@@ -157,16 +157,35 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
     if (!loggedInMemberId) return;
     const ownerId = isPageOwner ? ownerMemberId : (userId ? Number(userId) : null);
     if (!ownerId) return;
-    axiosInstance.post('/api/guestbook/write', { ownerMemberId: ownerId, guestbookContent: trimmed, writerMemberId: loggedInMemberId })
-      .then(() => {
-        return axiosInstance.get('/api/guestbook/list', { params: { ownerMemberId: ownerId } });
-      })
-      .then((res) => {
-        if (res.data?.success && Array.isArray(res.data.data)) setComments(res.data.data.map(mapGuestbook));
-      })
-      .catch(console.error);
+
+    const optimisticComment = {
+      id: `temp-${Date.now()}`,
+      ownerNickname: '',
+      author: loggedInNickname,
+      authorId: loggedInMemberId,
+      profileImg: null,
+      title: trimmed.slice(0, 20),
+      content: trimmed,
+      createdAt: new Date().toISOString(),
+      likes: 0,
+      liked: false,
+      replies: [],
+    };
+
+    setComments((prev) => [optimisticComment, ...prev]);
     setNewComment('');
     setVisibleCount((prev) => prev + 1);
+
+    axiosInstance.post('/api/guestbook/write', { ownerMemberId: ownerId, guestbookContent: trimmed, writerMemberId: loggedInMemberId })
+      .then(() => axiosInstance.get('/api/guestbook/list', { params: { ownerMemberId: ownerId } }))
+      .then((res) => {
+        if (res.data?.success && Array.isArray(res.data.data))
+          setComments(res.data.data.map(mapGuestbook));
+      })
+      .catch((err) => {
+        console.error(err);
+        setComments((prev) => prev.filter((c) => c.id !== optimisticComment.id));
+      });
   };
 
   const handleReplyToggle = (commentId) => {
