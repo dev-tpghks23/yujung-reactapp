@@ -12,6 +12,7 @@ import shareIcon from './intro_icon/share_683175.svg';
 import registrationIcon from './intro_icon/registration-mark_1203943.svg';
 import heartIcon from './intro_icon/ph--heart-light.svg';
 import viewIcon from './intro_icon/hugeicons--view.svg';
+import quotesIcon from './intro_icon/quotes.svg';
 import avatar1 from './intro_profile/image 337.png';
 import avatar2 from './intro_profile/image 309.png';
 import avatar3 from './intro_profile/IMAGE.png';
@@ -179,28 +180,20 @@ const STEP_CARDS = [
 /* ──────────────────────────────────────────
    섹션 5 — 로그 카드
 ────────────────────────────────────────── */
-const LogCard = React.forwardRef(({ $variant, category, title, desc, nickname, avatar, views, likes, $delay }, ref) => (
-    <S.LogCard ref={ref} $delay={$delay}>
-        <S.LogCategory $variant={$variant}>{category}</S.LogCategory>
-        <S.LogCardTitle>{title}</S.LogCardTitle>
+const LogCard = React.forwardRef(({ $variant, category, desc, nickname, avatar, $delay }, ref) => (
+    <S.LogCard ref={ref} $delay={$delay} $variant={$variant}>
+        <S.LogQuoteMark>
+            <img src={quotesIcon} alt="quote" />
+        </S.LogQuoteMark>
         <S.LogCardDesc>{desc}</S.LogCardDesc>
         <S.LogCardBottom>
+            <S.LogAvatarWrap>
+                <S.LogAvatar src={avatar} alt={nickname} />
+            </S.LogAvatarWrap>
             <S.LogProfile>
-                <S.LogAvatarWrap>
-                    <S.LogAvatar src={avatar} alt={nickname} />
-                </S.LogAvatarWrap>
                 <S.LogNickname>{nickname}</S.LogNickname>
+                <S.LogRole>{category}</S.LogRole>
             </S.LogProfile>
-            <S.LogStats>
-                <S.LogStat>
-                    <img src={viewIcon} alt="views" width="16" height="16" />
-                    {views}
-                </S.LogStat>
-                <S.LogStat>
-                    <img src={heartIcon} alt="likes" width="16" height="16" />
-                    {likes}
-                </S.LogStat>
-            </S.LogStats>
         </S.LogCardBottom>
     </S.LogCard>
 ));
@@ -208,33 +201,24 @@ const LogCard = React.forwardRef(({ $variant, category, title, desc, nickname, a
 const LOG_CARDS = [
     {
         $variant: 'blue',
-        category: '공부/취업',
-        title: '면접에서 반복된 질문에 답변을 못한 이유',
-        desc: '면접에서 반복된 질문에 답변을 못한 이유',
+        category: '취업 준비생',
+        desc: '취업 준비 2년차, 같은 실수를 반복하고 있었어요. FailLog로 "시간 관리"가 핵심 문제임을 깨달았죠. 이제는 면접 전날 꼭 체크리스트를 확인합니다.',
         nickname: '취준탈출넘버원',
         avatar: avatar1,
-        views: 45,
-        likes: 35,
     },
     {
         $variant: 'orange',
-        category: '사업/창업',
-        title: '첫 사업 아이템을 3번 바꾼 이유',
-        desc: '시장 조사 없이 시작했다가 피벗을 반복한 이야기',
+        category: '대학생',
+        desc: '수능 2수 후 분석했더니 "충동적 문제 풀이" 패턴이 보였어요. 3수 때는 의도적으로 천천히 풀었죠. 결과는 합격! 기록의 힘을 믿습니다.',
         nickname: '창업도전왕',
         avatar: avatar2,
-        views: 45,
-        likes: 35,
     },
     {
         $variant: 'pink',
-        category: '인간관계',
-        title: '말을 언제나 생각하고 조심히 말하기',
-        desc: '한 순간의 실수로 멀어져버린 우리 사이',
-        nickname: '말조심연습',
+        category: '자격증 수험생',
+        desc: '타인의 실패 사례가 큰 도움이 됐어요. "나만 그런 게 아니구나" 싶으면서도 구체적인 대처법을 배웠죠. 커뮤니티가 정말 소중합니다.',
+        nickname: '페일매일',
         avatar: avatar3,
-        views: 45,
-        likes: 35,
     },
 ];
 
@@ -432,13 +416,13 @@ const IntroContainer = () => {
                         ))}
                     </S.Section5Cards>
 
-                    <S.Section5Cards>
+                    <S.Section5Cards style={{ display: 'none' }}>
                         {LOG_CARDS.map((card) => (
                             <LogCard key={card.category} {...card} />
                         ))}
                     </S.Section5Cards>
 
-                    <S.StartButton onClick={() => navigate('/join')}>
+                    <S.StartButton style={{ marginTop: '60px' }} onClick={() => navigate('/join')}>
                         시작하기
                     </S.StartButton>
                 </div>
