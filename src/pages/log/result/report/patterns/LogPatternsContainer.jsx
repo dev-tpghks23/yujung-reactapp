@@ -75,7 +75,9 @@ const LogPatternsContainer = () => {
         <S.Container>
             <S.MetaRow>
                 <S.AuthorInfo>
-                    <S.ProfileImage src={selectedLog.author.profileImg} alt="profile" onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }} />
+                    <S.AvatarWrap>
+                        <S.ProfileImage src={selectedLog.author.profileImg} alt="profile" onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }} />
+                    </S.AvatarWrap>
                     <S.AuthorName>{selectedLog.author.name}</S.AuthorName>
                 </S.AuthorInfo>
                 <S.LikeButton onClick={handleLike}>

@@ -231,9 +231,11 @@ const LogResultContainer = () => {
                                     e.stopPropagation(); 
                                     navigate(`/profile/${log.memberId}`); 
                                 }} 
-                                style={{ cursor: 'pointer', zIndex: 10, position: 'relative' }}
+                                style={{ cursor: 'pointer', zIndex: 10, position: 'relative', display: 'flex', alignItems: 'center' }}
                             >
-                              <img src={log.memberProfileImageUrl || '/assets/picture/default-profile.png'} alt="프로필" onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }} style={{ width: 24, height: 24, borderRadius: '50%', marginRight: 8, objectFit: 'cover' }} />
+                              <S.AvatarWrap>
+                                <img src={log.memberProfileImageUrl || '/assets/picture/default-profile.png'} alt="프로필" onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                              </S.AvatarWrap>
                               <span style={{ textDecoration: 'underline' }}>{log.memberNickname || "익명"}</span>
                             </S.RelatedAuthor>
                             <S.RelatedStats>

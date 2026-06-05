@@ -234,6 +234,19 @@ S.RelatedFooter = styled.div`
   align-items: center;
 `;
 
+S.AvatarWrap = styled.div`
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, ${({ theme }) => theme.PALETTE.primary.main}, ${({ theme }) => theme.PALETTE.third.main});
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 8px;
+`;
+
 S.RelatedAuthor = styled.span`
   font-size: ${({ theme }) => theme.FONT_SIZE.h8};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
