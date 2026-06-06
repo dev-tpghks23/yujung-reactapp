@@ -13,6 +13,7 @@ const AiPostListContainer = ({ memberId }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+    if (!memberId) return;
     const fetchAiPosts = async () => {
       const res = await fetch(`http://localhost:10000/api/posts/aiPost/main?memberId=${memberId}`, { method: 'POST' });
       if (!res.ok) return;
@@ -44,22 +45,28 @@ const AiPostListContainer = ({ memberId }) => {
           최근 작성 글을 바탕으로, 당신과 유사한 글을 선별했습니다.
         </S.Span>
       </Header>
-      <PostList>
-        {posts.map(post => (
-          <AiPost
-            key={post.id}
-            postId={post.id}
-            date={post.date}
-            category={post.category}
-            title={post.title}
-            profile={post.profile}
-            author={post.author}
-            views={post.views}
-            likes={post.likes}
-            comments={post.comments}
-          />
-        ))}
-      </PostList>
+      {memberId ? (
+        <PostList>
+          {posts.map(post => (
+            <AiPost
+              key={post.id}
+              postId={post.id}
+              date={post.date}
+              category={post.category}
+              title={post.title}
+              profile={post.profile}
+              author={post.author}
+              views={post.views}
+              likes={post.likes}
+              comments={post.comments}
+            />
+          ))}
+        </PostList>
+      ) : (
+        <LoginRequired>
+          <S.Span size="h10Regular" color="faillog_gray9">로그인이 필요한 서비스입니다.</S.Span>
+        </LoginRequired>
+      )}
     </Wrapper>
   );
 };
@@ -95,6 +102,13 @@ const PostList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+`;
+
+const LoginRequired = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export default AiPostListContainer;
