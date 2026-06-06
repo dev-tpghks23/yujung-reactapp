@@ -43,7 +43,6 @@ const CommunityDetailContainer = () => {
     const [refreshKey, setRefreshKey] = useState(0);
 
     const memberId = useAuthStore((state) => state.user?.id ?? 0);
-    // console.log(memberId);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -122,54 +121,6 @@ const CommunityDetailContainer = () => {
         })),
     }));
 
-    //임시(ai post list 더미데이터)
-    const aiPostList = [
-    {
-        postId: 3,
-        date: '2026년 03월 03일',
-        category: 0,
-        title: '시험 직전 불안이 심해질 때 내가 했던 복기 루틴 3가지를 소개합니다',
-        profile: icon04,
-        author: '필기마스터',
-        views: 45,
-        likes: 35,
-        comments: 6,
-    },
-    {
-        postId: 3,
-        date: '2026년 03월 03일',
-        category: 0,
-        title: '도서관 루틴으로 바꾸고 나서 집중력이 유지된 기록',
-        profile: icon04,
-        author: '필기마스터',
-        views: 45,
-        likes: 35,
-        comments: 6,
-    },
-    {
-        postId: 3,
-        date: '2026년 03월 03일',
-        category: 1,
-        title: '공부 환경을 바꾸고 나서 성적이 오른 실제 경험담',
-        profile: icon04,
-        author: '필기마스터',
-        views: 45,
-        likes: 35,
-        comments: 6,
-    },
-    {
-        postId: 3,
-        date: '2026년 03월 03일',
-        category: 2,
-        title: '기출 회독보다 개념 이해가 먼저다 – 내 공부법 변화기',
-        profile: icon04,
-        author: '필기마스터',
-        views: 45,
-        likes: 35,
-        comments: 6,
-    },
-];
-
     return (
     <ReportContext.Provider value={{ openReport }}>
     <Container>
@@ -225,8 +176,7 @@ const CommunityDetailContainer = () => {
                 nextId={afterPost?.id}
             />
 
-            {/* <AiPostContainer aiPostList={postAiList ?? []} /> */}
-            <AiPostContainer aiPostList={aiPostList} />
+            <AiPostContainer memberId={memberId} postId={post.id} />
         </Wrapper>
     </Container>
     {reportState && (
