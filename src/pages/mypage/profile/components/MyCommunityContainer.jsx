@@ -47,7 +47,7 @@ const MyCommunityContainer = ({ isPageOwner = true, memberNickname = '', memberI
   const { data: fetchedPosts = [] } = useQuery({
     queryKey: ['myPosts', memberId],
     queryFn: () =>
-      axiosInstance.get('/api/posts/my-list', { params: { memberId } })
+      axiosInstance.get('/api/posts/my-posts', { params: { memberId } })
         .then((res) => (res.data?.success && Array.isArray(res.data.data) ? res.data.data.map(mapPost) : [])),
     enabled: isPageOwner && !!memberId,
     staleTime: 0,

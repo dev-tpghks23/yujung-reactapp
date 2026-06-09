@@ -55,7 +55,7 @@ const router = createBrowserRouter([
       {
         path: "user/:userId",
         children: [
-          { path: "profile",   element: <MyProfileContainer isPageOwner={false} /> },
+          { path: "profile",   element: <MyProfileContainer /> },
           { path: "fail-logs", element: <MyFailLogsContainer isPageOwner={false} /> },
           { path: "likes",     element: <MyLikesContainer isPageOwner={false} /> },
           { path: "guestbook", element: <MyGuestbookContainer isPageOwner={false} /> },

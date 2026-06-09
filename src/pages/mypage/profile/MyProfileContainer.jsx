@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../../../api/axiosInstance';
+import useAuthStore from '../../../store/authStore';
 
 import PageS from './styles/MyPageWrapper';
 import InfoS from './styles/InfoManagementStyles';
@@ -16,10 +17,12 @@ import MyCommunityContainer from './components/MyCommunityContainer';
 import HeroRotationComponent from '../heroSection/HeroRotationComponents';
 import { getHeroContent } from '../heroSection/HeroData';
 
-const MyProfileContainer = ({ isPageOwner = true }) => {
+const MyProfileContainer = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { userId } = useParams();
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const isPageOwner = !userId || Number(userId) === currentUserId;
   const { mainContent, quickMenus } = getHeroContent(pathname);
 
   const [memberInfo, setMemberInfo] = useState({
@@ -86,7 +89,7 @@ const MyProfileContainer = ({ isPageOwner = true }) => {
   const { data: myPostsData } = useQuery({
     queryKey: ['myPosts', memberInfo.memberId],
     queryFn: () =>
-      axiosInstance.get('/api/posts/my-list', { params: { memberId: memberInfo.memberId } })
+      axiosInstance.get('/api/posts/my-posts', { params: { memberId: memberInfo.memberId } })
         .then((res) => (res.data?.success && Array.isArray(res.data.data) ? res.data.data : [])),
     enabled: isPageOwner && !!memberInfo.memberId,
     staleTime: 0,
