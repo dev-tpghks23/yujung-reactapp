@@ -30,7 +30,7 @@ const DraftLogsComponent = ({ draftLogs = [] }) => {
                   <div>진행도 : {log.progress ?? 0}%</div>
                   <div>마지막 수정 : {log.date || "방금 전"}</div>
                 </div>
-                <div className="StatusTag">미완성</div>
+                <div className="StatusTag">작성중</div>
               </div>
             </div>
 
