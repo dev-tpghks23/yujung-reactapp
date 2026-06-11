@@ -29,6 +29,7 @@ const mapLog = (item) => ({
   views: item.readCount || 0,
   progress: item.logProgress || 0,
   logStatus: item.logStatus,
+  thumbnailUrl: item.thumbnailUrl || null,
 });
 
 const MyFailLogsContainer = ({ isPageOwner = true }) => {

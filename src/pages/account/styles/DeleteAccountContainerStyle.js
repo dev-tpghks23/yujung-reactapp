@@ -7,13 +7,13 @@ const S = {};
 S.Title = styled.h2`
   ${h5Extrabold}
   color: ${colorCSS['faillog-black']};
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 `;
 
 S.Subtitle = styled.p`
   ${h9Regular}
   color: ${colorCSS.faillog_gray8};
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 `;
 
 S.WarnBox = styled.div`
@@ -60,8 +60,8 @@ S.FieldLabel = styled.p`
 
 S.Input = styled.input`
   width: 100%;
-  padding: 13px 16px;
-  border: 1px solid ${colorCSS.faillog_gray2};
+  padding: 14px 16px;
+  border: 1px solid ${({ $error }) => ($error ? colorCSS["faillog-red"] : colorCSS.faillog_gray2)};
   border-radius: 8px;
   ${h9Regular}
   color: ${colorCSS['faillog-black']};
@@ -70,7 +70,7 @@ S.Input = styled.input`
   margin-bottom: 4px;
 
   &::placeholder { color: ${colorCSS.faillog_gray4}; }
-  &:focus { border-color: ${colorCSS['faillog-red']}; }
+  &:focus { border-color: ${({ $error }) => ($error ? colorCSS["faillog-red"] : colorCSS.faillog_purple)}; }
 `;
 
 S.ValidationMsg = styled.p`
@@ -126,22 +126,21 @@ S.DangerButton = styled.button`
 
 S.CancelButton = styled.button`
   width: 100%;
-  padding: 15px;
+  padding: 14px;
   background: transparent;
-  color: ${colorCSS.faillog_gray9};
+  color: ${colorCSS.faillog_purple};
   ${h9Bold}
-  border: 1px solid ${colorCSS.faillog_gray4};
+  border: 1.5px solid #d9a8ff;
   border-radius: 8px;
   cursor: pointer;
 
-  &:hover { background: ${colorCSS.faillog_gray1}; }
+  &:hover { background: ${colorCSS.faillog_light_purple}; }
 `;
 
 S.Copyright = styled.p`
   text-align: center;
   ${h11Regular}
   color: ${colorCSS.faillog_gray4};
-  margin-top: 16px;
 `;
 
 export default S;

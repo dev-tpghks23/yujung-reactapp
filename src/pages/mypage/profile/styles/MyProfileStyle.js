@@ -1,8 +1,14 @@
 import styled from "styled-components";
 import { sizeCSS, colorCSS, gradientText } from "../../../../components/style";
+import { flexCenterRow } from "../../../../styles/common";
 import theme from "../../../../styles/theme";
 
 const S = {};
+
+S.Span = styled.span`
+  ${({ size }) => sizeCSS[size]}
+  color: ${({ color }) => (colorCSS[color] ? colorCSS[color] : "#333333")};
+`;
 
 // 1. Base Layout
 S.MyPageWrapper = styled.div`
@@ -402,16 +408,19 @@ S.CheckboxOverlay = styled.div`
   }
 `;
 
-S.TagLabel = styled.span`
+S.TagLabel = styled.div`
   position: absolute;
   bottom: 12px;
   left: 12px;
-  background: rgba(93, 95, 239, 0.9); /* 서비스 테마색으로 변경 */
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
+`;
+
+S.CategoryBadge = styled.div`
+  background-color: ${({ bgcolor }) => colorCSS[bgcolor]};
+  width: 52px;
+  height: 20px;
+  padding-top: 1px;
+  ${flexCenterRow}
+  border-radius: 15px;
 `;
 
 S.PostContentSection = styled.div`

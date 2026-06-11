@@ -3,10 +3,12 @@ import S from '../styles/MyProfileStyle';
 import likeFillIcon from '../../../../components/resources/like-fill2.svg';
 import postIcon from '../../../../components/resources/post.svg';
 import defaultProfile from '../../../../components/resources/default-profile.svg';
-import defaultThumbnail from '../../faillog/resources/fail-log-card.png';
+import defaultThumbnail from '../../../log/other/otherLog_thumbNail/Group 2956.png';
+import getCategoryInfo from '../../../community/GetCategoryInfo';
 
 const MyCommunityPostCardComponent = ({ post, isSelected, onSelect, onNavigate, isPageOwner = true }) => {
-  const { category, title, content, author, date, likes, comments, imageUrl } = post;
+  const { categoryId, title, content, author, date, likes, comments, imageUrl } = post;
+  const { name: categoryName, textColor, bgColor } = getCategoryInfo(categoryId);
 
   return (
     <S.CardWrapper isSelected={isSelected} onClick={onNavigate}>
@@ -23,7 +25,11 @@ const MyCommunityPostCardComponent = ({ post, isSelected, onSelect, onNavigate, 
             />
           </S.CheckboxOverlay>
         )}
-        <S.TagLabel>{category}</S.TagLabel>
+        <S.TagLabel>
+          <S.CategoryBadge bgcolor={bgColor}>
+            <S.Span size="h11Bold" color={textColor}>{categoryName}</S.Span>
+          </S.CategoryBadge>
+        </S.TagLabel>
       </S.ImageSection>
 
       <S.PostContentSection>

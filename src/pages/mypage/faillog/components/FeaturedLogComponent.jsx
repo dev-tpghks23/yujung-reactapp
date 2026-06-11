@@ -3,6 +3,7 @@ import S from '../styles/MyFailLogStyles';
 import defaultProfile from '../../../../components/resources/default-profile.svg';
 import eyeIcon from '../../../../components/resources/eye.svg';
 import likeFilledIcon from '../../../../components/resources/like-fill2.svg';
+import defaultThumbnail from '../../../log/other/otherLog_thumbNail/Group 2956.png';
 
 const FeaturedLogComponent = ({ logs = [] }) => {
   const hasLikedPosts = logs.some(
@@ -60,7 +61,7 @@ const FeaturedLogComponent = ({ logs = [] }) => {
         <S.FeaturedMainImage>
           <img
             className="MainImg"
-            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
+            src={featuredLog.thumbnailUrl || defaultThumbnail}
             alt="featured"
           />
           <div className="BlackOverlay">
