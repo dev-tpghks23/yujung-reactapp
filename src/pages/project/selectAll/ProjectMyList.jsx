@@ -4,16 +4,15 @@ import theme from '../../../styles/theme';
 import OfficeMaterialIcon from '../project_icon/office-material_227089.svg';
 import S from './ProjectMyListStyle';
 
-const getProgressDay = (startDate) => {
-    if (!startDate) return 'D+0';
-    const start = new Date(startDate);
-    start.setHours(0, 0, 0, 0);
+const getProgressDay = (endDate) => {
+    if (!endDate) return 'D-0';
+    const end = new Date(endDate);
+    end.setHours(0, 0, 0, 0);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const diff = Math.round((today - start) / (1000 * 60 * 60 * 24));
-    
-    if (diff < 0) return `D${diff}`;
-    return `D+${diff}`;
+    const diff = Math.round((end - today) / (1000 * 60 * 60 * 24));
+    if (diff === 0) return 'D-0';
+    return `D-${Math.abs(diff)}`;
 };
 
 const getAccentColor = (id) => {
@@ -61,7 +60,7 @@ const ProjectCard = ({ project, onClick }) => {
                         </S.OwnerAvatar>
                         <S.OwnerName>{project.memberNickname || '나'}</S.OwnerName>
                     </S.OwnerRow>
-                    <S.DDay>{getProgressDay(project.projectStartDate)}</S.DDay>
+                    <S.DDay>{getProgressDay(project.projectEndDate)}</S.DDay>
                 </S.CardTop>
                 <S.CardTitle>{project.projectTitle}</S.CardTitle>
                 <S.TagRow>

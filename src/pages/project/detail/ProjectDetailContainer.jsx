@@ -190,7 +190,7 @@ const ProjectDetailContainer = () => {
         const diff = Math.round((end - today) / (1000 * 60 * 60 * 24));
         if (diff > 0) return `D-${diff}`;
         if (diff === 0) return 'D-0';
-        return `D+${Math.abs(diff)}`;
+        return `D-${Math.abs(diff)}`;
     };
 
     // ── 달성률 계산 (체크리스트 완료 비율) ──
@@ -217,10 +217,10 @@ const ProjectDetailContainer = () => {
     // ── 마일스톤 바 ──
     const MILESTONES = [
         { pct: 0,   main: '시작',   sub: '0%' },
-        { pct: 25,  main: '25%',   sub: '달성' },
+        { pct: 25,  main: '달성',   sub: '25%' },
         { pct: 50,  main: '절반',   sub: '50%' },
         { pct: 75,  main: '후반부', sub: '75%' },
-        { pct: 100, main: '100%',  sub: '완료', trophy: true },
+        { pct: 100, main: '완료',   sub: '100%', trophy: true },
     ];
     const onFixed = MILESTONES.some(m => m.pct === checklistPercent);
 
