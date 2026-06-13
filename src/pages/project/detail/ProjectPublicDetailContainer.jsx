@@ -51,7 +51,8 @@ const LogSelectModal = ({ onClose, onConfirm }) => {
         const fetchLogs = async () => {
             try {
                 const res = await axios.get('/api/logs/my-list');
-                setLogs(res.data.data || []);
+                const logData = res.data.data || [];
+                setLogs(logData.filter(log => log.logStatus !== 'DRAFT'));
             } catch {
                 setError('로그 목록을 불러오는데 실패했습니다.');
             } finally {
@@ -312,12 +313,6 @@ const ProjectPublicDetailContainer = () => {
                 <S.PageTop>
                     <S.PageTitle>PROJECT</S.PageTitle>
                     <S.TopBtnRow>
-                        <span 
-                            style={{ color: theme.GRAYSCALE[10], fontSize: '14px', cursor: 'pointer', textDecoration: 'underline' }}
-                            onClick={() => navigate(`/profile/${project.memberId}`)}
-                        >
-                            {project.memberNickname}님의 프로젝트
-                        </span>
                         <S.OutlineBtn onClick={() => navigate('/projects')}>
                             목록으로
                         </S.OutlineBtn>
