@@ -63,12 +63,14 @@ const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
       try {
         const res = await axiosInstance.get('/api/logs/my-list');
         if (res.data?.success) {
-          const mappedLogs = res.data.data.map(log => ({
-            id: log.id,
-            category: log.categoryName,
-            title: log.logTitle,
-            date: log.logCreatedAt + ' 작성'
-          }));
+          const mappedLogs = res.data.data
+            .filter(log => log.logStatus !== 'DRAFT')
+            .map(log => ({
+              id: log.id,
+              category: log.categoryName,
+              title: log.logTitle,
+              date: log.logCreatedAt + ' 작성'
+            }));
           setPastLogs(mappedLogs);
         }
       } catch (err) {
@@ -91,6 +93,7 @@ const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
         if (draft) {
           try {
             const payload = {
+              logId: draft.id || null,
               title: draft.logTitle,
               vision: draft.visionTitle,
               categoryId: draft.categoryId,
@@ -184,8 +187,10 @@ const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
       </S.TitleSection>
 
       <S.SectionRow>
-        <S.SectionLabel>함께 분석할까요?</S.SectionLabel>
-        <S.SelectedCount>{selectedLogs.length > 0 ? `${selectedLogs.length}개 선택됨` : ''}</S.SelectedCount>
+        <S.SectionLabel>함께 분석할까요? <S.LimitInfoText>(최대 3개)</S.LimitInfoText></S.SectionLabel>
+        <S.SelectedCount>
+          {selectedLogs.length === 3 ? <S.MaxReachedText>최대 개수 선택됨</S.MaxReachedText> : selectedLogs.length > 0 ? `${selectedLogs.length}개 선택됨` : ''}
+        </S.SelectedCount>
       </S.SectionRow>
 
       <S.CategoryTabs>
@@ -210,11 +215,17 @@ const LogAnalyzeModal = ({ onClose, logContent, draft }) => {
               key={log.id}
               $selected={isSelected}
               onClick={() => {
-                setSelectedLogs(prev =>
-                  prev.some(l => l.id === log.id)
-                    ? prev.filter(l => l.id !== log.id)
-                    : [...prev, log]
-                );
+                setSelectedLogs(prev => {
+                  const isAlreadySelected = prev.some(l => l.id === log.id);
+                  if (isAlreadySelected) {
+                    return prev.filter(l => l.id !== log.id);
+                  } else {
+                    if (prev.length >= 3) {
+                      return prev;
+                    }
+                    return [...prev, log];
+                  }
+                });
               }}
             >
               <S.LogItemContent>

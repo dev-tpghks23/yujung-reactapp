@@ -153,9 +153,21 @@ S.SectionLabel = styled.span`
 `;
 
 S.SelectedCount = styled.span`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h10};
+  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
   color: ${({ theme }) => theme.PALETTE.third.main};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+`;
+
+S.LimitInfoText = styled.span`
+  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
+  color: ${({ theme }) => theme.GRAYSCALE[9]};
+  font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
+  margin-left: 1px;
+`;
+
+S.MaxReachedText = styled.span`
+  font-size: ${({ theme }) => theme.FONT_SIZE.h9};
+  color: ${({ theme }) => theme.PALETTE.fourth.main};
 `;
 
 S.CategoryTabs = styled.div`

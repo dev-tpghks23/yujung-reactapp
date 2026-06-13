@@ -168,9 +168,9 @@ S.Divider = styled.div`
 `;
 
 S.CardContent = styled.div`
-    padding: 16px 58px;
+    padding: 16px 70px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     font-size: ${({ theme }) => theme.FONT_SIZE.h9};
     font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
     color: ${({ theme }) => theme.PALETTE.black};
@@ -238,7 +238,7 @@ S.Chevron = styled.span`
 S.TransformWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 16px;
     width: 100%;
 `;

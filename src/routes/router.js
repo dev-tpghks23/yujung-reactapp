@@ -95,7 +95,9 @@ const router = createBrowserRouter([
                 element: <LogWriteContainer />,
                 children: [
                   { path: "step1", element: <LogWriteStep1Container /> },
+                  { path: "step1/:draftId", element: <LogWriteStep1Container /> },
                   { path: "step2", element: <LogWriteStep2Container /> },
+                  { path: "step2/:draftId", element: <LogWriteStep2Container /> },
                 ]
               },
               {

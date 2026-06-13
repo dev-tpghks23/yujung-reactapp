@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../../../api/axiosInstance';
 import LogAnalyzeModal from './LogAnalyzeModal';
 import writingIcon from './write_icon/writing.svg';
@@ -13,6 +13,7 @@ const TipIconComponent = ({ className }) => (
 
 const LogWriteStep2Container = () => {
   const navigate = useNavigate();
+  const { draftId } = useParams();
   const [content, setContent] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [draft, setDraft] = useState(null);
@@ -26,7 +27,7 @@ const LogWriteStep2Container = () => {
       // 만약 과거 불량 데이터(categoryName이나 categoryId가 없는 상태)라면 Step1으로 쫓아냄
       if (!parsed.categoryName || !parsed.categoryId) {
         alert("이전 단계 데이터가 부족합니다. (버그 패치됨)\nStep 1에서 카테고리를 다시 선택해주세요!");
-        navigate('/logs/new/step1');
+        navigate('/logs/new/step1', { state: { fromStep2: true } });
         return;
       }
       setDraft(parsed);
@@ -34,12 +35,17 @@ const LogWriteStep2Container = () => {
       if (parsed.logContent) setContent(parsed.logContent);
     } else {
       // Step1 데이터가 없으면 Step1으로 리다이렉트
-      navigate('/logs/new/step1');
+      navigate('/logs/new/step1', { state: { fromStep2: true } });
     }
   }, [navigate]);
 
   const handlePrev = () => {
-    navigate("/logs/new/step1");
+    const currentId = draft?.id || draftId;
+    if (currentId) {
+      navigate(`/logs/new/step1/${currentId}`);
+    } else {
+      navigate("/logs/new/step1", { state: { fromStep2: true } });
+    }
   };
 
   // 임시저장 - DRAFT 상태로 백엔드에 저장
@@ -48,6 +54,7 @@ const LogWriteStep2Container = () => {
     if (!content.trim()) { alert("내용을 입력해주세요."); return; }
     setIsSaving(true);
     try {
+      const logProgress = Math.min(50, Math.floor(content.length / 20) * 5);
       const payload = {
         logTitle: draft.logTitle,
         visionTitle: draft.visionTitle,
@@ -55,13 +62,28 @@ const LogWriteStep2Container = () => {
         logThumbnailUrl: draft.logThumbnailUrl,
         logContent: content,
         logStatus: "DRAFT",
-        logProgress: 0,
+        logProgress,
       };
-      const res = await axiosInstance.post('/api/logs', payload);
-      if (res.data?.success) {
-        // sessionStorage에 내용도 업데이트
-        sessionStorage.setItem('logDraft', JSON.stringify({ ...draft, logContent: content }));
-        alert("임시저장 되었습니다.");
+
+      const currentId = draft.id || draftId;
+      if (currentId) {
+        // 기존 임시저장 덮어쓰기 (PUT)
+        const res = await axiosInstance.put(`/api/logs/${currentId}`, payload);
+        if (res.data?.success) {
+          sessionStorage.setItem('logDraft', JSON.stringify({ ...draft, id: currentId, logContent: content }));
+          alert("임시저장 덮어쓰기가 완료되었습니다.");
+        }
+      } else {
+        // 새로 생성 (POST)
+        const res = await axiosInstance.post('/api/logs', payload);
+        if (res.data?.success) {
+          const newId = res.data.data; // 새로 생성된 로그의 ID
+          sessionStorage.setItem('logDraft', JSON.stringify({ ...draft, id: newId, logContent: content }));
+          setDraft(prev => ({ ...prev, id: newId }));
+          // URL 업데이트하여 중복 생성 방지
+          navigate(`/logs/new/step2/${newId}`, { replace: true });
+          alert("임시저장 되었습니다.");
+        }
       }
     } catch (err) {
       alert("임시저장에 실패했습니다.");

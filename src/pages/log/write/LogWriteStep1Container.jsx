@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axiosInstance from '../../../api/axiosInstance';
 
 import uploadIcon from './write_icon/upload.svg';
@@ -14,11 +14,14 @@ const VisionIconComponent = ({ className }) => (
 
 const LogWriteStep1Container = () => {
   const navigate = useNavigate();
+  const { draftId } = useParams();
+  const location = useLocation();
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [categoryId, setCategoryId] = useState(null);
   const [vision, setVision] = useState("");
+  const [draftContent, setDraftContent] = useState("");
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isVisionListOpen, setIsVisionListOpen] = useState(false);
   const [thumbnail, setThumbnail] = useState(null);
@@ -53,17 +56,50 @@ const LogWriteStep1Container = () => {
       .catch(err => console.error("과거 비전 목록을 불러오는 데 실패했습니다.", err));
   }, []);
 
-  // 이전에 작성 중이던 내용 복원
+  // 이전에 작성 중이던 내용 복원 (draftId 우선, 없으면 sessionStorage)
   useEffect(() => {
-    const saved = sessionStorage.getItem('logDraft');
-    if (saved) {
-      const draft = JSON.parse(saved);
-      setTitle(draft.logTitle || "");
-      setVision(draft.visionTitle || "");
-      setCategory(draft.categoryName || "");
-      setCategoryId(draft.categoryId || null);
+    if (draftId) {
+      axiosInstance.get(`/api/logs/${draftId}`)
+        .then(res => {
+          if (res.data?.success) {
+            const draft = res.data.data;
+            setTitle(draft.logTitle || "");
+            setVision(draft.visionTitle || "");
+            setCategory(draft.categoryName || "");
+            setCategoryId(draft.categoryId || null);
+            setDraftContent(draft.logContent || "");
+            if (draft.logThumbnailUrl) {
+              setThumbnail({ url: draft.logThumbnailUrl, uploadedUrl: draft.logThumbnailUrl, name: "기존 썸네일" });
+            }
+          }
+        })
+        .catch(err => console.error("임시저장 로그를 불러오는 데 실패했습니다.", err));
+    } else {
+      if (location.state?.fromStep2) {
+        const saved = sessionStorage.getItem('logDraft');
+        if (saved) {
+          const draft = JSON.parse(saved);
+          setTitle(draft.logTitle || "");
+          setVision(draft.visionTitle || "");
+          setCategory(draft.categoryName || "");
+          setCategoryId(draft.categoryId || null);
+          setDraftContent(draft.logContent || "");
+          if (draft.logThumbnailUrl) {
+            setThumbnail({ url: draft.logThumbnailUrl, uploadedUrl: draft.logThumbnailUrl, name: "기존 썸네일" });
+          }
+        }
+      } else {
+        // 새 로그 작성인 경우 깔끔하게 초기화
+        sessionStorage.removeItem('logDraft');
+        setTitle("");
+        setVision("");
+        setCategory("");
+        setCategoryId(null);
+        setDraftContent("");
+        setThumbnail(null);
+      }
     }
-  }, []);
+  }, [draftId, location.state]);
 
   const handleNext = () => {
     if (!title.trim()) { alert("로그 제목을 입력해주세요."); return; }
@@ -71,13 +107,15 @@ const LogWriteStep1Container = () => {
     if (!vision.trim()) { alert("이루고 싶은 비전을 입력해주세요."); return; }
 
     sessionStorage.setItem('logDraft', JSON.stringify({
+      id: draftId || null,
       logTitle: title,
       visionTitle: vision,
       categoryId: categoryId,
       categoryName: category,
       logThumbnailUrl: thumbnail?.uploadedUrl || null,
+      logContent: draftContent,
     }));
-    navigate("/logs/new/step2");
+    navigate(draftId ? `/logs/new/step2/${draftId}` : "/logs/new/step2");
   };
 
   const handleVisionSelect = (selectedVision) => {
