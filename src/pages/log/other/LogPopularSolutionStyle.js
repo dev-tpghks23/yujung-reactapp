@@ -62,6 +62,14 @@ S.Profile = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover span {
+        text-decoration: underline;
+    }
 `;
 
 S.ProfileCircle = styled.div`
