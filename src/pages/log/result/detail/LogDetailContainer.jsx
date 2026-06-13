@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import checkCircleIcon from '../result_icon/check_circle.svg';
 import heartActiveIcon from '../result_icon/heart_active.svg';
 import heartInactiveIcon from '../result_icon/heart_inactive.svg';
@@ -9,6 +9,7 @@ import viewIcon from '../result_icon/view_icon.svg';
 
 const LogDetailContainer = () => {
   const { liked, likeCount, handleLike, selectedLog } = useOutletContext();
+  const navigate = useNavigate();
 
   if (!selectedLog) return null;
 
@@ -34,7 +35,10 @@ const LogDetailContainer = () => {
 
       {/* Author & Actions */}
       <S.MetaRow>
-        <S.AuthorInfo>
+        <S.AuthorInfo 
+          onClick={() => selectedLog.author?.memberId && navigate(`/user/${selectedLog.author.memberId}/profile`)}
+          style={{ cursor: 'pointer' }}
+        >
           <S.AvatarWrap>
             <S.ProfileImage src={selectedLog.author.profileImg} alt="profile" onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }} />
           </S.AvatarWrap>

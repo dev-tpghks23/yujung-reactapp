@@ -46,7 +46,7 @@ const ProjectCard = ({ project, onClick }) => {
                     <S.OwnerRow 
                         onClick={(e) => { 
                             e.stopPropagation(); 
-                            navigate(`/profile`); 
+                            navigate(`/my-page/profile`); 
                         }} 
                         style={{ cursor: 'pointer', zIndex: 10, position: 'relative' }}
                     >

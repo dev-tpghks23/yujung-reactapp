@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import S from './LogOtherListStyle';
 
 import viewIcon from './otherLog_icon/hugeicons--view.svg';
@@ -87,6 +87,7 @@ const CATEGORY_VARIANT = {
 const getCategoryVariant = (categoryName) => CATEGORY_VARIANT[categoryName] || 'gray';
 
 const LogOtherList = ({ keyword, category, sort }) => {
+    const navigate = useNavigate();
     const [logs, setLogs] = useState([]);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -166,7 +167,7 @@ const LogOtherList = ({ keyword, category, sort }) => {
                                     <S.Vision>{log.visionTitle}</S.Vision>
 
                                     <S.CardBottom>
-                                        <S.Profile>
+                                        <S.Profile onClick={(e) => { e.preventDefault(); navigate(`/user/${log.memberId}/profile`); }} style={{ cursor: 'pointer' }}>
                                             <S.AvatarWrap>
                                                 <S.Avatar
                                                     src={log.memberProfileImageUrl || '/assets/picture/default-profile.png'}

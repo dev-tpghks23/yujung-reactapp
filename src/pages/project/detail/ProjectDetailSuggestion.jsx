@@ -13,7 +13,7 @@ const ProjectDetailSuggestion = ({ suggestion, setSuggestion, suggestions, recom
     const renderSuggestionItem = (s, isRecommended = false) => (
         <S.SuggestionItem key={(isRecommended ? 'rec-' : '') + s.id}>
             <S.SuggestionAvatarWrap
-                onClick={() => navigate(`/profile/${s.memberId}`)}
+                onClick={() => navigate(`/user/${s.memberId}/profile`)}
                 style={{ cursor: 'pointer' }}
             >
                 <S.SuggestionAvatarImg
@@ -24,7 +24,7 @@ const ProjectDetailSuggestion = ({ suggestion, setSuggestion, suggestions, recom
             </S.SuggestionAvatarWrap>
             <S.SuggestionItemContent>
                 <S.SuggestionUser
-                    onClick={() => navigate(`/profile/${s.memberId}`)}
+                    onClick={() => navigate(`/user/${s.memberId}/profile`)}
                     style={{ cursor: 'pointer' }}
                 >
                     {s.memberNickname}

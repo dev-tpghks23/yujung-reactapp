@@ -46,7 +46,7 @@ const LogPopularSolution = () => {
                             <S.Card key={i} onClick={() => navigate(`/logs/result/${card.logId}/detail`)} style={{ cursor: 'pointer' }}>
 
                                 {/* 프로필 */}
-                                <S.Profile>
+                                <S.Profile onClick={(e) => { e.stopPropagation(); navigate(`/user/${card.memberId}/profile`); }} style={{ cursor: 'pointer' }}>
                                     <S.ProfileCircle>
                                         <S.ProfileImg
                                             src={card.memberProfileImageUrl || '/assets/picture/default-profile.png'}
