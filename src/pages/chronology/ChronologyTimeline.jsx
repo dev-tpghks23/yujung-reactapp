@@ -134,7 +134,7 @@ const ChronologyTimeline = ({
         <S.VisionCard onClick={() => setShowVisionDropdown((v) => !v)}>
           <S.VisionLabel>VISION</S.VisionLabel>
           <S.VisionTitleRow>
-            <S.VisionTitle>{selectedProject.visionTitle || selectedProject.title}</S.VisionTitle>
+            <S.VisionTitle>{selectedProject.visionTitle || '비전 없음'}</S.VisionTitle>
             <S.VisionChevron $open={showVisionDropdown}>
               <svg width="11" height="4" viewBox="0 0 11 4" fill="none">
                 <path d="M1 0.5L5.5 3.5L10 0.5" stroke="#8D8D8D" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -145,25 +145,26 @@ const ChronologyTimeline = ({
 
         {showVisionDropdown && (
           <S.VisionDropdown>
-            {projects.map((p) => (
-              <S.VisionDropdownItem
-                key={p.id}
-                $active={p.id === selectedProject.id}
-                onClick={() => {
-                  if (onVisionFirstClick) onVisionFirstClick();
-                  onSelectProject(p);
-                  setShowVisionDropdown(false);
-                }}
-              >
-                <S.ProjectToggleInfo>
-                  <S.ProjectToggleName>{p.visionTitle || p.title}</S.ProjectToggleName>
-                  <S.ProjectToggleDate>등록된 프로젝트</S.ProjectToggleDate>
-                </S.ProjectToggleInfo>
-                <S.DDay $active={true}>
-                  {visionProjectCount[p.visionTitle || p.title] ?? 0}개
-                </S.DDay>
-              </S.VisionDropdownItem>
-            ))}
+            {projects.length === 0 ? (
+              <S.EmptyMessage>작성된 비전이 없습니다.</S.EmptyMessage>
+            ) : (
+              projects.map((p) => (
+                <S.VisionDropdownItem
+                  key={p.id}
+                  $active={p.id === selectedProject.id}
+                  onClick={() => {
+                    if (onVisionFirstClick) onVisionFirstClick();
+                    onSelectProject(p);
+                    setShowVisionDropdown(false);
+                  }}
+                >
+                  <S.ProjectToggleInfo>
+                    <S.ProjectToggleName>{p.title}</S.ProjectToggleName>
+                    <S.ProjectToggleDate>{p.visionTitle || '비전 없음'}</S.ProjectToggleDate>
+                  </S.ProjectToggleInfo>
+                </S.VisionDropdownItem>
+              ))
+            )}
           </S.VisionDropdown>
         )}
       </S.VisionWrapper>
@@ -258,30 +259,34 @@ const ChronologyTimeline = ({
 
         {showProjectToggle && (
           <S.ProjectToggleList>
-            {(addProjects ?? []).map((p) => {
-              const alreadyAdded = timeline.some((t) => t.projectId === p.id || t.id === p.id);
-              return (
-                <S.ProjectToggleItem
-                  key={p.id}
-                  $active={alreadyAdded}
-                  onClick={() => {
-                    if (alreadyAdded) {
-                      setDuplicateError('이미 등록된 프로젝트입니다.');
-                      return;
-                    }
-                    setDuplicateError('');
-                    onAddTimeline(p);
-                    setShowProjectToggle(false);
-                  }}
-                >
-                  <S.ProjectToggleInfo>
-                    <S.ProjectToggleName>{p.title}</S.ProjectToggleName>
-                    <S.ProjectToggleDate>{p.startDate} ~ {p.endDate}</S.ProjectToggleDate>
-                  </S.ProjectToggleInfo>
-                  <S.DDay $active={alreadyAdded}>D + {p.dDay}</S.DDay>
-                </S.ProjectToggleItem>
-              );
-            })}
+            {(addProjects ?? []).length === 0 ? (
+              <S.EmptyMessage>작성한 프로젝트가 없습니다.</S.EmptyMessage>
+            ) : (
+              (addProjects ?? []).map((p) => {
+                const alreadyAdded = timeline.some((t) => t.projectId === p.id || t.id === p.id);
+                return (
+                  <S.ProjectToggleItem
+                    key={p.id}
+                    $active={alreadyAdded}
+                    onClick={() => {
+                      if (alreadyAdded) {
+                        setDuplicateError('이미 등록된 프로젝트입니다.');
+                        return;
+                      }
+                      setDuplicateError('');
+                      onAddTimeline(p);
+                      setShowProjectToggle(false);
+                    }}
+                  >
+                    <S.ProjectToggleInfo>
+                      <S.ProjectToggleName>{p.title}</S.ProjectToggleName>
+                      <S.ProjectToggleDate>{p.startDate} ~ {p.endDate}</S.ProjectToggleDate>
+                    </S.ProjectToggleInfo>
+                    <S.DDay $active={alreadyAdded}>D + {p.dDay}</S.DDay>
+                  </S.ProjectToggleItem>
+                );
+              })
+            )}
           </S.ProjectToggleList>
         )}
       </S.AddSection>

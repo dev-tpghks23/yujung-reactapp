@@ -263,7 +263,7 @@ const IntroContainer = () => {
                         </h1>
                         <p className="intro-section1-sub">실패를 외면하지 않고 기록할 때,</p>
                         <p className="intro-section1-sub">당신의 강력한 성장 데이터가 됩니다.</p>
-                        <S.StartButton onClick={() => navigate('/join')}>
+                        <S.StartButton onClick={() => navigate('/login')}>
                             시작하기
                         </S.StartButton>
                     </div>
@@ -422,7 +422,7 @@ const IntroContainer = () => {
                         ))}
                     </S.Section5Cards>
 
-                    <S.StartButton style={{ marginTop: '60px' }} onClick={() => navigate('/join')}>
+                    <S.StartButton style={{ marginTop: '60px' }} onClick={() => navigate('/login')}>
                         시작하기
                     </S.StartButton>
                 </div>

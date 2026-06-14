@@ -130,8 +130,12 @@ const ChronologyAnalysisResult = ({ vision, analysis, onBack }) => {
         이 비전을 달성하면서 총 <S.CountHighlight>{analysis.totalChecklists}</S.CountHighlight> 개의 체크리스트를 달성 했습니다
       </S.ChecklistSummary>
       <S.ChecklistCompare>
-        <S.Nickname>{analysis.nickname}</S.Nickname> 님은 평균 이용자들에 비해{' '}
-        <S.CountHighlight>{analysis.totalChecklists - analysis.avgUserChecklists}</S.CountHighlight>개 많은 체크리스트를 달성 했습니다.
+        {(() => {
+          const diff = analysis.totalChecklists - analysis.avgUserChecklists;
+          return diff >= 0
+            ? <><S.Nickname>{analysis.nickname}</S.Nickname> 님은 평균 이용자들에 비해 <S.CountHighlight>{diff}</S.CountHighlight>개 많은 체크리스트를 달성 했습니다.</>
+            : <><S.Nickname>{analysis.nickname}</S.Nickname> 님은 평균 이용자들에 비해 <S.CountHighlight>{Math.abs(diff)}</S.CountHighlight>개 적은 체크리스트를 달성 했습니다.</>;
+        })()}
       </S.ChecklistCompare>
 
       <S.StatsCard>
