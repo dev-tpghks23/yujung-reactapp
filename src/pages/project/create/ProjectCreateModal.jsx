@@ -28,7 +28,8 @@ const ProjectCreateModal = ({ onClose, onCreated }) => {
             try {
                 setIsFetching(true);
                 const response = await axios.get('/api/logs/my-list');
-                setLogs(response.data.data || []);
+                const logData = response.data.data || [];
+                setLogs(logData.filter(log => log.logStatus !== 'DRAFT'));
             } catch (err) {
                 setError('로그 목록을 불러오는데 실패했습니다.');
             } finally {

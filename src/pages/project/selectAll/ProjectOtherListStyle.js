@@ -71,6 +71,15 @@ S.OwnerRow = styled.div`
     gap: 7px;
     min-width: 0;
     overflow: hidden;
+    padding: 4px 8px;
+    margin-left: -8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover span {
+        text-decoration: underline;
+    }
 `;
 
 S.OwnerAvatar = styled.div`

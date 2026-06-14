@@ -115,12 +115,17 @@ const LogResultContainer = () => {
   const selectedLog = {
     id: logInfo.id,
     badges: [
-      { label: logInfo.logStatus === "PUBLISHED" ? "분석 완료" : "작성 중", color: "#22C55E", bg: "#F0FDF4" },
+      { 
+        label: logInfo.logStatus === "PUBLISHED" ? "분석 완료" : "작성 중", 
+        color: theme.PALETTE.secondary.main, 
+        bg: theme.PALETTE.secondary.light 
+      },
       { label: logInfo.categoryName || "카테고리", color: categoryStyle.color, bg: categoryStyle.bg },
     ],
     title: logInfo.logTitle,
     date: logInfo.logCreatedAt ? logInfo.logCreatedAt.substring(0, 10).replace(/-/g, '.') : "방금 전",
     author: { 
+      memberId: logInfo.memberId,
       name: logInfo.memberNickname || "익명",
       profileImg: logInfo.memberProfileImageUrl || '/assets/picture/default-profile.png'
     },
@@ -222,14 +227,14 @@ const LogResultContainer = () => {
                             <S.RelatedAuthor 
                                 onClick={(e) => { 
                                     e.stopPropagation(); 
-                                    navigate(`/profile/${log.memberId}`); 
+                                    navigate(`/user/${log.memberId}/profile`); 
                                 }} 
                                 style={{ cursor: 'pointer', zIndex: 10, position: 'relative', display: 'flex', alignItems: 'center' }}
                             >
                               <S.AvatarWrap>
                                 <img src={log.memberProfileImageUrl || '/assets/picture/default-profile.png'} alt="프로필" onError={(e) => { e.target.onerror = null; e.target.src = '/assets/picture/default-profile.png'; }} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
                               </S.AvatarWrap>
-                              <span style={{ textDecoration: 'underline' }}>{log.memberNickname || "익명"}</span>
+                              <span>{log.memberNickname || "익명"}</span>
                             </S.RelatedAuthor>
                             <S.RelatedStats>
                               <span><img src={viewIcon} alt="views" width="12" style={{ marginRight: 4 }} />{log.readCount || 0}</span>

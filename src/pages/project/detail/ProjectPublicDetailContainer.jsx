@@ -51,7 +51,8 @@ const LogSelectModal = ({ onClose, onConfirm }) => {
         const fetchLogs = async () => {
             try {
                 const res = await axios.get('/api/logs/my-list');
-                setLogs(res.data.data || []);
+                const logData = res.data.data || [];
+                setLogs(logData.filter(log => log.logStatus !== 'DRAFT'));
             } catch {
                 setError('로그 목록을 불러오는데 실패했습니다.');
             } finally {

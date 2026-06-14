@@ -247,10 +247,19 @@ S.AvatarWrap = styled.div`
   margin-right: 8px;
 `;
 
-S.RelatedAuthor = styled.span`
+S.RelatedAuthor = styled.div`
   font-size: ${({ theme }) => theme.FONT_SIZE.h8};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   color: ${({ theme }) => theme.TEXT_COLOR.basic};
+  padding: 4px 8px;
+  margin-left: -8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover span {
+    text-decoration: underline;
+  }
 `;
 
 S.RelatedStats = styled.div`
