@@ -48,6 +48,7 @@ const MyProfileContainer = () => {
   const [chartLogs, setChartLogs] = useState([]);
   const [showPhoneVerifyPopup, setShowPhoneVerifyPopup] = useState(false);
   const [showNameInfoPopup, setShowNameInfoPopup] = useState(false);
+  const [memberNotFound, setMemberNotFound] = useState(false);
 
   // 1. 내 프로필일 때 정보 조회
   useEffect(() => {
@@ -91,7 +92,13 @@ const MyProfileContainer = () => {
           }
         }
       })
-      .catch(console.error);
+      .catch((err) => {
+        if (err.response?.status === 404) {
+          setMemberNotFound(true);
+        } else {
+          console.error(err);
+        }
+      });
   }, [isPageOwner, handle]);
 
   // 3. 로그 리스트 조회 
@@ -214,6 +221,19 @@ const MyProfileContainer = () => {
   };
 
   const displayNickname = memberInfo.memberNickname || (!isPageOwner ? handle : '');
+
+  if (memberNotFound) {
+    return (
+      <PageS.MainWrapper>
+        <InfoS.InfoManagementSection>
+          <div className="info-header">
+            <h2>해당 사용자가 없습니다.</h2>
+            <p>존재하지 않거나 탈퇴한 회원입니다.</p>
+          </div>
+        </InfoS.InfoManagementSection>
+      </PageS.MainWrapper>
+    );
+  }
 
   return (
     <>
