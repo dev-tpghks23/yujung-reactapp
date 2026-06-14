@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import theme from '../../../styles/theme';
+import { goToMemberProfile } from '../../../utils/profileNavigation';
 import OfficeMaterialIcon from '../project_icon/office-material_227089.svg';
 import S from './ProjectOtherListStyle';
 
@@ -34,11 +35,11 @@ const ProjectCard = ({ project, index }) => {
                 <S.AccentBar $color={accentColor} />
                 <S.CardContent>
                     <S.CardTop>
-                        <S.OwnerRow 
-                            onClick={(e) => { 
-                                e.stopPropagation(); 
-                                navigate(`/user/${project.memberId}/profile`); 
-                            }} 
+                        <S.OwnerRow
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                goToMemberProfile(navigate, project.memberId);
+                            }}
                             style={{ cursor: 'pointer', zIndex: 10, position: 'relative' }}
                         >
                             <S.OwnerAvatar>

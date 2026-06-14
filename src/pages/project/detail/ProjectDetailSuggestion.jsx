@@ -3,6 +3,7 @@ import LightBulbIcon from '../project_icon/35202510_light_bulb.svg';
 import PaperPlaneIcon from '../project_icon/Group 446.svg';
 import S from './ProjectDetailSuggestionStyle';
 import { useNavigate } from 'react-router-dom';
+import { goToMemberProfile } from '../../../utils/profileNavigation';
 
 const ProjectDetailSuggestion = ({ suggestion, setSuggestion, suggestions, recommendedSuggestions = [], onSubmit, onAddFromSuggestion, isOwner }) => {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ const ProjectDetailSuggestion = ({ suggestion, setSuggestion, suggestions, recom
     const renderSuggestionItem = (s, isRecommended = false) => (
         <S.SuggestionItem key={(isRecommended ? 'rec-' : '') + s.id}>
             <S.SuggestionAvatarWrap
-                onClick={() => navigate(`/user/${s.memberId}/profile`)}
+                onClick={() => goToMemberProfile(navigate, s.memberId)}
                 style={{ cursor: 'pointer' }}
             >
                 <S.SuggestionAvatarImg
@@ -24,7 +25,7 @@ const ProjectDetailSuggestion = ({ suggestion, setSuggestion, suggestions, recom
             </S.SuggestionAvatarWrap>
             <S.SuggestionItemContent>
                 <S.SuggestionUser
-                    onClick={() => navigate(`/user/${s.memberId}/profile`)}
+                    onClick={() => goToMemberProfile(navigate, s.memberId)}
                     style={{ cursor: 'pointer' }}
                 >
                     {s.memberNickname}

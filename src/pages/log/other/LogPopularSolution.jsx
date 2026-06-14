@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import S from './LogPopularSolutionStyle';
 import axiosInstance from '../../../api/axiosInstance';
+import { goToMemberProfile } from '../../../utils/profileNavigation';
 import TrumpetIcon from './otherLog_icon/1ee6415a019300001 1.png';
 import FeroIcon from './otherLog_icon/chatbot_10541415.svg';
 import ArrowIcon from './otherLog_icon/uiw--right.svg';
@@ -46,7 +47,7 @@ const LogPopularSolution = () => {
                             <S.Card key={i} onClick={() => navigate(`/logs/result/${card.logId}/detail`)} style={{ cursor: 'pointer' }}>
 
                                 {/* 프로필 */}
-                                <S.Profile onClick={(e) => { e.stopPropagation(); navigate(`/user/${card.memberId}/profile`); }} style={{ cursor: 'pointer' }}>
+                                <S.Profile onClick={(e) => { e.stopPropagation(); goToMemberProfile(navigate, card.memberId); }} style={{ cursor: 'pointer' }}>
                                     <S.ProfileCircle>
                                         <S.ProfileImg
                                             src={card.memberProfileImageUrl || '/assets/picture/default-profile.png'}

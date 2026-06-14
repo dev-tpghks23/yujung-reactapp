@@ -1,5 +1,6 @@
 import React from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
+import { goToMemberProfile } from '../../../../utils/profileNavigation';
 import checkCircleIcon from '../result_icon/check_circle.svg';
 import heartActiveIcon from '../result_icon/heart_active.svg';
 import heartInactiveIcon from '../result_icon/heart_inactive.svg';
@@ -35,8 +36,8 @@ const LogDetailContainer = () => {
 
       {/* Author & Actions */}
       <S.MetaRow>
-        <S.AuthorInfo 
-          onClick={() => selectedLog.author?.memberId && navigate(`/user/${selectedLog.author.memberId}/profile`)}
+        <S.AuthorInfo
+          onClick={() => goToMemberProfile(navigate, selectedLog.author?.memberId)}
           style={{ cursor: 'pointer' }}
         >
           <S.AvatarWrap>

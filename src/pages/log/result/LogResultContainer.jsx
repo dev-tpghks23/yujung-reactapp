@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useParams, useNavigate, useLocation } from 'react-router-dom';
 import axiosInstance from '../../../api/axiosInstance';
+import { goToMemberProfile } from '../../../utils/profileNavigation';
 import { S } from './LogResultContainerStyles';
 import viewIcon from './result_icon/view_icon.svg';
 import likeIcon from './result_icon/like_icon.svg';
@@ -224,11 +225,11 @@ const LogResultContainer = () => {
                           <S.RelatedTitle>{log.logTitle}</S.RelatedTitle>
                           <S.RelatedSub>{log.visionTitle}</S.RelatedSub>
                           <S.RelatedFooter>
-                            <S.RelatedAuthor 
-                                onClick={(e) => { 
-                                    e.stopPropagation(); 
-                                    navigate(`/user/${log.memberId}/profile`); 
-                                }} 
+                            <S.RelatedAuthor
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    goToMemberProfile(navigate, log.memberId);
+                                }}
                                 style={{ cursor: 'pointer', zIndex: 10, position: 'relative', display: 'flex', alignItems: 'center' }}
                             >
                               <S.AvatarWrap>

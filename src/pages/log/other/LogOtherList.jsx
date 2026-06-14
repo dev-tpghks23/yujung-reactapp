@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import S from './LogOtherListStyle';
+import { goToMemberProfile } from '../../../utils/profileNavigation';
 
 import viewIcon from './otherLog_icon/hugeicons--view.svg';
 import heartIcon from './otherLog_icon/ph--heart-light.svg';
@@ -167,7 +168,7 @@ const LogOtherList = ({ keyword, category, sort }) => {
                                     <S.Vision>{log.visionTitle}</S.Vision>
 
                                     <S.CardBottom>
-                                        <S.Profile onClick={(e) => { e.preventDefault(); navigate(`/user/${log.memberId}/profile`); }} style={{ cursor: 'pointer' }}>
+                                        <S.Profile onClick={(e) => { e.preventDefault(); e.stopPropagation(); goToMemberProfile(navigate, log.memberId); }} style={{ cursor: 'pointer' }}>
                                             <S.AvatarWrap>
                                                 <S.Avatar
                                                     src={log.memberProfileImageUrl || '/assets/picture/default-profile.png'}
