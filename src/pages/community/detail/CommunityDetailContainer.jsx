@@ -168,7 +168,6 @@ const CommunityDetailContainer = () => {
                 replyList={replyList}
                 postId={post.id}
                 loginId={memberId}
-                onReplyAdded={() => setRefreshKey(k => k + 1)}
             />
 
             <BeforeAfterPost

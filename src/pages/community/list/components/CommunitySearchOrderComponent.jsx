@@ -6,7 +6,7 @@ import downImage from '../../resources/down.svg'
 
 const OPTIONS = ['제목', '제목+내용', '내용', '작성자', '댓글'];
 
-const CommunitySearchOrderComponent = ({ defaultValue = '제목', onChange }) => {
+const CommunitySearchOrderComponent = ({ defaultValue = '제목', onChange, options = OPTIONS }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(defaultValue);
   const wrapperRef = useRef(null);
@@ -36,8 +36,8 @@ const CommunitySearchOrderComponent = ({ defaultValue = '제목', onChange }) =>
 
 {/* customProps은 dom에 전달하면 안된다 그러기위해 앞에 $를 붙인다. */}
       {isOpen && (
-        <myStyle.OptionBox>
-          {OPTIONS.map((option) => (
+        <myStyle.OptionBox $optionCount={options.length}>
+          {options.map((option) => (
             <myStyle.OptionItem
               key={option}
               $isfirst={option === '제목'}

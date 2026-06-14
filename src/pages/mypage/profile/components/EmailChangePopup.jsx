@@ -99,7 +99,7 @@ const EmailChangePopup = ({ isOpen, memberEmail, memberNickname, onClose, onSubm
         <S.Header>
           <S.Title>
             <strong>{memberNickname || 'User'}님</strong> 의 회원정보 중{' '}
-            <span>연락처 이메일</span> 수정을 위해<br />
+            <br /><span>연락처 이메일</span> 수정을 위해<br />
             인증절차가 필요합니다.
           </S.Title>
           <S.CurrentId>{maskEmail(memberEmail)}</S.CurrentId>

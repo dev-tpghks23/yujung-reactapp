@@ -23,7 +23,7 @@ const CommunityMainHeader = () => {
                   </myStyle.MainHeaderLeftTextTopDiv>
 
                   <myStyle.MainHeaderLeftTextBottomDiv>
-                      <S.Span size={"h8Bold"} color={"faillog_gray9"} display={"block"}>실패를 숨기지 마세요. 우리는 서로의 오답노트에서 가장 크게 배웁니다.</S.Span>
+                      <S.Span size={"h8-regular"} color={"faillog_gray9"} display={"block"}>실패를 숨기지 마세요. 우리는 서로의 오답노트에서 가장 크게 배웁니다.</S.Span>
                   </myStyle.MainHeaderLeftTextBottomDiv>
               </myStyle.MainHeaderLeftDiv>
 

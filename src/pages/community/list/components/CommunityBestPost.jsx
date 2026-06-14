@@ -12,6 +12,7 @@ import heartFill from '../../resources/like-fill2.svg'
 import thumbnailEmpty from '../../resources/month-image-empty.png'
 import defaultProfile from '../../resources/default.png'
 import { useNavigate } from 'react-router-dom';
+import { goToMemberProfile } from '../../../../utils/profileNavigation';
 
 const CommunityBestPost = ({
   id,
@@ -57,34 +58,34 @@ const CommunityBestPost = ({
                           <myStyle.BestPostMainHeaderTitle>
                               <S.Span size={"h8Bold"} color={"faillog_purple"}>이번달 좋아요 최다 게시글</S.Span>
                           </myStyle.BestPostMainHeaderTitle>
-                          <S.Span size={"h9Regular"} color={"faillog_gray9"}>{date}</S.Span>
+                          <S.Span size={"h8Regular"} color={"faillog_gray9"}>{date}</S.Span>
                         </myStyle.BestPostMainHeader>
                         <myStyle.BestPostMainTitle>
                           <S.Span2 size={"h4Bold"} color={"faillog-black"} lineclamp={2}>{title}<br/>
                       공부 환경부터 바꾸고 나서니 변화가생긴 썰</S.Span2>
                         </myStyle.BestPostMainTitle>
                         <myStyle.BestPostMainContent>
-                          <S.Span2 size={"h7Bold"} color={"faillog_gray9"} lineclamp={2}>{content}</S.Span2>
+                          <S.Span2 size={"h7-regular"} color={"faillog_gray9"} lineclamp={2}>{content}</S.Span2>
                         </myStyle.BestPostMainContent>
                         <myStyle.BestPostMainHr></myStyle.BestPostMainHr>
                         <myStyle.BestPostMainInfo>
                           <myStyle.UserInfo>
-                            <myStyle.AuthorArea onClick={(e) => { e.stopPropagation(); navigate(`/user/${memberId}/profile`); }}>
+                            <myStyle.AuthorArea onClick={(e) => { e.stopPropagation(); goToMemberProfile(navigate, memberId); }}>
                               <myStyle.UserImg src={profile || defaultProfile} onError={handledOnErrorImg}></myStyle.UserImg>
-                              <S.Span size={"h9Regular"} color={"faillog_black"}>{author}</S.Span>
+                              <S.Span size={"h8Regular"} color={"faillog_black"}>{author}</S.Span>
                             </myStyle.AuthorArea>
                             <myStyle.PostInfo>
                               <myStyle.infoElement>
-                                <img src={eye} width={16} height={12} />
-                                <S.Span size={"h9Regular"} color={"faillog_black"}>{views}</S.Span>
+                                <img src={eye} width={18} height={14} />
+                                <S.Span size={"h8Regular"} color={"faillog_black"}>{views}</S.Span>
                               </myStyle.infoElement>
                               <myStyle.infoElement>
-                                <img src={isLike ? heartFill : heart} width={16} height={16} />
-                                <S.Span size={"h9Regular"} color={"faillog_black"}>{likes}</S.Span>
+                                <img src={isLike ? heartFill : heart} width={18} height={18} />
+                                <S.Span size={"h8Regular"} color={"faillog_black"}>{likes}</S.Span>
                               </myStyle.infoElement>
                               <myStyle.infoElement>
-                                <img src={post} width={16} height={16} />                              
-                                <S.Span size={"h9Regular"} color={"faillog_black"}>{comments}</S.Span>
+                                <img src={post} width={18} height={18} />                              
+                                <S.Span size={"h8Regular"} color={"faillog_black"}>{comments}</S.Span>
                               </myStyle.infoElement>
                             </myStyle.PostInfo>
                           </myStyle.UserInfo>

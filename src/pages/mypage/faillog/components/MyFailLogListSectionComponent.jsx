@@ -14,6 +14,7 @@ const MyFailLogListSectionComponent = ({
   setSearchOption,
   handleSearchSubmit,
   filteredLogs,
+  pagedLogs,
   currentPage,
   totalPages,
   handlePageChange,
@@ -31,6 +32,7 @@ const MyFailLogListSectionComponent = ({
         onOptionChange={setSearchOption}
         onSearchSubmit={handleSearchSubmit}
         styles={LogS}
+        options={['제목', '제목+내용', '내용']}
       />
 
       {filteredLogs.length === 0 ? (
@@ -44,7 +46,7 @@ const MyFailLogListSectionComponent = ({
       ) : (
         <>
           <MyFailLogCardComponent
-            filteredLogs={filteredLogs}
+            filteredLogs={pagedLogs}
             selectedDeleteIds={selectedDeleteIds}
           />
 

@@ -116,7 +116,7 @@ CommunityBestPostStyle.PostInfo = styled.div`
   margin-left: 15px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 `
 
 CommunityBestPostStyle.infoElement = styled.div`
@@ -126,8 +126,8 @@ CommunityBestPostStyle.infoElement = styled.div`
 `
 
 CommunityBestPostStyle.UserImg = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 `
 
 CommunityBestPostStyle.BestPostMainButton = styled.div`

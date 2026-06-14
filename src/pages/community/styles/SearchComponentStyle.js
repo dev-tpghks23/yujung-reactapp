@@ -1,6 +1,12 @@
-import styled from "styled-components"
+import styled, { keyframes } from "styled-components"
 import { colorCSS, sizeCSS } from "../style"
 import { flexCenterRow } from "../../../styles/common"
+
+const glow = keyframes`
+  0%   { filter: drop-shadow(0 0 3px rgba(171, 71, 255, 0.6)); opacity: 1; }
+  50%  { filter: drop-shadow(0 0 10px rgba(2, 125, 240, 1)) drop-shadow(0 0 20px rgba(171, 71, 255, 0.9)); opacity: 0.85; }
+  100% { filter: drop-shadow(0 0 3px rgba(171, 71, 255, 0.6)); opacity: 1; }
+`
 
 const searchStyle = {}
 searchStyle.component = styled.div`
@@ -29,6 +35,7 @@ searchStyle.contentLeft = styled.div`
 searchStyle.image1 = styled.img`
   width: 20px;
   height: 20px;
+  animation: ${glow} 2.4s ease-in-out infinite;
 `
 
 searchStyle.buttonImage = styled.img`

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import S from '../styles/LoginComponentStyle';
 import useAuthStore from '../../../store/authStore';
 
@@ -8,6 +8,7 @@ const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[!@#])[\da-zA-Z!@#]{8,}$/;
 
 const LoginComponent = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { setUser, setIsAuthenticated } = useAuthStore();
 
   const [memberEmail, setMemberEmail] = useState('');
@@ -16,6 +17,15 @@ const LoginComponent = () => {
   const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const error = searchParams.get('error');
+    if (error === 'withdrawn') {
+      setLoginError('탈퇴한 계정입니다.');
+    } else if (error === 'social') {
+      setLoginError('소셜 로그인에 실패했습니다.');
+    }
+  }, [searchParams]);
 
   const validate = () => {
     const errs = {};

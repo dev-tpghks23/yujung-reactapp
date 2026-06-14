@@ -11,26 +11,32 @@ const formatDate = (dateStr) => {
 
 const AiPostListContainer = ({ memberId }) => {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!memberId) return;
     const fetchAiPosts = async () => {
-      const res = await fetch(`http://localhost:10000/api/posts/aiPost/main?memberId=${memberId}`, { method: 'POST' });
-      if (!res.ok) return;
-      const json = await res.json();
-      if (!json.success) return;
-      setPosts(json.data.map(p => ({
-        id: p.id,
-        memberId: p.memberId,
-        date: formatDate(p.postCreatedAt),
-        category: p.categoryId - 1,
-        title: p.postTitle,
-        profile: p.memberProfileImageUrl,
-        author: p.memberNickname,
-        views: p.postReadCount,
-        likes: p.likeCount,
-        comments: p.replyCount,
-      })));
+      setLoading(true);
+      try {
+        const res = await fetch(`http://localhost:10000/api/posts/aiPost/main?memberId=${memberId}`, { method: 'POST' });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!json.success) return;
+        setPosts(json.data.map(p => ({
+          id: p.id,
+          memberId: p.memberId,
+          date: formatDate(p.postCreatedAt),
+          category: p.categoryId - 1,
+          title: p.postTitle,
+          profile: p.memberProfileImageUrl,
+          author: p.memberNickname,
+          views: p.postReadCount,
+          likes: p.likeCount,
+          comments: p.replyCount,
+        })));
+      } finally {
+        setLoading(false);
+      }
     };
     fetchAiPosts();
   }, [memberId]);
@@ -47,26 +53,36 @@ const AiPostListContainer = ({ memberId }) => {
         </S.Span>
       </Header>
       {memberId ? (
-        <PostList>
-          {posts.map(post => (
-            <AiPost
-              key={post.id}
-              postId={post.id}
-              memberId={post.memberId}
-              date={post.date}
-              category={post.category}
-              title={post.title}
-              profile={post.profile}
-              author={post.author}
-              views={post.views}
-              likes={post.likes}
-              comments={post.comments}
-            />
-          ))}
-        </PostList>
+        loading ? (
+          <LoginRequired>
+            <S.Span size="h8Regular" color="faillog_gray9">추천 게시글 로드중...</S.Span>
+          </LoginRequired>
+        ) : posts.length > 0 ? (
+          <PostList>
+            {posts.map(post => (
+              <AiPost
+                key={post.id}
+                postId={post.id}
+                memberId={post.memberId}
+                date={post.date}
+                category={post.category}
+                title={post.title}
+                profile={post.profile}
+                author={post.author}
+                views={post.views}
+                likes={post.likes}
+                comments={post.comments}
+              />
+            ))}
+          </PostList>
+        ) : (
+          <LoginRequired>
+            <S.Span size="h8Regular" color="faillog_gray9">추천 게시글이 없습니다.</S.Span>
+          </LoginRequired>
+        )
       ) : (
         <LoginRequired>
-          <S.Span size="h10Regular" color="faillog_gray9">로그인이 필요한 서비스입니다.</S.Span>
+          <S.Span size="h8Regular" color="faillog_gray9">로그인이 필요한 서비스입니다.</S.Span>
         </LoginRequired>
       )}
     </Wrapper>
@@ -75,7 +91,7 @@ const AiPostListContainer = ({ memberId }) => {
 
 const Wrapper = styled.div`
   width: 312px;
-  height: 536px;
+  height: 552px;
   background-color: ${colorCSS["faillog_white"]};
   border-radius: 15px;
   padding: 6px;
@@ -91,6 +107,7 @@ const Header = styled.div`
   flex-direction: column;
   gap: 4px;
   padding-left: 7px;
+  padding-top: 16px;
 `;
 
 const TitleRow = styled.div`

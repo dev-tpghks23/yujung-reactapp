@@ -2,18 +2,18 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import S from './styles/HeroSectionStyles';
 
-const resolveMenuPath = (path, userId) => {
-  if (!userId) return path;
-  if (path.startsWith('/my-page/')) return path.replace('/my-page/', `/user/${userId}/`);
+const resolveMenuPath = (path, handle) => {
+  if (!handle) return path;
+  if (path.startsWith('/my-page/')) return path.replace('/my-page/', `/my-page/${handle}/`);
   return path;
 };
 
-const HeroRotationComponent = ({ mainContent, quickMenus, isPageOwner = true, userId = null }) => {
+const HeroRotationComponent = ({ mainContent, quickMenus, isPageOwner = true, handle = null }) => {
   const navigate = useNavigate();
 
   if (!mainContent || !quickMenus) return null;
 
-  const mainPath = resolveMenuPath(mainContent.path, userId);
+  const mainPath = resolveMenuPath(mainContent.path, handle);
 
   return (
     <S.HeroSectionContainer>
@@ -37,7 +37,7 @@ const HeroRotationComponent = ({ mainContent, quickMenus, isPageOwner = true, us
         <S.QuickMenuGroup>
           {quickMenus.map((menu) => {
             const isDisabled = !isPageOwner && menu.id === 'likes';
-            const resolvedPath = resolveMenuPath(menu.path, userId);
+            const resolvedPath = resolveMenuPath(menu.path, handle);
             const CardComponent =
               menu.id === "fail-logs" ? S.FailLogQuickCard :
               menu.id === "my-fail-log" ? S.MyLogCard :

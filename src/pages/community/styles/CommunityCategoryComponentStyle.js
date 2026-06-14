@@ -18,11 +18,15 @@ S.button = styled.button`
   width: 88px;
   height: 40px;
   border-radius: 10px;
+  cursor: pointer;
 
   ${flexCenterRow}
 
   ${({selected}) => selected ? selectedStyle : unSelectedStyle }
 
+  &:hover {
+    border: 1.5px solid ${colorCSS.faillog_purple};
+  }
 `
 
 export default S;

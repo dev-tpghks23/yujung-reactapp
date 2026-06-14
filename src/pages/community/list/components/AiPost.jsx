@@ -10,6 +10,7 @@ import heart from '../../resources/like.svg'
 import comment from '../../resources/post.svg'
 import likeFill from '../../resources/like-fill2.svg'
 import defaultProfile from '../../resources/default.png'
+import { goToMemberProfile } from '../../../../utils/profileNavigation';
 
 const AiPost = ({ postId, memberId, date, category, title, profile, author, views, likes, comments }) => {
 
@@ -34,7 +35,7 @@ const AiPost = ({ postId, memberId, date, category, title, profile, author, view
       </TitleWrap>
 
       <BottomRow>
-        <AuthorWrap onClick={(e) => { e.stopPropagation(); navigate(`/user/${memberId}/profile`); }}>
+        <AuthorWrap onClick={(e) => { e.stopPropagation(); goToMemberProfile(navigate, memberId); }}>
           <AuthorImg src={profile || defaultProfile} onError={handledOnErrorImg} alt={author} />
           <S.Span size="h9Regular" color="faillog-black">{author}</S.Span>
         </AuthorWrap>

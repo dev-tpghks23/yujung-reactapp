@@ -51,7 +51,7 @@ const MyCommunityContainer = ({ isPageOwner = true, memberNickname = '', memberI
     queryFn: () =>
       axiosInstance.get('/api/posts/my-posts', { params: { memberId } })
         .then((res) => (res.data?.success && Array.isArray(res.data.data?.posts) ? res.data.data.posts.map(mapPost) : [])),
-    enabled: isPageOwner && !!memberId,
+    enabled: !!memberId,
     staleTime: 0,
   });
 
@@ -214,9 +214,11 @@ const MyCommunityContainer = ({ isPageOwner = true, memberNickname = '', memberI
           </>
         ) : (
           <EmptyStateComponent
-            title={<>아직 작성한 게시글이 없네요.<br /><strong>페일로그</strong>의 커뮤니티를 이용해볼까요?</>}
+            title={isPageOwner ? <>아직 작성한 게시글이 없네요.<br /><strong>페일로그</strong>의 커뮤니티를 이용해볼까요?</>:
+              <>아직 {memberNickname || '회원'}님의 게시글이 없어요.</>
+            }
             subText={<>실패를 외면하지 않고 기록할 때,<br />당신의 강력한 성장 데이터가 됩니다.</>}
-            buttonText="시작하기"
+            buttonText={isPageOwner ? "시작하기" : null}
             onButtonClick={() => navigate("/community")}
             styles={S}
           />

@@ -10,6 +10,7 @@ import GuestbookInputComponent from './components/GuestbookInputComponent';
 import GuestbookCommentItemComponent from './components/GuestbookCommentItemComponent';
 import axiosInstance from '../../../api/axiosInstance';
 import PopupComponent from '../../../components/commons/PopupComponent';
+import ReportPopup from '../../community/detail/components/ReportPopup';
 
 const mapGuestbook = (item) => ({
   id: item.id,
@@ -47,13 +48,24 @@ const mapGuestbook = (item) => ({
 const MyGuestbookContainer = ({ isPageOwner = true }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { userId } = useParams();
+  const { handle } = useParams();
   const { mainContent, quickMenus } = getHeroContent(pathname);
 
   const [loggedInMemberId, setLoggedInMemberId] = useState(null);
   const [loggedInNickname, setLoggedInNickname] = useState('익명');
   const [ownerMemberId, setOwnerMemberId] = useState(null);
   const [ownerNickname, setOwnerNickname] = useState('');
+  const [viewedOwnerId, setViewedOwnerId] = useState(null);
+
+  // 남의 방명록 조회 시: handle -> memberId 변환
+  useEffect(() => {
+    if (isPageOwner || !handle) return;
+    axiosInstance.get(`/api/members/handle/${handle}`)
+      .then((res) => {
+        if (res.data?.success) setViewedOwnerId(res.data.data.memberId);
+      })
+      .catch(console.error);
+  }, [isPageOwner, handle]);
 
   const [authChecked, setAuthChecked] = useState(false);
   const [loginPopup, setLoginPopup] = useState(false);
@@ -62,11 +74,22 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
   const [newComment, setNewComment] = useState('');
   const [replyTextMap, setReplyTextMap] = useState({});
   const [replyOpenId, setReplyOpenId] = useState(null);
-  const [searchType, setSearchType] = useState('제목+내용');
+  const [searchType, setSearchType] = useState('내용');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [visibleCount, setVisibleCount] = useState(4);
   const [activeMenuId, setActiveMenuId] = useState(null);
+  const [reportState, setReportState] = useState(null);
   const sentinelRef = useRef(null);
+
+  const openReport = (type, reportId, profileImg, author, content) => {
+    if (!loggedInMemberId) {
+      setLoginPopup(true);
+      return;
+    }
+    setReportState({ type, id: reportId, profileImg, author, content });
+  };
+
+  const closeReport = () => setReportState(null);
 
   // 로그인 유저 정보 + ownerMemberId 결정
   useEffect(() => {
@@ -87,7 +110,7 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
 
   // ownerMemberId가 결정되면 방명록 목록 로드
   useEffect(() => {
-    const ownerId = isPageOwner ? ownerMemberId : (userId ? Number(userId) : null);
+    const ownerId = isPageOwner ? ownerMemberId : viewedOwnerId;
     if (!ownerId) return;
     axiosInstance.get('/api/guestbook/list', { params: { ownerMemberId: ownerId } })
       .then((res) => {
@@ -100,24 +123,24 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
         }
       })
       .catch(console.error);
-  }, [ownerMemberId, isPageOwner, userId]);
+  }, [ownerMemberId, isPageOwner, viewedOwnerId]);
 
   const filteredComments = useMemo(() => {
     const keyword = searchKeyword.trim().toLowerCase();
     if (!keyword) return comments;
 
     return comments.filter((comment) => {
-      const title = comment.title.toLowerCase();
-      const content = comment.content.toLowerCase();
-      const author = comment.author.toLowerCase();
-      const replyTexts = comment.replies.map((r) => r.content.toLowerCase()).join(' ');
+      const replies = comment.replies || [];
+      const rereplies = replies.flatMap((r) => r.rereplies || []);
 
-      if (searchType === '제목') return title.includes(keyword);
-      if (searchType === '내용') return content.includes(keyword);
-      if (searchType === '제목+내용') return `${title} ${content}`.includes(keyword);
-      if (searchType === '작성자') return author.includes(keyword);
-      if (searchType === '댓글') return content.includes(keyword) || replyTexts.includes(keyword);
-      return false;
+      if (searchType === '작성자') {
+        const authors = [comment.author, ...replies.map((r) => r.author), ...rereplies.map((rr) => rr.author)];
+        return authors.some((a) => a.toLowerCase().includes(keyword));
+      }
+
+      // 내용 (기본값)
+      const contents = [comment.content, ...replies.map((r) => r.content), ...rereplies.map((rr) => rr.content)];
+      return contents.some((c) => c.toLowerCase().includes(keyword));
     });
   }, [comments, searchKeyword, searchType]);
 
@@ -156,7 +179,7 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
       return;
     }
     if (!loggedInMemberId) return;
-    const ownerId = isPageOwner ? ownerMemberId : (userId ? Number(userId) : null);
+    const ownerId = isPageOwner ? ownerMemberId : viewedOwnerId;
     if (!ownerId) return;
 
     const optimisticComment = {
@@ -198,7 +221,7 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
   };
 
   const refetchList = () => {
-    const ownerId = isPageOwner ? ownerMemberId : (userId ? Number(userId) : null);
+    const ownerId = isPageOwner ? ownerMemberId : viewedOwnerId;
     if (!ownerId) return Promise.resolve();
     return axiosInstance.get('/api/guestbook/list', { params: { ownerMemberId: ownerId } })
       .then((res) => {
@@ -281,7 +304,7 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
   const handleEditComment = (commentId, newContent) => {
     const comment = comments.find((c) => c.id === commentId);
     if (!comment) return;
-    const ownerId = isPageOwner ? ownerMemberId : (userId ? Number(userId) : null);
+    const ownerId = isPageOwner ? ownerMemberId : viewedOwnerId;
     axiosInstance.put('/api/guestbook/update', { id: commentId, ownerMemberId: ownerId, guestbookContent: newContent, writerMemberId: comment.authorId })
       .then(() => {
         setComments((prev) => prev.map((c) => c.id === commentId ? { ...c, content: newContent } : c));
@@ -292,7 +315,7 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
   const handleDeleteComment = (commentId) => {
     const comment = comments.find((c) => c.id === commentId);
     if (!comment) return;
-    const ownerId = isPageOwner ? ownerMemberId : (userId ? Number(userId) : null);
+    const ownerId = isPageOwner ? ownerMemberId : viewedOwnerId;
     axiosInstance.delete('/api/guestbook/delete', { data: { id: commentId, ownerMemberId: ownerId, writerMemberId: comment.authorId } })
       .then(() => {
         setComments((prev) => prev.filter((c) => c.id !== commentId));
@@ -405,12 +428,12 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
         message="방명록은 로그인 된 사용자만 이용하실 수 있습니다."
         onConfirm={() => setLoginPopup(false)}
       />
-      <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} isPageOwner={isPageOwner} userId={userId} />
+      <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} isPageOwner={isPageOwner} handle={handle} />
 
       <S.GuestbookSection>
         <S.GuestbookHeader>
           <h2><span>페일로그</span> 방명록</h2>
-          <p>{isPageOwner ? '다른 사람들이 남긴 방명록을 통해 소통해보세요.' : `${ownerNickname || userId}님의 방명록입니다.`}</p>
+          <p>{isPageOwner ? '다른 사람들이 남긴 방명록을 통해 소통해보세요.' : `${ownerNickname || handle}님의 방명록입니다.`}</p>
         </S.GuestbookHeader>
 
         <GuestbookInputComponent
@@ -424,6 +447,7 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
           onOptionChange={setSearchType}
           onSearchSubmit={setSearchKeyword}
           placeholder="방명록 검색..."
+          options={['내용', '작성자']}
         />
 
         {filteredComments.length === 0 ? (
@@ -457,12 +481,25 @@ const MyGuestbookContainer = ({ isPageOwner = true }) => {
                 onRereplySubmit={handleRereplySubmit}
                 onEditRereply={handleEditRereply}
                 onDeleteRereply={handleDeleteRereply}
+                onReport={openReport}
               />
             ))}
             <div ref={sentinelRef} />
           </S.CommentList>
         )}
       </S.GuestbookSection>
+
+      {reportState && (
+        <ReportPopup
+          type={reportState.type}
+          id={reportState.id}
+          memberId={loggedInMemberId}
+          profileImg={reportState.profileImg}
+          author={reportState.author}
+          content={reportState.content}
+          onClose={closeReport}
+        />
+      )}
     </PageS.MainWrapper>
   );
 };

@@ -19,6 +19,9 @@ const API_URL_MAP = {
   '게시글': 'http://localhost:10000/api/CommunityReport/post',
   '댓글':   'http://localhost:10000/api/CommunityReport/reply',
   '대댓글': 'http://localhost:10000/api/CommunityReport/rereply',
+  '방명록':       'http://localhost:10000/api/guestbook/report/comment',
+  '방명록 답글':   'http://localhost:10000/api/guestbook/report/reply',
+  '방명록 대댓글': 'http://localhost:10000/api/guestbook/report/rereply',
 };
 
 // type: 팝업 종류 (게시글/댓글/대댓글), id: 신고 대상 id, memberId: 로그인 멤버 id(신고자 멤버 id)
@@ -34,6 +37,9 @@ const ReportPopup = ({ type = '댓글', id, memberId, profileImg, author, conten
     if (type === '게시글') return { memberId, postId: id, reportReasonCategoryId: categoryId, postReportContent: reportText };
     if (type === '댓글')   return { memberId, replyId: id, reportReasonCategoryId: categoryId, replyReportContent: reportText };
     if (type === '대댓글') return { memberId, rereplyId: id, reportReasonCategoryId: categoryId, rereplyReportContent: reportText };
+    if (type === '방명록')       return { memberId, guestbookId: id, reportReasonCategoryId: categoryId, guestbookReportContent: reportText };
+    if (type === '방명록 답글')   return { memberId, guestbookReplyId: id, reportReasonCategoryId: categoryId, guestbookReplyReportContent: reportText };
+    if (type === '방명록 대댓글') return { memberId, guestbookRereplyId: id, reportReasonCategoryId: categoryId, guestbookRereplyReportContent: reportText };
   };
 
   const handleSubmit = async () => {

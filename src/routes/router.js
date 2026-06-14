@@ -53,7 +53,7 @@ const router = createBrowserRouter([
         element: <LogOtherContainer />
       },
       {
-        path: "user/:userId",
+        path: "my-page/:handle",
         children: [
           { path: "profile",   element: <MyProfileContainer /> },
           { path: "fail-logs", element: <MyFailLogsContainer isPageOwner={false} /> },

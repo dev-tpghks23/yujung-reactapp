@@ -98,8 +98,8 @@ S.CardBody = styled.div`
   padding: 24px 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  overflow: hidden;
+  gap: 20px;
+  /* overflow: hidden; */
 `
 
 S.CardMeta = styled.div`
@@ -117,8 +117,8 @@ S.CategoryBadge = styled.span`
 `
 
 S.CategoryWrap = styled.div`
-  width: 52px;
-  height: 20px;
+  width: 72px;
+  height: 28px;
   border-radius: 15px;
 
   background-color: ${({bgColor}) => colorCSS[bgColor]};
@@ -149,14 +149,14 @@ S.CardFooter = styled.div`
 S.AuthorInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
   &:hover span { text-decoration: underline; }
 `
 
 S.AuthorAvatar = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   /* border-radius: 50%; */
   /* background-color: ${colorCSS["faillog_gray1"]};
   border: 1px solid #e0e0e0; */
@@ -165,13 +165,13 @@ S.AuthorAvatar = styled.img`
 S.Stats = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 `
 
 S.postInfo = styled.span`
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 `
 
 S.StatItem = styled.span`

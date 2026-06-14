@@ -9,6 +9,7 @@ import eye from '../../resources/eye.svg';
 import callendar from '../../resources/callendar.svg';
 import clock from '../../resources/clock.svg';
 import defaultImage from '../../resources/default.png'
+import { goToMemberProfile } from '../../../../utils/profileNavigation';
 
 const PostHeader = ({ memberId, category, title, profile, author, views, date, timeAgo }) => {
   const { name, textColor, bgColor } = getCategoryInfo(category);
@@ -22,13 +23,13 @@ const PostHeader = ({ memberId, category, title, profile, author, views, date, t
     <Wrapper>
       {/* 이부분에 추가 */}
       <CategoryBadge bgcolor={bgColor}>
-        <S.Span size="h11Bold" color={textColor}>{name}</S.Span>
+        <S.Span size="h10Bold" color={textColor}>{name}</S.Span>
       </CategoryBadge>
 
       <S.Span2 size="h5Bold" color="faillog-black" lineclamp={2}>{title}</S.Span2>
 
       <BottomRow>
-        <AuthorWrap onClick={() => navigate(`/user/${memberId}/profile`)}>
+        <AuthorWrap onClick={() => goToMemberProfile(navigate, memberId)}>
           <PorileImg src={profile} onError={handledOnErrorImg} alt={author} />
           <S.Span size="h9Regular" color="faillog_gray9">{author}</S.Span>
         </AuthorWrap>

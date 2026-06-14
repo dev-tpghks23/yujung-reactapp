@@ -12,6 +12,7 @@ const LikesLogListSectionComponent = ({
   setSearchOption,
   handleSearchSubmit,
   filteredLogs,
+  pagedLogs,
   currentPage,
   totalPages,
   handlePageChange,
@@ -26,6 +27,7 @@ const LikesLogListSectionComponent = ({
         onOptionChange={setSearchOption}
         onSearchSubmit={handleSearchSubmit}
         styles={LogS}
+        options={['제목', '제목+내용', '내용']}
       />
 
       {filteredLogs.length === 0 ? (
@@ -39,7 +41,7 @@ const LikesLogListSectionComponent = ({
       ) : (
         <>
           <LikesLogComponent
-            filteredLogs={filteredLogs}
+            filteredLogs={pagedLogs}
             onUnlikeOne={onUnlikeOne}
             isPageOwner={isPageOwner}
           />

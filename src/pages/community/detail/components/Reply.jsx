@@ -13,10 +13,23 @@ import ReplySubmit from './ReplySubmit.jsx';
 import { useMenuContext } from './MenuContext.js';
 import { useReportContext } from './ReportContext.js';
 import PopupComponent from '../../../../components/commons/PopupComponent';
+import { goToMemberProfile } from '../../../../utils/profileNavigation';
 
 import defaultImage from '../../resources/default.png'
 
 const LIMIT = 230;
+
+const formatTimeAgo = (dateStr) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (diff < 60) return '방금';
+  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
+  if (diff < 2592000) return `${Math.floor(diff / 86400)}일 전`;
+  if (diff < 31536000) return `${Math.floor(diff / 2592000)}개월 전`;
+  return `${Math.floor(diff / 31536000)}년 전`;
+};
 
 // loginId: 로그인 유저 id, memberId: 댓글 작성자 id, replyId: 댓글 id
 // profileImg: 프로필 이미지, createdAt: 작성일
@@ -45,6 +58,7 @@ const Reply = ({
   const toggleMenu = () => setOpenMenuId(menuOpen ? null : menuId);
 
   const [currentContent, setCurrentContent] = useState(content);
+  const [currentRereplyList, setCurrentRereplyList] = useState(rereplyList);
   const [expanded, setExpanded] = useState(false);
   const [replyOpen, setReplyOpen] = useState(false);
   const [liked, setLiked] = useState(isLiked);
@@ -52,6 +66,29 @@ const Reply = ({
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editText, setEditText] = useState(content);
+
+  //댓글 컴포넌트 데이터 갱신
+  const refreshReply = async () => {
+    const res = await fetch('http://localhost:10000/api/posts/read-reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: loginId, replyId }),
+    });
+    if (!res.ok) return;
+    const json = await res.json();
+    if (!json.success) return;
+    const d = json.data;
+    setCurrentContent(d.replyContent);
+    setCurrentRereplyList((d.replies ?? []).map((rr) => ({
+      loginId,
+      memberId: rr.memberId,
+      rereplyId: rr.id,
+      profileImg: rr.memberProfileImageUrl ?? defaultImage,
+      author: rr.memberNickname,
+      content: rr.rereplyContent,
+      createdAt: formatTimeAgo(rr.rereplyCreatedAt),
+    })));
+  };
 
   const handleEditClick = () => {
     setOpenMenuId(null);
@@ -61,6 +98,7 @@ const Reply = ({
 
   const handleEditCancel = () => setEditMode(false);
 
+  //댓글 수정
   const handleEditSave = async () => {
     if (!editText.trim()) return;
     const res = await fetch('http://localhost:10000/api/posts/update-reply', {
@@ -70,12 +108,12 @@ const Reply = ({
     });
     if (!res.ok) return;
     const json = await res.json();
-    if (json.success) {
-      setCurrentContent(editText);
-      setEditMode(false);
-    }
+    if (!json.success) return;
+    await refreshReply();
+    setEditMode(false);
   };
 
+  //댓글 삭제
   const handleDeleteConfirm = async () => {
     setDeletePopupOpen(false);
     const res = await fetch(`http://localhost:10000/api/posts/delete-reply/${replyId}`, {
@@ -100,10 +138,9 @@ const Reply = ({
     });
     if (!res.ok) return;
     const json = await res.json();
-    if (json.success) {
-      setReplyOpen(false);
-      onReplyAdded?.();
-    }
+    if (!json.success) return;
+    await refreshReply();
+    setReplyOpen(false);
   };
 
   const handleLike = async () => {
@@ -132,7 +169,7 @@ const Reply = ({
 
   const isOverflow = currentContent.length > LIMIT;
   const displayText = isOverflow && !expanded ? currentContent.slice(0, LIMIT) : currentContent;
-  const showSection = rereplyList.length > 0 || replyOpen;
+  const showSection = currentRereplyList.length > 0 || replyOpen;
 
   const handledOnErrorImg = (e) => {
     e.target.src = defaultImage;
@@ -150,7 +187,7 @@ const Reply = ({
       <TopRow>
         <ProfileGroup>
           {profileImg && <ProfileImg src={profileImg} onError={handledOnErrorImg} alt="프로필" />}
-          <AuthorName onClick={() => navigate(`/user/${memberId}/profile`)}>{author}</AuthorName>
+          <AuthorName onClick={() => goToMemberProfile(navigate, memberId)}>{author}</AuthorName>
           <S.Span size="h10Regular" color="faillog_gray9">{createdAt}</S.Span>
         </ProfileGroup>
 
@@ -229,8 +266,8 @@ const Reply = ({
         <SectionArea>
           <Divider />
           <RereplyListArea>
-            {rereplyList.map((item, i) => (
-              <Rereply key={i} {...item} onReplyAdded={onReplyAdded} />
+            {currentRereplyList.map((item) => (
+              <Rereply key={item.rereplyId} {...item} onReplyAdded={refreshReply} />
             ))}
             {replyOpen && <ReplySubmit subject={"답글"} onSubmit={handleRereplySubmit} />}
           </RereplyListArea>

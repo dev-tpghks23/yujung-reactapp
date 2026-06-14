@@ -33,7 +33,7 @@ S.OptionBox = styled.div`
   top: calc(100% + 8px);
   left: 0;
   width: 200px;
-  height: 240px;
+  height: ${({ $optionCount }) => ($optionCount ?? 5) * 48}px;
   border-radius: 15px;
   overflow: hidden;
   z-index: 999;

@@ -1,19 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import S from '../styles/DeleteAccountContainerStyle';
 import PopupComponent from '../../../components/commons/PopupComponent';
 import axiosInstance from '../../../api/axiosInstance';
 import useAuthStore from '../../../store/authStore';
 
+const CONFIRM_PHRASE = '회원탈퇴';
+
 const DeleteAccountContainer = () => {
   const navigate = useNavigate();
   const { setUser, setIsAuthenticated } = useAuthStore();
+  const [isSocialLogin, setIsSocialLogin] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [confirmText, setConfirmText] = useState('');
   const [agreed, setAgreed] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
 
-  const canSubmit = agreed && password.length > 0 && !passwordError;
+  useEffect(() => {
+    axiosInstance.get('/private/member/me')
+      .then((res) => {
+        setIsSocialLogin(res.data?.data?.socialMemberProvider !== 'local');
+      })
+      .catch(console.error);
+  }, []);
+
+  const canSubmit = agreed && (
+    isSocialLogin
+      ? confirmText === CONFIRM_PHRASE
+      : password.length > 0 && !passwordError
+  );
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
@@ -41,7 +57,7 @@ const DeleteAccountContainer = () => {
     <>
       <PopupComponent
         isOpen={showPopup}
-        message="그리울거에요"
+        message="지금까지 Fail Log를 이용해주셔서 감사합니다."
         onConfirm={handleConfirmDelete}
         onCancel={() => setShowPopup(false)}
         confirmText="네"
@@ -61,14 +77,28 @@ const DeleteAccountContainer = () => {
         </S.WarnList>
       </S.WarnBox>
 
-      <S.FieldLabel>현재 비밀번호</S.FieldLabel>
-      <S.Input
-        type="password"
-        placeholder="비밀번호를 입력하세요"
-        value={password}
-        onChange={handlePasswordChange}
-      />
-      {passwordError && <S.ValidationMsg>{passwordError}</S.ValidationMsg>}
+      {isSocialLogin ? (
+        <>
+          <S.FieldLabel>회원 탈퇴를 진행하려면 "{CONFIRM_PHRASE}"를 입력하세요</S.FieldLabel>
+          <S.Input
+            type="text"
+            placeholder={CONFIRM_PHRASE}
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+          />
+        </>
+      ) : (
+        <>
+          <S.FieldLabel>현재 비밀번호</S.FieldLabel>
+          <S.Input
+            type="password"
+            placeholder="비밀번호를 입력하세요"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          {passwordError && <S.ValidationMsg>{passwordError}</S.ValidationMsg>}
+        </>
+      )}
 
       <S.CheckRow>
         <input

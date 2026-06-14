@@ -17,6 +17,7 @@ const ReplySubmit = ({ onSubmit, subject = "댓글" }) => {
 
   const handleSubmit = () => {
     if (onSubmit) onSubmit(text);
+    setText('');
   };
 
   const isMax = text.length === MAX_LENGTH;

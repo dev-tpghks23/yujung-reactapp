@@ -1,11 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import S from '../styles/MyFailLogStyles';
 import defaultProfile from '../../../../components/resources/default-profile.svg';
 import eyeIcon from '../../../../components/resources/eye.svg';
 import likeFilledIcon from '../../../../components/resources/like-fill2.svg';
 import defaultThumbnail from '../../../log/other/otherLog_thumbNail/Group 2956.png';
 
-const FeaturedLogComponent = ({ logs = [] }) => {
+const FeaturedLogComponent = ({ logs = [], isPageOwner = true, ownerNickname = '' }) => {
+  const navigate = useNavigate();
+
+  const goToLog = (logId) => {
+    navigate(`/logs/result/${logId}/detail`);
+  };
+
   const hasLikedPosts = logs.some(
     (log) => log.isLiked || (log.likeCount || log.likes || 0) > 0,
   );
@@ -14,9 +21,10 @@ const FeaturedLogComponent = ({ logs = [] }) => {
 
   const topLogs = [...logs]
     .sort((a, b) => {
-      const scoreA = (a.views || 0) + (a.likeCount || a.likes || 0);
-      const scoreB = (b.views || 0) + (b.likeCount || b.likes || 0);
-      return scoreB - scoreA;
+      const likeA = a.likeCount || a.likes || 0;
+      const likeB = b.likeCount || b.likes || 0;
+      if (likeB !== likeA) return likeB - likeA;
+      return (b.views || 0) - (a.views || 0);
     })
     .slice(0, 3);
 
@@ -25,23 +33,23 @@ const FeaturedLogComponent = ({ logs = [] }) => {
   return (
     <S.FeaturedWrapper>
       <S.SectionHeader>
-        <h2>나의 <span>페일로그</span></h2>
+        <h2>{isPageOwner ? '나의' : `${ownerNickname}님의`} <span>페일로그</span></h2>
       </S.SectionHeader>
 
       <S.FeaturedContainer>
         <S.FeaturedListArea>
           <div className="TitleBox">
-            <h3>당신의 가장 빛났던 실패 이야기</h3>
-            <p>내가 작성한 페일로그 중<br />제일 관심이 많았던 게시글이 표시됩니다.</p>
+            <h3>{isPageOwner ? '당신의' : `${ownerNickname}님의`} 가장 빛났던 실패 이야기</h3>
+            <p>{isPageOwner ? '내가' : `${ownerNickname}님이`} 작성한 페일로그 중<br />제일 관심이 많았던 게시글이 표시됩니다.</p>
           </div>
 
           {topLogs.map((log, idx) => (
-            <S.FeaturedItem key={log.id ?? idx}>
+            <S.FeaturedItem key={log.id ?? idx} onClick={() => goToLog(log.id)}>
               <h4>{log.title}</h4>
               <div className="Meta">
                 <div className="User">
                   <img src={log.profileImg || defaultProfile} alt="profile" />
-                  {log.author || '나의 기록'}
+                  {log.author || (isPageOwner ? '나의 기록' : ownerNickname)}
                 </div>
                 <div className="Stats">
                   <span>
@@ -58,7 +66,7 @@ const FeaturedLogComponent = ({ logs = [] }) => {
           ))}
         </S.FeaturedListArea>
 
-        <S.FeaturedMainImage>
+        <S.FeaturedMainImage onClick={() => goToLog(featuredLog.id)}>
           <img
             className="MainImg"
             src={featuredLog.thumbnailUrl || defaultThumbnail}
@@ -68,7 +76,7 @@ const FeaturedLogComponent = ({ logs = [] }) => {
             <p>"{featuredLog.content?.substring(0, 70)}..."</p>
             <div className="AuthorInfo">
               <img src={featuredLog.profileImg || defaultProfile} alt="profile" />
-              {featuredLog.author || '나의 기록'}
+              {featuredLog.author || (isPageOwner ? '나의 기록' : ownerNickname)}
             </div>
           </div>
         </S.FeaturedMainImage>

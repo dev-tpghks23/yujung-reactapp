@@ -12,10 +12,14 @@ import EmptyStateComponent from '../commons/EmptyStateComponent';
 import CommS from '../profile/styles/CommunityStyles';
 import axiosInstance from '../../../api/axiosInstance';
 
+const CARDS_PER_ROW = 4;
+const ROWS_PER_PAGE = 4;
+const PAGE_SIZE = CARDS_PER_ROW * ROWS_PER_PAGE;
+
 const MyLikesContainer = ({ isPageOwner = true }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { userId } = useParams();
+  const { handle } = useParams();
   const { mainContent, quickMenus } = getHeroContent(pathname);
   const { content, setContent, setPage } = useSearchStore();
 
@@ -53,13 +57,13 @@ const MyLikesContainer = ({ isPageOwner = true }) => {
   }, [isPageOwner]);
 
   useEffect(() => {
-    if (isPageOwner || !userId) return;
-    axiosInstance.get(`/api/members/${userId}`)
+    if (isPageOwner || !handle) return;
+    axiosInstance.get(`/api/members/handle/${handle}`)
       .then((res) => {
         if (res.data?.success) setOwnerNickname(res.data.data.memberNickname || '');
       })
       .catch(console.error);
-  }, [isPageOwner, userId]);
+  }, [isPageOwner, handle]);
 
   const [filteredLogs, setFilteredLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,8 +81,10 @@ const MyLikesContainer = ({ isPageOwner = true }) => {
       });
     }
     setFilteredLogs(filtered);
-    setTotalPages(Math.ceil(filtered.length / 4) || 1);
+    setTotalPages(Math.ceil(filtered.length / PAGE_SIZE) || 1);
   }, [allLogs, content, searchOption]);
+
+  const pagedLogs = filteredLogs.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const handleSearchSubmit = (val) => {
     setContent(val);
@@ -95,7 +101,7 @@ const MyLikesContainer = ({ isPageOwner = true }) => {
 
   return (
     <PageS.MainWrapper>
-      <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} isPageOwner={isPageOwner} userId={userId} />
+      <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} isPageOwner={isPageOwner} handle={handle} />
       <RecentLogsComponent logs={recentLogs} />
 
       {hasNoCards ? (
@@ -115,6 +121,7 @@ const MyLikesContainer = ({ isPageOwner = true }) => {
           setSearchOption={setSearchOption}
           handleSearchSubmit={handleSearchSubmit}
           filteredLogs={filteredLogs}
+          pagedLogs={pagedLogs}
           currentPage={currentPage}
           totalPages={totalPages}
           handlePageChange={(page) => setCurrentPage(page)}

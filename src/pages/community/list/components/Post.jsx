@@ -10,6 +10,7 @@ import comment from '../../resources/post.svg'
 import likeFill from '../../resources/like-fill2.svg'
 import getCategoryInfo from '../../GetCategoryInfo';
 import defaultProfile from '../../resources/default.png';
+import { goToMemberProfile } from '../../../../utils/profileNavigation';
 
 const Wrapper = styled.div`
   width: 984px;
@@ -68,9 +69,8 @@ const CategoryBadge = styled.div`
   /* ${h11Bold}
   color: #ffffff; */
   background-color: ${({bgcolor}) => colorCSS[bgcolor]};
-  width: 52px;
-  height: 20px;
-  padding-top: 1px;
+  width: 64px;
+  height: 26px;
   ${flexCenterRow}
   border-radius: 15px;
 `;
@@ -107,14 +107,14 @@ const BottomRow = styled.div`
 const AuthorWrap = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 7px;
   cursor: pointer;
   &:hover span { text-decoration: underline; }
 `;
 
 const AuthorImg = styled.img`
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   /* object-fit: cover; */
 `;
@@ -122,13 +122,13 @@ const AuthorImg = styled.img`
 const Stats = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 `;
 
 const StatItem = styled.span`
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 7px;
 `;
 
 const Divider = styled.hr`
@@ -173,31 +173,31 @@ const Post = ({
           <Info>
             <TopRow>
               <CategoryBadge bgcolor={bgColor}>
-                <S.Span size={"h11Bold"} color={textColor}>
+                <S.Span size={"h10Bold"} color={textColor}>
                   {name}
-                </S.Span> 
+                </S.Span>
               </CategoryBadge>
-              <S.Span size={"h10Regular"} color={"faillog_gray9"}>{date}</S.Span>
+              <S.Span size={"h9Regular"} color={"faillog_gray9"}>{date}</S.Span>
             </TopRow>
             <S.Span2 size={"h7Extrabold"} color={"faillog-black"} lineclamp={1}>{title}</S.Span2>
-            <S.Span2 size={"h8Bold"} color={"faillog_gray9"}>{content}</S.Span2>
+            <S.Span2 size={"h8-regular"} color={"faillog_gray9"}>{content}</S.Span2>
             <BottomRow>
-              <AuthorWrap onClick={(e) => { e.stopPropagation(); navigate(`/user/${memberId}/profile`); }}>
+              <AuthorWrap onClick={(e) => { e.stopPropagation(); goToMemberProfile(navigate, memberId); }}>
                 <AuthorImg src={profile || defaultProfile} onError={handledOnErrorImg} alt={author} />
-                <S.Span size="h10Regular">{author}</S.Span>
+                <S.Span size="h9Regular">{author}</S.Span>
               </AuthorWrap>
               <Stats>
                 <StatItem>
-                  <img src={eye} width={12} height={8}></img>
-                  <S.Span size="h9Regular" color="faillog-black" isvisible={true}>{views}</S.Span>
+                  <img src={eye} width={15} height={11}></img>
+                  <S.Span size="h8Regular" color="faillog-black" isvisible={true}>{views}</S.Span>
                 </StatItem>
                 <StatItem>
-                  <img src={isLiked ? likeFill : heart} width={14} height={14}></img>
-                  <S.Span size="h9Regular" color="faillog-black" isvisible={true}>{likes}</S.Span>
+                  <img src={isLiked ? likeFill : heart} width={17} height={17}></img>
+                  <S.Span size="h8Regular" color="faillog-black" isvisible={true}>{likes}</S.Span>
                 </StatItem>
                 <StatItem>
-                  <img src={comment} width={14} height={14}></img>
-                  <S.Span size="h9Regular" color="faillog-black" isvisible={true}>{comments}</S.Span>
+                  <img src={comment} width={17} height={17}></img>
+                  <S.Span size="h8Regular" color="faillog-black" isvisible={true}>{comments}</S.Span>
                 </StatItem>
               </Stats>
             </BottomRow>

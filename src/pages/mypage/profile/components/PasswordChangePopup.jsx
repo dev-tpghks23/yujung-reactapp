@@ -30,7 +30,7 @@ const PasswordChangePopup = ({ isOpen, memberEmail, memberNickname, onClose, onS
         <S.Header>
           <S.Title>
             <strong>{memberNickname || 'User'}님</strong> 의 회원정보 중{' '}
-            <span>비밀번호</span> 수정을 위해<br />
+            <br /> <span>비밀번호</span> 수정을 위해<br />
             변경할 비밀번호를 입력해주세요.
           </S.Title>
           <S.CurrentId>현재 아이디 : {memberEmail}</S.CurrentId>

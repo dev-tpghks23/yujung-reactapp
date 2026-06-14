@@ -110,7 +110,8 @@ S.FeaturedMainImage = styled.div`
   flex: 0.9;
   position: relative;
   min-height: 500px;
-  
+  cursor: pointer;
+
   img {
     width: 100%;
     height: 100%;

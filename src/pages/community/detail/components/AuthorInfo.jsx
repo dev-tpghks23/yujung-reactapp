@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import S, { colorCSS } from '../../style';
 import defaultImage from '../../resources/default.png'
+import { goToMemberProfile } from '../../../../utils/profileNavigation';
 
 const AuthorInfo = ({ memberId, profile, author, postCount, faillogCount, commentCount }) => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const AuthorInfo = ({ memberId, profile, author, postCount, faillogCount, commen
 
   return (
     <Wrapper>
-      <AuthorWrap onClick={() => navigate(`/user/${memberId}/profile`)} style={{ cursor: 'pointer' }}>
+      <AuthorWrap onClick={() => goToMemberProfile(navigate, memberId)} style={{ cursor: 'pointer' }}>
         <ProfileImg src={profile} onError={handledOnErrorImg} alt={author} />
         <S.Span size="h7Bold" color="faillog-black">{author}</S.Span>
       </AuthorWrap>

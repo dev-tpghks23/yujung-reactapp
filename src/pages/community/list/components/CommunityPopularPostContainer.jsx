@@ -11,6 +11,7 @@ import heart from '../../resources/like.svg'
 import comment from '../../resources/post.svg'
 import likeFill from '../../resources/like-fill2.svg'
 import getCategoryInfo from '../../GetCategoryInfo';
+import { goToMemberProfile } from '../../../../utils/profileNavigation';
 
 import imageEmpty from '../../resources/popular-image-empty.png'
 import defaultProfile from '../../resources/default.png'
@@ -142,7 +143,7 @@ const CommunityPopularPostContainer = ({ posts }) => {
             <S.Span size="h2-bold" color="faillog-black">실시간 인기글</S.Span>
           </myStyle.headerTestOneDiv>
           <myStyle.headerTextTwoDiv>
-            <S.Span size="h8-bold" color="faillog_gray9">
+            <S.Span size="h8-regular" color="faillog_gray9">
               많이 공감받은 복기 글을 한눈에 확인해보세요.
             </S.Span>
           </myStyle.headerTextTwoDiv>
@@ -174,9 +175,9 @@ const CommunityPopularPostContainer = ({ posts }) => {
                   <myStyle.CardBody>
                     <myStyle.CardMeta>
                       <myStyle.CategoryWrap bgColor={bgColor}>
-                        <S.Span color={textColor} size={"h11Bold"}>{name}</S.Span>
+                        <S.Span color={textColor} size={"h9Bold"}>{name}</S.Span>
                       </myStyle.CategoryWrap>
-                      <S.Span size="h10Regular" color="faillog_gray9">{post.date}</S.Span>
+                      <S.Span size="h8Regular" color="faillog_gray9">{post.date}</S.Span>
                     </myStyle.CardMeta>
                     <myStyle.CardTitle>
                       <S.Span2 size="h6Bold" color="faillog-black" lineclamp={2}>
@@ -184,28 +185,28 @@ const CommunityPopularPostContainer = ({ posts }) => {
                       </S.Span2>
                     </myStyle.CardTitle>
                     <myStyle.CardContent>
-                      <S.Span2 size="h8Bold" color="faillog_gray9" lineclamp={3}>
+                      <S.Span2 size="h8-regular" color="faillog_gray9" lineclamp={3}>
                         {post.content}
                       </S.Span2>
                     </myStyle.CardContent>
                     <myStyle.CardDivider />
                     <myStyle.CardFooter>
-                      <myStyle.AuthorInfo onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.memberId}/profile`); }}>
+                      <myStyle.AuthorInfo onClick={(e) => { e.stopPropagation(); goToMemberProfile(navigate, post.memberId); }}>
                         <myStyle.AuthorAvatar src={post.profile || defaultProfile} onError={handledOnErrorImg} />
-                        <S.Span size="h9Regular" color="faillog_gray9">{post.author}</S.Span>
+                        <S.Span size="h8Regular" color="faillog-black">{post.author}</S.Span>
                       </myStyle.AuthorInfo>
                       <myStyle.Stats>
                         <myStyle.postInfo>
-                          <img src={eye} width={12} height={8}></img>
-                          <S.Span size={"h10Regular"} color={"faillog-black"} isvisible={true}>{post.views}</S.Span>
+                          <img src={eye} width={16} height={12}></img>
+                          <S.Span size={"h9Regular"} color={"faillog-black"} isvisible={true}>{post.views}</S.Span>
                         </myStyle.postInfo>
                         <myStyle.postInfo>
-                          <img src={heart} width={14} height={14}></img>
-                          <S.Span size={"h10Regular"} color={"faillog-black"}>{post.likes}</S.Span>
+                          <img src={heart} width={16} height={16}></img>
+                          <S.Span size={"h9Regular"} color={"faillog-black"}>{post.likes}</S.Span>
                         </myStyle.postInfo>
                         <myStyle.postInfo>
-                          <img src={comment} width={14} height={14}></img>
-                          <S.Span size={"h10Regular"} color={"faillog-black"}>{post.comments}</S.Span>
+                          <img src={comment} width={16} height={16}></img>
+                          <S.Span size={"h9Regular"} color={"faillog-black"}>{post.comments}</S.Span>
                         </myStyle.postInfo>
                       </myStyle.Stats>
                     </myStyle.CardFooter>

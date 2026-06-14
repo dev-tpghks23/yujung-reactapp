@@ -121,6 +121,14 @@ S.Profile = styled.div`
     display: flex;
     align-items: center;
     gap: 10px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover span {
+        text-decoration: underline;
+    }
 `;
 
 S.AvatarWrap = styled.div`

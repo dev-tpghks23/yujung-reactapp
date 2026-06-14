@@ -16,6 +16,10 @@ import FailS from './styles/MyFailLogStyles';
 import PopupComponent from '../../../components/commons/PopupComponent';
 import axiosInstance from '../../../api/axiosInstance';
 
+const CARDS_PER_ROW = 4;
+const ROWS_PER_PAGE = 4;
+const PAGE_SIZE = CARDS_PER_ROW * ROWS_PER_PAGE;
+
 const mapLog = (item) => ({
   id: item.id,
   title: item.logTitle || '',
@@ -35,7 +39,7 @@ const mapLog = (item) => ({
 const MyFailLogsContainer = ({ isPageOwner = true }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { userId } = useParams();
+  const { handle } = useParams();
   const { mainContent, quickMenus } = getHeroContent(pathname);
   const { content, setContent, setPage } = useSearchStore();
   
@@ -56,36 +60,47 @@ const MyFailLogsContainer = ({ isPageOwner = true }) => {
 
   const [draftLogs, setDraftLogs] = useState([]);
   const [ownerNickname, setOwnerNickname] = useState('');
+  const [targetMemberId, setTargetMemberId] = useState(null);
 
   useEffect(() => {
-    if (isPageOwner || !userId) return;
-    axiosInstance.get(`/api/members/${userId}`)
+    if (isPageOwner || !handle) return;
+    axiosInstance.get(`/api/members/handle/${handle}`)
       .then((res) => {
-        if (res.data?.success) setOwnerNickname(res.data.data.memberNickname || '');
+        if (res.data?.success) {
+          setOwnerNickname(res.data.data.memberNickname || '');
+          setTargetMemberId(res.data.data.memberId || null); 
+        }
       })
       .catch(console.error);
-  }, [isPageOwner, userId]);
+  }, [isPageOwner, handle]);
 
   useEffect(() => {
-    if (!isPageOwner) return;
-    axiosInstance.get('/api/logs/my-list')
+    if (!isPageOwner && !targetMemberId) return;
+
+    const params = isPageOwner ? {} : { memberId: targetMemberId };
+
+    axiosInstance.get('/api/logs/my-list', { params })
       .then((res) => {
         if (res.data?.success && Array.isArray(res.data.data)) {
           const mapped = res.data.data.map(mapLog);
           setAllLogs(mapped.filter((log) => log.logStatus !== 'DRAFT'));
-          setDraftLogs(mapped.filter((log) => log.logStatus === 'DRAFT'));
+          if (isPageOwner) {
+            setDraftLogs(mapped.filter((log) => log.logStatus === 'DRAFT'));
+          }
         }
       })
       .catch(console.error);
 
-    axiosInstance.get('/api/logs/trashed')
-      .then((res) => {
-        if (res.data?.success && Array.isArray(res.data.data)) {
-          setTrashedLogs(res.data.data.map(mapLog));
-        }
-      })
-      .catch(console.error);
-  }, [isPageOwner]);
+    if (isPageOwner) {
+      axiosInstance.get('/api/logs/trashed')
+        .then((res) => {
+          if (res.data?.success && Array.isArray(res.data.data)) {
+            setTrashedLogs(res.data.data.map(mapLog));
+          }
+        })
+        .catch(console.error);
+    }
+  }, [isPageOwner, targetMemberId]); 
 
   useEffect(() => {
     let filtered = allLogs;
@@ -98,8 +113,10 @@ const MyFailLogsContainer = ({ isPageOwner = true }) => {
       });
     }
     setFilteredLogs(filtered);
-    setTotalPages(Math.ceil(filtered.length / 4) || 1); 
+    setTotalPages(Math.ceil(filtered.length / PAGE_SIZE) || 1);
   }, [allLogs, content, searchOption]);
+
+  const pagedLogs = filteredLogs.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   useEffect(() => {
     setSelectedDeleteIds([]);
@@ -222,7 +239,7 @@ const MyFailLogsContainer = ({ isPageOwner = true }) => {
       onCancel={popup?.onCancel}
     />
     <PageS.MainWrapper>
-      <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} isPageOwner={isPageOwner} userId={userId} />
+      <HeroRotationComponent mainContent={mainContent} quickMenus={quickMenus} isPageOwner={isPageOwner} handle={handle} />
       {isPageOwner && <DraftLogsComponent draftLogs={draftLogs.slice(0, 3)} />}
 
       {hasNoCards ? (
@@ -231,19 +248,23 @@ const MyFailLogsContainer = ({ isPageOwner = true }) => {
             ? <>아직 기록된 실패가 없네요.<br /><span>첫 번째 페일로그</span>를 적어볼까요?</>
             : <>아직 <span>{ownerNickname}</span>님의 페일로그가 없어요.</>
           }
-          subText="실패를 외면하지 않고 기록할 때, 당신의 강력한 성장 데이터가 됩니다."
+          subText={isPageOwner 
+            ? "실패를 외면하지 않고 기록할 때, 당신의 강력한 성장 데이터가 됩니다." 
+            : "실패를 기록하고 성장하는 공간, 페일로그와 함께하고 있습니다."
+          }
           buttonText={isPageOwner ? "시작하기" : undefined}
           onButtonClick={isPageOwner ? () => navigate('/logs/new/step1') : undefined}
           styles={CommS}
         />
       ) : (
         <>
-          <FeaturedLogComponent logs={allLogs} />
+          <FeaturedLogComponent logs={allLogs} isPageOwner={isPageOwner} ownerNickname={ownerNickname} />
           <MyFailLogListSectionComponent
             searchOption={searchOption}
             setSearchOption={setSearchOption}
             handleSearchSubmit={handleSearchSubmit}
             filteredLogs={filteredLogs}
+            pagedLogs={pagedLogs}
             currentPage={currentPage}
             totalPages={totalPages}
             handlePageChange={(page) => setCurrentPage(page)}
