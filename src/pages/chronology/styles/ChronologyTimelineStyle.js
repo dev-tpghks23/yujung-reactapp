@@ -370,6 +370,13 @@ S.DuplicateError = styled.p`
   padding-left: 4px;
 `;
 
+S.EmptyMessage = styled.p`
+  ${h10Regular}
+  color: #aaa;
+  text-align: center;
+  padding: 16px 0;
+`;
+
 S.AddButton = styled.button`
   width: 100%;
   padding: 16px;

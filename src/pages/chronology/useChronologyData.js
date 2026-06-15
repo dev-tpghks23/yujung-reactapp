@@ -17,7 +17,7 @@ const toTimelineItem = (p, index = 0) => {
     endDate: p.endDate || '',
     bullets: p.bullets || [],
     aiSuggestions: p.aiSuggestions || [],
-    images: [`https://picsum.photos/300/200?random=${p.id ?? index}`],
+    images: [p.thumbnailUrl || `https://picsum.photos/300/200?random=${p.id ?? index}`],
   };
 };
 
@@ -65,6 +65,7 @@ const useChronologyData = () => {
           bullets:       (p.checklists || []).slice(0, 4).map((c) => c.checklistTitle),
           aiSuggestions: p.aiSuggestions   || [],
           createdAt:     p.projectCreatedAt || '',
+          thumbnailUrl:  p.logThumbnailUrl  || null,
         }));
 
         setProjects(mapped);
@@ -173,7 +174,7 @@ const useChronologyData = () => {
         endDate:      project.endDate || '',
         bullets:      project.bullets || [],
         aiSuggestions: project.aiSuggestions || [],
-        images:       [`https://picsum.photos/300/200?random=${seed}`],
+        images:       [project.thumbnailUrl || `https://picsum.photos/300/200?random=${seed}`],
       },
     ]);
   };
@@ -181,20 +182,25 @@ const useChronologyData = () => {
   /* ── 일괄 등록 ── */
   const onAddAllTimeline = (projectList) => {
     const now = new Date();
-    const newItems = (projectList || []).map((p, i) => ({
-      id:           Date.now() + i,
-      projectId:    p.id,
-      year:         String(now.getFullYear()),
-      month:        `${now.getMonth() + 1}월`,
-      projectTitle: p.title,
-      description:  p.description || p.title,
-      startDate:    p.startDate || '',
-      endDate:      p.endDate || '',
-      bullets:      p.bullets || [],
-      aiSuggestions: p.aiSuggestions || [],
-      images:       [`https://picsum.photos/300/200?random=${Date.now() + i}`],
-    }));
-    setTimeline((prev) => [...prev, ...newItems]);
+    setTimeline((prev) => {
+      const registeredIds = new Set(prev.map((t) => t.projectId ?? t.id));
+      const newItems = (projectList || [])
+        .filter((p) => !registeredIds.has(p.id))
+        .map((p, i) => ({
+          id:           Date.now() + i,
+          projectId:    p.id,
+          year:         String(now.getFullYear()),
+          month:        `${now.getMonth() + 1}월`,
+          projectTitle: p.title,
+          description:  p.description || p.title,
+          startDate:    p.startDate || '',
+          endDate:      p.endDate || '',
+          bullets:      p.bullets || [],
+          aiSuggestions: p.aiSuggestions || [],
+          images:       [p.thumbnailUrl || `https://picsum.photos/300/200?random=${Date.now() + i}`],
+        }));
+      return [...prev, ...newItems];
+    });
   };
 
   const handleSelectProject = (project) => {
